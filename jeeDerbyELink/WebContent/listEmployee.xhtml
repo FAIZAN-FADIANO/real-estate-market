@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+ 
+<ui:composition template="/WEB-INF/templates/MyTemplate.xhtml">
+
+	<ui:define name="title">Employee List</ui:define>
+	
+	<ui:define name="content">
+	<h:dataTable value="#{employeeController.employeeList}" var="emp"  border="1">
+         <h:column>
+              <f:facet name="header">
+                  <h:outputText value="First Name"/>
+              </f:facet>
+                  <h:outputText value="#{emp.firstName}"/>
+               </h:column>
+               
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Last Name"/>
+                    </f:facet>
+                    <h:outputText value="#{emp.lastName}"/>
+                </h:column>
+               
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Phone"/>
+                    </f:facet>
+                    <h:outputText value="#{emp.phone}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Email"/>
+                    </f:facet>
+                    <h:outputText value="#{emp.email}"/>
+                </h:column>
+            </h:dataTable>
+            
+            <h:form>
+            <h:link outcome="newEmployee.xhtml" value="Add new Employee"/>
+            </h:form>
+	</ui:define>
+</ui:composition>
+</html>
