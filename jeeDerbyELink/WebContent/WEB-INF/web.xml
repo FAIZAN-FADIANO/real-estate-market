@@ -14,12 +14,19 @@
     <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>Faces Servlet</servlet-name>
-    <url-pattern>/faces/*</url-pattern>
+	    <url-pattern>*.jsf</url-pattern>
+	    <url-pattern>/faces/*</url-pattern>
   </servlet-mapping>
+  
   <context-param>
       <param-name>com.sun.faces.enableViewStateIdRendering</param-name>
       <param-value>false</param-value>
   </context-param>
+  <context-param>
+    <param-name>BootsFaces_USETHEME</param-name>
+    <param-value>true</param-value>
+</context-param>
 </web-app>

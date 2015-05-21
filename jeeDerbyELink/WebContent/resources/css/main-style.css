@@ -1,0 +1,39 @@
+/* line 4, sass/main-style.scss */
+#header {
+  margin-top: 10px;
+}
+
+/* line 8, sass/main-style.scss */
+#loggingTitle {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* line 13, sass/main-style.scss */
+#loggingForm {
+  border-radius: 10px;
+  border: 1px solid;
+  box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+  font-size: 150%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 50px;
+}
+/* line 22, sass/main-style.scss */
+#loggingForm input, #loggingForm button {
+  width: 100%;
+  margin: 5px 0 20px;
+  padding: 5px;
+}
+
+/* line 29, sass/main-style.scss */
+.langSelectTop {
+  width: 100%;
+  max-width: 120px;
+}
+
+/* line 34, sass/main-style.scss */
+#langSelectIcon {
+  float: left;
+  margin-right: 5px;
+}

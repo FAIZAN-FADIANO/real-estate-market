@@ -1,0 +1,10 @@
+adminLoginMetaTitle = Вход
+adminLoginPageTitle = Войдите, что-бы получить доступ к Админ панеле
+loginBlockLegend = Вход в систему
+loginLabel = Логин
+loginPlaceholder = Введите Ваш Логин
+passwordLabel = Пароль
+passwordPlaceholder = Введите Ваш Пароль
+enterButtonLabel = Войти
+createAccountLabel = Воздать новый Аккаунт
+lostPasswordLabel = Забыли свой пароль?

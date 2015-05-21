@@ -1,0 +1,59 @@
+$bright-color: #ff0000;
+$normal-font-size: 14px;
+
+#header {
+  margin-top: 10px;
+}
+
+#loggingTitle {
+	margin-top: 20px;
+	text-align: center;	
+}
+
+#loggingForm {
+	border-radius: 10px;
+	border: 1px solid;
+	box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+	font-size: 150%;
+	padding-top: 10px;
+  	padding-bottom: 10px;
+  	margin-top: 50px;
+  
+	input, button {
+		width: 100%;
+		margin: 5px 0 20px;
+		padding: 5px;
+	}
+}
+
+.langSelectTop {
+	width: 100%;
+	max-width: 120px;
+}
+
+#langSelectIcon {
+	float: left;
+  	margin-right: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

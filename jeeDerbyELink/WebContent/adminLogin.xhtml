@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:p="http://primefaces.org/ui">
+<h:head></h:head>
+
+<h:body>
+	<ui:composition template="/WEB-INF/templates/MyTemplate.xhtml">
+	
+				
+			<ui:define name="title">#{logging.adminLoginMetaTitle}</ui:define>
+			
+			<ui:define name="header">
+			    <b:container id="header">
+			    	<b:row>
+			    		<b:column col-xs="3" offset-xs="9">
+			    			<p:graphicImage id="langSelectIcon" name="langSelectIcon.png" library="images"></p:graphicImage>
+			    			<h:form id="langSelect">
+			    				<h:selectOneMenu value="#{frontLocale.currentLocale}" var="lang" 
+			    								onchange="submit()" valueChangeListener="#{frontLocale.localeChanged}">
+			    				 	<f:selectItems value="#{frontLocale.locales}"></f:selectItems>
+			    				 	
+			    				</h:selectOneMenu>
+			    			</h:form>
+			    		</b:column>
+			    	</b:row>
+			    </b:container>
+			</ui:define>
+			<ui:define name="content">
+			    <b:container>
+			    	<b:row>
+			    		<b:column id="loggingTitle" ><h1>#{logging.adminLoginPageTitle}</h1></b:column>
+			    	</b:row>
+			    	<b:row>
+			    		<b:column id="loggingForm" span="4" offset="4" col-sm="6" offset-sm="3" col-xs="10" offset-xs="1">
+							<b:panelGrid colSpans="12">
+								<h:outputText value="#{logging.loginLabel}"/>
+								<p:inputText placeholder="#{logging.loginPlaceholder}"></p:inputText> 
+								<h:outputText value="#{logging.passwordLabel}" />
+								<p:inputText placeholder="#{logging.passwordPlaceholder}"></p:inputText> 
+								<p:commandButton value="#{logging.enterButtonLabel}"></p:commandButton>   
+								<p:link value="#{logging.lostPasswordLabel}" outcome="bootsFaces.xhtml"></p:link>		
+								<p:link value="#{logging.createAccountLabel}" outcome="listEmployee.xhtml"></p:link>
+							</b:panelGrid>		
+			    		</b:column>
+			    	</b:row>
+			    </b:container>
+			</ui:define>
+			<ui:define name="footer">
+			    Add your footer here or delete to use the default
+			</ui:define>
+
+	</ui:composition>
+</h:body>	
+</html>
