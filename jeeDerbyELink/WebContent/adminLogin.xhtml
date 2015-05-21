@@ -18,14 +18,22 @@
 			<ui:define name="header">
 			    <b:container id="header">
 			    	<b:row>
-			    		<b:column col-xs="3" offset-xs="9">
+			    		<b:column col-xs="9"><p:messages autoUpdate="true" /></b:column>
+			    		<b:column col-xs="3">
 			    			<p:graphicImage id="langSelectIcon" name="langSelectIcon.png" library="images"></p:graphicImage>
 			    			<h:form id="langSelect">
-			    				<h:selectOneMenu value="#{frontLocale.currentLocale}" var="lang" 
-			    								onchange="submit()" valueChangeListener="#{frontLocale.localeChanged}">
-			    				 	<f:selectItems value="#{frontLocale.locales}"></f:selectItems>
-			    				 	
-			    				</h:selectOneMenu>
+			    				<p:selectOneMenu value="#{frontLocale.currentLocale}" converter="customLocaleConverter" 
+			    				onchange="submit()" effect="fade" valueChangeListener="#{frontLocale.localeChanged}"
+			    				var="lang" style="width:160px">
+			    				 	<f:selectItems value="#{frontLocale.locales}" var="locale"
+			    				 	itemLabel="#{locale.label}" itemValue="#{locale}"></f:selectItems>
+			    				 	<p:column style="width:10%">
+						                <p:graphicImage name="#{lang.icon}" library="images"></p:graphicImage>
+						            </p:column>
+						            <p:column>
+						                <h:outputText value="#{lang.label}" />
+						            </p:column>
+			    				</p:selectOneMenu>
 			    			</h:form>
 			    		</b:column>
 			    	</b:row>
