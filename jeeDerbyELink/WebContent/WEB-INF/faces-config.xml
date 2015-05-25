@@ -6,9 +6,18 @@
     version="2.2">
 
 	<application>
+		<locale-config>
+            <default-locale>en</default-locale>
+            <supported-locale>ru</supported-locale>
+            <supported-locale>de</supported-locale>
+        </locale-config>
         <resource-bundle>
             <base-name>stolser.i18n.general.logging</base-name>
             <var>logging</var>
         </resource-bundle>
     </application>
+    
+    <lifecycle>
+	    <phase-listener>com.stolser.LifeCycleListener</phase-listener>
+	</lifecycle>
 </faces-config>

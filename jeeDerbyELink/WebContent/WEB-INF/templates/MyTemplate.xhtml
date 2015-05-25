@@ -6,43 +6,60 @@
 	  xmlns:f="http://java.sun.com/jsf/core"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:p="http://primefaces.org/ui">
-<h:head>
-	<h:outputStylesheet library="css" name="main-style.css"/>
-	<h:outputScript library="js" name="jquery-1.11.2.min.js" />
-	<h:outputScript library="js" name="common.js" />
-	
-  	<title><ui:insert name="title">Hello World JSF - JPA - EJB</ui:insert></title>
-</h:head>
-<h:body>
-	
-<f:view locale="#{frontLocale.currentLocale}">
-	
-	    <ui:insert name="header">
-	    	<p>Header area from <span class="file-name">MyTemplate.xhtml</span> file</p>
-	    	<!--  include your header file or uncomment the include below and create header.xhtml in this directory -->
-	    	<!-- <ui:include src="header.xhtml"/> -->
-	    </ui:insert>
+<f:view locale="#{frontLocale.currentLocale.langCode}">    
 
+	<h:head>
+		<h:outputStylesheet library="css" name="main-style.css"/>
+		<h:outputScript library="js" name="jquery-1.11.2.min.js" />
+		<h:outputScript library="js" name="common.js" />
+		
+	  	<title><ui:insert name="title">Hello World JSF - JPA - EJB</ui:insert></title>
+	</h:head>
+	<h:body>
+		    <ui:insert name="header">
+		    	<b:container id="header">
+			    	<b:row><b:column><p:messages autoUpdate="true" /></b:column></b:row>
+			    	<b:row>
+			    		<b:column col-xs="10" offset-xs="2" col-sm="6" offset-sm="6" col-md="4" offset="8">
+			    			<p:graphicImage id="langSelectIcon" name="langSelectIcon.png" library="images"></p:graphicImage>
+			    			<h:form id="langSelect">
+			    				<p:selectOneMenu value="#{frontLocale.currentLocale}" converter="#{customLocaleConverter}" 
+			    				onchange="submit()" effect="fade" var="lang" style="width:160px" immediate="true">
+			    				 	<f:selectItems value="#{frontLocale.locales}" var="locale"
+			    				 	itemLabel="#{locale.label}" itemValue="#{locale}"></f:selectItems>
+			    				 	<p:column style="width:10%">
+						                <p:graphicImage name="#{lang.icon}" library="images"></p:graphicImage>
+						            </p:column>
+						            <p:column>
+						                <h:outputText value="#{lang.label} (#{lang.country})" />
+						            </p:column>
+			    				</p:selectOneMenu>
+			    			</h:form>
+			    		</b:column>
+			    	</b:row>
+			    </b:container>
+		    </ui:insert>
+	
+		
+		
+	
+		  <ui:insert name="content">
+		    	<p>Content area from MyTemplate.xhtml file</p>
+		    	<!--  include your content file or uncomment the include below and create content.xhtml in this directory -->
+			  	<!-- <div> -->
+		    	<!-- <ui:include src="content.xhtml"/> -->  
+		    	<!-- </div> -->
+		  </ui:insert>
+	
+		
+	
+		  <ui:insert name="footer">
+		    	<p>Footer area from MyTemplate.xhtml file</p>
+		    	<!--  include your header file or uncomment the include below and create footer.xhtml in this directory -->
+				<!--<ui:include src="footer.xhtml"/>  -->
+		  </ui:insert>
 	
 	
-
-	  <ui:insert name="content">
-	    	<p>Content area from MyTemplate.xhtml file</p>
-	    	<!--  include your content file or uncomment the include below and create content.xhtml in this directory -->
-		  	<!-- <div> -->
-	    	<!-- <ui:include src="content.xhtml"/> -->  
-	    	<!-- </div> -->
-	  </ui:insert>
-
-	
-
-	  <ui:insert name="footer">
-	    	<p>Footer area from MyTemplate.xhtml file</p>
-	    	<!--  include your header file or uncomment the include below and create footer.xhtml in this directory -->
-			<!--<ui:include src="footer.xhtml"/>  -->
-	  </ui:insert>
-
-</f:view>	
-</h:body>
-
+	</h:body>
+</f:view>
 </html>

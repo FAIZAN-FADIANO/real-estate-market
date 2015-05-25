@@ -35,5 +35,15 @@
 /* line 34, sass/main-style.scss */
 #langSelectIcon {
   float: left;
-  margin-right: 5px;
+  margin-right: 7px;
+  margin-top: 5px;
+}
+
+/* line 41, sass/main-style.scss */
+#langSelect label {
+  font-size: 125%;
+}
+/* line 45, sass/main-style.scss */
+#langSelect div .ui-selectonemenu-trigger {
+  width: auto;
 }

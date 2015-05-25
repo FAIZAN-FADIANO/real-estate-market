@@ -33,7 +33,18 @@ $normal-font-size: 14px;
 
 #langSelectIcon {
 	float: left;
-  	margin-right: 5px;
+  	margin-right: 7px;
+  	margin-top: 5px;
+}
+
+#langSelect {
+	label {
+		font-size: 125%;
+	}
+	
+	div .ui-selectonemenu-trigger {
+		width: auto;
+	}
 }
 
 

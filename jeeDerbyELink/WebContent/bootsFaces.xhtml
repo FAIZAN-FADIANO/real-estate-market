@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
 	  xmlns:h="http://java.sun.com/jsf/html"
 	  xmlns:f="http://java.sun.com/jsf/core"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:p="http://primefaces.org/ui">
-    
-<h:head>
-    <title>BootsFaces Basic Page</title>
-</h:head>
+<h:head></h:head>
 <h:body>
-    <b:container id="header" styleClass="center" fluid="true">
-        <b:row>
-            <b:column>
-                <h1>Hello, world BootsFaces!</h1>
-            </b:column>
-        </b:row>
-        <b:row>
-        	<b:column span="6" offset="3">
-        		<p:calendar value="#{employeeController.date}" mode="popup"></p:calendar>
-        	</b:column>
-        </b:row>
-    </b:container>
-
+	<ui:composition template="/WEB-INF/templates/MyTemplate.xhtml">
+		<ui:define name="content">
+		    <b:container id="content" styleClass="center">
+		        <b:row>
+		            <b:column>
+		                <h1>#{logging.adminLoginPageTitle}</h1>
+		            </b:column>
+		        </b:row>
+		        <b:row>
+		        	<b:column span="6" offset="3">
+		        		<p:calendar value="#{employeeController.date}" mode="popup"></p:calendar><br/>
+		        		<h:outputText value="#{logging.loginLabel}"/><br/>
+		        		<h:outputText value="#{logging.passwordLabel}" />
+		        	</b:column>
+		        </b:row>
+		    </b:container>
+		    </ui:define>
+	</ui:composition>
 	
 </h:body>
 </html>
