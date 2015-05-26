@@ -51,4 +51,14 @@
 /* line 51, sass/main-style.scss */
 #usersTable .columnsToggler {
   float: right;
+  margin-top: 3px;
+}
+/* line 56, sass/main-style.scss */
+#usersTable .ui-datatable-header {
+  height: 44px;
+  line-height: 36px;
+}
+/* line 61, sass/main-style.scss */
+#usersTable .ui-datatable-tablewrapper {
+  overflow: hidden;
 }

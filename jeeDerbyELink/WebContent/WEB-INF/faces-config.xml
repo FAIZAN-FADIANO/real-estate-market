@@ -21,7 +21,7 @@
         </resource-bundle>
     </application>
     
-    <lifecycle>
+<!--     <lifecycle>
 	    <phase-listener>com.stolser.LifeCycleListener</phase-listener>
-	</lifecycle>
+	</lifecycle> -->
 </faces-config>

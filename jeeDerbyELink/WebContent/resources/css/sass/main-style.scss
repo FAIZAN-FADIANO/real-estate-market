@@ -50,6 +50,16 @@ $normal-font-size: 14px;
 #usersTable {
 	.columnsToggler {
 		float: right;
+		margin-top: 3px;
+	}
+	
+	.ui-datatable-header {
+		  height: 44px;
+  		  line-height: 36px;
+	}
+	
+	.ui-datatable-tablewrapper {
+		overflow: hidden;
 	}
 }
 

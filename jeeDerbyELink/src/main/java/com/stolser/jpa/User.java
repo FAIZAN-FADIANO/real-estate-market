@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "USERS")
 @SequenceGenerator(name="SEQMYCLASSID", sequenceName="SEQMYCLASSID")
-@NamedQuery(name = "findAllUsers", query = "SELECT e FROM Users e")
+@NamedQuery(name = "findAllUsers", query = "SELECT e FROM User e")
 public class User implements Serializable {
 	
 	private static final long serialVersionUID = 347L;

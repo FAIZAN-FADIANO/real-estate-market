@@ -1,5 +1,6 @@
 package com.stolser.ejb;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.LocalBean;
@@ -25,6 +26,7 @@ public class UserEJB {
     public List<User> findAllUsers() {
     	TypedQuery<User> query = entityManager.createNamedQuery("findAllUsers", User.class);
     	return query.getResultList();
+    	//return new ArrayList<User>();
     }
     
     public void addNewUser(User user) {
