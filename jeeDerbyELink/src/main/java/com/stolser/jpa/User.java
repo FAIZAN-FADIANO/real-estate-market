@@ -1,20 +1,26 @@
 package com.stolser.jpa;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "USERS")
 @SequenceGenerator(name="SEQMYCLASSID", sequenceName="SEQMYCLASSID")
-@NamedQuery(name = "findAllUsers", query = "SELECT e FROM User e")
+@NamedQuery(name = "findAllUsers", query = "SELECT e FROM Users e")
 public class User implements Serializable {
 	
 	private static final long serialVersionUID = 347L;
@@ -23,17 +29,22 @@ public class User implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQMYCLASSID")
 	private long id;
 	@NotNull
-	private UserType type;
+	@Column(name = "USERTYPE")
+	@Enumerated(EnumType.STRING)
+	private UserType type = UserType.CLIENT;
 	@NotNull
-	private UserStatus status;
+	@Enumerated(EnumType.STRING)
+	private UserStatus status = UserStatus.REGISTERED;
 	@NotNull
-	private String login;
+	private String login = "login";
 	@NotNull
-	private String password;
+	private String password = "password";
 	@NotNull
-	private String firstName;
+	private String firstName = "";
 	@NotNull
-	private String lastName;
+	private String lastName = "";
+	@Temporal(TemporalType.DATE)
+	private Date birthday;
 	private String email;
 
 //constructors
@@ -104,12 +115,25 @@ public class User implements Serializable {
 		this.lastName = lastName;
 	}
 
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
 	public String getEmail() {
 		return email;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	@Override
+	public String toString() {
+		return lastName + firstName + "(" + type + ")";
 	}
 }
 

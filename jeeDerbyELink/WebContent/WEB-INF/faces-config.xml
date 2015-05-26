@@ -13,7 +13,11 @@
         </locale-config>
         <resource-bundle>
             <base-name>stolser.i18n.general.logging</base-name>
-            <var>logging</var>
+            <var>loggingRB</var>
+        </resource-bundle>
+        <resource-bundle>
+            <base-name>stolser.i18n.general.entity.user</base-name>
+            <var>userRB</var>
         </resource-bundle>
     </application>
     

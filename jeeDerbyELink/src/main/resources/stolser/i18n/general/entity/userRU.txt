@@ -1,24 +1,22 @@
 # UserTypes
-userAdminLabel = admin
+userAdminLabel = админ
 userAdminDescription =  Access to all possible functionality on the back-end including adding new users. On the front-end see all types of messages (including errors).
-userRealtorLabel = realtor
+userRealtorLabel = риелтор
 userRealtorDescription =  A real estate agent. Has an access to the back-end. Can have assigned estate items (by himself or by the admin). Adding/editing/deleting assigned to him estate items.
-userClientLabel = client
+userClientLabel = клиент
 userClientDescription =  A registered user of the front-end, doesn't have an access to the back-end. Have access to Private Panel with some extra functionality.
 #User's properties
-userFirstNameLabel = first name
-userLastNameLabel = last name
-userTypeLabel = type
-userStatusLabel = status
-userLoginLabel = login
-userPasswordLabel = password
-userBirthdayLabel = birthday
-userEmailLabel = email
+userFirstNameLabel = имя
+userLastNameLabel = фамилия
+userTypeLabel = тип
+userStatusLabel = статус
+userLoginLabel = логин
+userPasswordLabel = пароль
+userBirthdayLabel = день рождения
+userEmailLabel = эл. почта
 
 
 #Listing of users page
-listOfUsersMetaTitle = A list of users
-listOfUsersTableTitle = A list of users (total number {0} users)
-showColumnsLabel = Show columns:
-
-
+listOfUsersMetaTitle = Список юзеров
+listOfUsersTableTitle = Список юзеров (общее количетсво {0} юзеров)
+showColumnsLabel = Показать колонки:

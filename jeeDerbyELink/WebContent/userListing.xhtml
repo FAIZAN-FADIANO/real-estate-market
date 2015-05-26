@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+<h:head></h:head>
+<h:body>
+<ui:composition template="/WEB-INF/templates/MyTemplate.xhtml">
+	<ui:define name="title">#{userRB.listOfUsersMetaTitle}</ui:define>
+ 
+	<ui:define name="content">
+		<b:container>
+			<b:row>
+				<p:dataTable id="usersTable" var="user" value="#{userController.usersList}" draggableColumns="true">
+					<f:facet name="usersTableHeader">
+						<h:outputFormat value="#{userRB.listOfUsersTableTitle}">
+							<f:param value="#{fn:length(userController.usersList)}"></f:param>
+						</h:outputFormat>
+						<p:commandButton styleClass="columnsToggler" type="button" value="#{userRB.showColumnsLabel}" 
+						icon="ui-icon-wrench"></p:commandButton>
+						<p:columnToggler trigger="toggler" datasource="usersList"></p:columnToggler>
+					</f:facet>
+					<p:column  headerText="#{userRB.userLastNameLabel}" footerText="#{userRB.userLastNameLabel}" 
+								priority="1" toggleable="false" visible="">
+						<p:outputLabel>#{user.lastName}</p:outputLabel>
+					</p:column>
+					<p:column  headerText="#{userRB.userFirstNameLabel}" footerText="#{userRB.userFirstNameLabel}" 
+								priority="1" toggleable="false" visible="">
+						<p:outputLabel>#{user.firstName}</p:outputLabel>
+					</p:column>
+					<p:column  headerText="#{userRB.userTypeLabel}" footerText="#{userRB.userTypeLabel}" 
+								priority="3" toggleable="" visible="">
+						<p:outputLabel>#{user.type}</p:outputLabel>
+					</p:column>
+					<p:column  headerText="#{userRB.userLoginLabel}" footerText="#{userRB.userLoginLabel}" 
+								priority="2" toggleable="" visible="">
+						<p:outputLabel>#{user.login}</p:outputLabel>
+					</p:column>
+<!-- 					<p:column  headerText="#{userRB.userPasswordLabel}" footerText="#{userRB.userPasswordLabel}" 
+								priority="2" toggleable="" visible="">
+						<p:outputLabel>#{user.password}</p:outputLabel>
+					</p:column> -->
+					<p:column  headerText="#{userRB.userBirthdayLabel}" footerText="#{userRB.userBirthdayLabel}" 
+								priority="5" toggleable="" visible="false">
+						<p:outputLabel>#{user.birthday}</p:outputLabel>
+					</p:column>
+					<p:column  headerText="#{userRB.userEmailLabel}" footerText="#{userRB.userEmailLabel}" 
+								priority="3" toggleable="" visible="false">
+						<p:outputLabel>#{user.email}</p:outputLabel>
+					</p:column>
+					<p:column  headerText="#{userRB.userStatusLabel}" footerText="#{userRB.userStatusLabel}" 
+								priority="2" toggleable="" visible="">
+						<p:outputLabel>#{user.status}</p:outputLabel>
+					</p:column>
+				</p:dataTable>
+			</b:row>
+		</b:container>
+	</ui:define>
+
+</ui:composition>
+</h:body>
+</html>

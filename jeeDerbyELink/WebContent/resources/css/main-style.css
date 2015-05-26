@@ -47,3 +47,8 @@
 #langSelect div .ui-selectonemenu-trigger {
   width: auto;
 }
+
+/* line 51, sass/main-style.scss */
+#usersTable .columnsToggler {
+  float: right;
+}
