@@ -1,15 +1,16 @@
-/* line 4, sass/main-style.scss */
+/* line 5, sass/main-style.scss */
 #header {
   margin-top: 10px;
+  min-height: 100px;
 }
 
-/* line 8, sass/main-style.scss */
+/* line 10, sass/main-style.scss */
 #loggingTitle {
   margin-top: 20px;
   text-align: center;
 }
 
-/* line 13, sass/main-style.scss */
+/* line 15, sass/main-style.scss */
 #loggingForm {
   border-radius: 10px;
   border: 1px solid;
@@ -19,46 +20,58 @@
   padding-bottom: 10px;
   margin-top: 50px;
 }
-/* line 22, sass/main-style.scss */
+/* line 24, sass/main-style.scss */
 #loggingForm input, #loggingForm button {
   width: 100%;
   margin: 5px 0 20px;
   padding: 5px;
 }
 
-/* line 29, sass/main-style.scss */
+/* line 31, sass/main-style.scss */
 .langSelectTop {
   width: 100%;
   max-width: 120px;
 }
 
-/* line 34, sass/main-style.scss */
+/* line 36, sass/main-style.scss */
 #langSelectIcon {
   float: left;
   margin-right: 7px;
   margin-top: 5px;
 }
 
-/* line 41, sass/main-style.scss */
+/* line 43, sass/main-style.scss */
 #langSelect label {
   font-size: 125%;
 }
-/* line 45, sass/main-style.scss */
+/* line 47, sass/main-style.scss */
 #langSelect div .ui-selectonemenu-trigger {
   width: auto;
 }
 
-/* line 51, sass/main-style.scss */
+/* line 53, sass/main-style.scss */
 #usersTable .columnsToggler {
   float: right;
   margin-top: 3px;
 }
-/* line 56, sass/main-style.scss */
+/* line 58, sass/main-style.scss */
 #usersTable .ui-datatable-header {
   height: 44px;
   line-height: 36px;
 }
-/* line 61, sass/main-style.scss */
+/* line 63, sass/main-style.scss */
 #usersTable .ui-datatable-tablewrapper {
   overflow: hidden;
+}
+
+/* line 68, sass/main-style.scss */
+.ui-datatable tbody td {
+  text-align: center;
+  color: #407cea;
+}
+
+/* line 74, sass/main-style.scss */
+.userTypeCell,
+.userStatusCell {
+  text-transform: lowercase;
 }

@@ -18,7 +18,7 @@
 		<b:container>
 			<b:row>
 				<p:dataTable id="usersTable" var="user" value="#{userController.usersList}" draggableColumns="true"
-								reflow="priority">
+								reflow="priority" emptyMessage="#{userRB.emptyMessage}">
 					<f:facet name="header">
 						<h:outputFormat value="#{userRB.listOfUsersTableTitle}">
 							<f:param value="#{fn:length(userController.usersList)}"></f:param>
@@ -36,7 +36,7 @@
 						<p:outputLabel>#{user.firstName}</p:outputLabel>
 					</p:column>
 					<p:column  headerText="#{userRB.userTypeLabel}" footerText="#{userRB.userTypeLabel}" 
-								priority="3">
+								priority="3" styleClass="userTypeCell">
 						<p:outputLabel>#{user.type}</p:outputLabel>
 					</p:column>
 					<p:column  headerText="#{userRB.userLoginLabel}" footerText="#{userRB.userLoginLabel}" 
@@ -48,11 +48,11 @@
 						<p:outputLabel>#{user.birthday}</p:outputLabel>
 					</p:column>
 					<p:column  headerText="#{userRB.userEmailLabel}" footerText="#{userRB.userEmailLabel}" 
-								priority="3">
+								priority="3" width="25%">
 						<p:outputLabel>#{user.email}</p:outputLabel>
 					</p:column>
 					<p:column  headerText="#{userRB.userStatusLabel}" footerText="#{userRB.userStatusLabel}" 
-								priority="2">
+								priority="2" width="10%" styleClass="userStatusCell">
 						<p:outputLabel>#{user.status}</p:outputLabel>
 					</p:column>
 				</p:dataTable>

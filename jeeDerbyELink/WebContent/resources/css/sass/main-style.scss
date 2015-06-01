@@ -1,8 +1,10 @@
 $bright-color: #ff0000;
 $normal-font-size: 14px;
+$colorTextTableBody: rgb(64, 124, 234);
 
 #header {
-  margin-top: 10px;
+  	margin-top: 10px;
+    min-height: 100px;
 }
 
 #loggingTitle {
@@ -63,6 +65,15 @@ $normal-font-size: 14px;
 	}
 }
 
+.ui-datatable tbody td {
+	  text-align: center;
+	  color: $colorTextTableBody;
+}
+
+.userTypeCell,
+.userStatusCell {
+	text-transform: lowercase;
+}
 
 
 

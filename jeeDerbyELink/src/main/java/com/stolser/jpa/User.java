@@ -43,6 +43,9 @@ public class User implements Serializable {
 	private String firstName = "";
 	@NotNull
 	private String lastName = "";
+	@NotNull
+	@Temporal(TemporalType.DATE)
+	private Date dateOfCreation;
 	@Temporal(TemporalType.DATE)
 	private Date birthday;
 	private String email;
@@ -113,6 +116,14 @@ public class User implements Serializable {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public Date getDateOfCreation() {
+		return dateOfCreation;
+	}
+
+	public void setDateOfCreation(Date dateOfCreation) {
+		this.dateOfCreation = dateOfCreation;
 	}
 
 	public Date getBirthday() {
