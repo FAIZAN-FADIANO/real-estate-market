@@ -14,7 +14,7 @@ import com.stolser.jpa.User;
 @ManagedBean(name = "userController")
 @RequestScoped
 public class UserController {
-	
+	 
 //--------properties
 	private User user = new User();
 		

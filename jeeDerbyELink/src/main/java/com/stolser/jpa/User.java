@@ -3,70 +3,99 @@ package com.stolser.jpa;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
+import javax.validation.constraints.*;
 
+/**
+ * User entity: An abstract entity, and the root of an inheritance hierarchy.
+ * Has one of the types defined in the <code>UserType</code> enum type.
+ * Each type determines access rights on the back-end and messages and 
+ * UI elements on the front-end.
+ * */
 @Entity
+@NamedQueries({
+	@NamedQuery(name="User.findAll", query="select u from User u"),
+	@NamedQuery(name="User.findByType",
+		query="select u from User u where u.type = :type"),
+	@NamedQuery(name="User.findByStatus", 
+		query="select u from User u where u.status = :status"),
+	@NamedQuery(name="User.findByLogin", 
+		query="select u from User u where u.login = :login")
+})
 @Table(name = "USERS")
-@SequenceGenerator(name="SEQMYCLASSID", sequenceName="SEQMYCLASSID")
-@NamedQuery(name = "findAllUsers", query = "SELECT e FROM User e")
-public class User implements Serializable {
-	
-	private static final long serialVersionUID = 347L;
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="DISCRIM_TYPE")
+abstract public class User implements Serializable {
+	private static final long serialVersionUID = 351L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQMYCLASSID")
-	private long id;
+	@Column(name="USER_PK")
+	@TableGenerator(name="userIdGenerator",
+					table="SEQUENCE_STORAGE",
+					pkColumnName="SEQUENCE_NAME",
+					pkColumnValue="USERS.USER_PK",
+					valueColumnName="SEQUENCE_VALUE",
+					initialValue=1, allocationSize=1)
+	@GeneratedValue(strategy=GenerationType.TABLE, generator="userIdGenerator")
+	private int id;
 	@NotNull
-	@Column(name = "USERTYPE")
+	@Column(name = "USER_TYPE")
 	@Enumerated(EnumType.STRING)
-	private UserType type = UserType.CLIENT;
+	private UserType type;
 	@NotNull
 	@Enumerated(EnumType.STRING)
-	private UserStatus status = UserStatus.REGISTERED;
+	private UserStatusType status;
+	/**
+	 * <span style="color:red";>Value MUST be unique.</span> Will be used in a URL.
+	 * */
 	@NotNull
-	private String login = "login";
+	@Pattern(regexp="^[a-zA-Z0-9-]{5-15}$")
+	private String login;
 	@NotNull
-	private String password = "password";
+	@Pattern(regexp="^.{5-15}$")
+	private String password;
 	@NotNull
-	private String firstName = "";
+	@Pattern(regexp="^[a-zA-Z-]{1-20}$")
+	@Column(name="FIRST_NAME")
+	private String firstName;
 	@NotNull
-	private String lastName = "";
+	@Pattern(regexp="^[a-zA-Z-]{1-20}$")
+	@Column(name="LAST_NAME")
+	private String lastName;
 	@NotNull
 	@Temporal(TemporalType.DATE)
+	@Column(name="CREATION_DATE")
 	private Date dateOfCreation;
 	@Temporal(TemporalType.DATE)
+	@Past
 	private Date birthday;
+	@Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\." + 
+					"[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@" + 
+			"(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
 	private String email;
+	@Version
+	private int version;
+/*--------- END of entity properties --------------*/
 
-//constructors
+/*--------- constructors --------------------------*/	
 	public User() {}
-//-----------------
-	
+
+/*--------- END of constructors -------------------*/
+
 	enum UserType {
-		SUPER_ADMIN, ADMIN, REALTOR, CLIENT
+		SUPER_ADMIN, ADMIN, REALTOR, REGISTERED_USER
 	}
 	
-	enum UserStatus {
-		REGISTERED, ACTIVE, NOT_ACTIVE
+	enum UserStatusType {
+		ACTIVE, NOT_ACTIVE, DISCARDED;
 	}
 
-	public long getId() {
+/*-------- getters and setters ---------*/
+	public int getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -78,11 +107,11 @@ public class User implements Serializable {
 		this.type = type;
 	}
 
-	public UserStatus getStatus() {
+	public UserStatusType getStatus() {
 		return status;
 	}
 
-	public void setStatus(UserStatus status) {
+	public void setStatus(UserStatusType status) {
 		this.status = status;
 	}
 
@@ -142,6 +171,16 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+/*-------- END of getters and setters ---------*/
+	
 	@Override
 	public String toString() {
 		return lastName + firstName + "(" + type + ")";
