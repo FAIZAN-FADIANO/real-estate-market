@@ -12,11 +12,9 @@ import javax.validation.constraints.*;
  */
 @Entity
 @NamedQueries({
-	@NamedQuery(name="Utility.findAll", query="select u from Utility u"),
-	@NamedQuery(name="Utility.findBySystemName", 
-				query="select u from Utility u where u.systemName = :systemName")
+	@NamedQuery(name="Utility.findAll", query="select u from Utility u")
 })
-@Table(name="ESTATE_UTILITIES")
+@Table(name="UTILITIES")
 public class Utility implements Serializable {
 	private static final long serialVersionUID = 347L;
 	
@@ -25,7 +23,7 @@ public class Utility implements Serializable {
 	@TableGenerator(name="utilityIdGenerator",
 					table="SEQUENCE_STORAGE",
 					pkColumnName="SEQUENCE_NAME",
-					pkColumnValue="ESTATE_UTILITIES.UTILITY_PK",
+					pkColumnValue="UTILITIES.UTILITY_PK",
 					valueColumnName="SEQUENCE_VALUE",
 					initialValue=1, allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.TABLE, generator="utilityIdGenerator")

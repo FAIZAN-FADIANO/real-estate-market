@@ -31,9 +31,12 @@ import javax.validation.constraints.*;
 public class House extends EstateItem implements Serializable {
 	private static final long serialVersionUID = 358L;
 	
+	@Column(name="GARAGE_ROOMINESS")
 	@Min(value=0)	
 	private int garageRoominess;
+	@Column(name="PLOT_AREA")
 	private double plotArea;
+	@Column(name="POOL_AVAILABILITY")
 	private boolean isTherePool;
 	@Version
 	private int version;

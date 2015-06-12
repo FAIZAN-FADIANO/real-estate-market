@@ -45,6 +45,7 @@ public class PostComment implements Serializable {
 	private String text;
 	@NotNull
 	@Temporal(TemporalType.DATE)
+	@Column(name="CREATION_DATE")
 	private Date dateOfCreation;
 	/**
 	 * A post (of type Post) to which this postComment belongs to.

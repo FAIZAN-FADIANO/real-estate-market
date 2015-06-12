@@ -16,7 +16,7 @@ import com.stolser.jpa.User;
 public class UserController {
 	 
 //--------properties
-	private User user = new User();
+	private User user;
 		
 	@EJB 
 	private UserEJB userEJB;

@@ -15,10 +15,13 @@ import javax.persistence.*;
 public class RegisteredUser extends User implements Serializable {
 	private static final long serialVersionUID = 354L;
 	
+	@Column(name="HOME_AREA_UNIT")
 	@Enumerated(EnumType.STRING)
 	private EstateItem.HomeAreaUnitType homeAreaUnit;
+	@Column(name="PLOT_AREA_UNIT")
 	@Enumerated(EnumType.STRING)
 	private EstateItem.PlotAreaUnitType plotAreaUnit;
+	@Column(name="PRICE_CURRENCY")
 	@Enumerated(EnumType.STRING)
 	private EstateItem.PriceCurrencyType priceCurrency;
 	@ManyToMany

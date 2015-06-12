@@ -28,10 +28,17 @@ import javax.validation.constraints.*;
 @Table(name="APARTMENTS")
 public class Apartment extends EstateItem implements Serializable {
 	private static final long serialVersionUID = 357L;
-
+	
+	@Column(name="FLOOR_NUMBER")
 	private int floorNumber;
+	@Column(name="PARKING_PLACE_NUMBER")
 	@Min(value=0)	
 	private int numberOfParkingPlaces;
+	/**
+	 * Services for residents inside a building.<br/>
+	 * Can contain HTML tags.
+	 * */
+	@Column(name="EXTRA_SERVICES_DESC")
 	private String householdServicesDescription;
 	@Version
 	private int version;

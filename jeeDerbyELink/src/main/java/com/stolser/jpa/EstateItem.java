@@ -91,7 +91,7 @@ abstract public class EstateItem implements Serializable {
 	@Column(name="TOTAL_AREA")
 	private double homeAreaTotal;
 	@ManyToMany
-    @JoinTable( name = "ESTATE_UTILITY",
+    @JoinTable( name = "ESTATE_UTILITIES",
             	joinColumns = @JoinColumn(name = "ESTATE_ITEM_ID"),
             	inverseJoinColumns = @JoinColumn(name = "UTILITY_ID"))
 	private List<Utility> extraUtilities;
@@ -105,22 +105,28 @@ abstract public class EstateItem implements Serializable {
 	@Null
 	@Column(name="DAY_RENT")
 	private double dailyRent;
+	@Column(name="ESTATE_DESCRIPTION")
 	private String estateDescription;
+	@Column(name="OWNER_DESCRIPTION")
 	private String ownerDescription;
 	@ElementCollection
 	@CollectionTable(name ="ESTATE_IMAGES")
 	@Column(name="IMAGES")
 	private List<String> images;
+	@Column(name="CONSTRUCTION_YEAR")
 	@Temporal(TemporalType.DATE)
 	@Past
 	private Date yearOfConstruction;
 	/**
 	 * Includes all types of rooms: beds, livingrooms, libraries, studies etc.
 	 * */
+	@Column(name="ROOMS_NUMBER")
 	@Min(value=1)
 	private int numberOfRooms;
+	@Column(name="BEDS_NUMBER")
 	@Min(value=1)
 	private int numberOfBeds;
+	@Column(name="BATHROOMS_NUMBER")
 	@Min(value=1)
 	private int numberOfBathrooms;
 	@Version

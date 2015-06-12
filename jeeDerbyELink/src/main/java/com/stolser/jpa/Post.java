@@ -43,19 +43,24 @@ public class Post implements Serializable {
 	private Admin author;
 	@OneToMany(mappedBy="post")
 	private Collection<PostComment> listOfComments;
+	@Column(name="CREATION_DATE")
 	@Temporal(TemporalType.DATE)
 	private Date dateOfCreation;
 	/**
 	 * <span style="color:red";>Value MUST be unique.</span> Will be used in a URL.
 	 * */
+	@Column(name="LINK_NAME")
 	@NotNull
 	private String linkName;
 	@NotNull
 	private String title;
 	@NotNull private String text;
 	private String excerpt;
+	@Column(name="META_TITLE")
 	private String metaTitle;
+	@Column(name="META_KEYWORDS")
 	private String metaKeyWords;
+	@Column(name="META_DESCRIPTION")
 	private String metaDescription;
 	@Version
 	private int version;
