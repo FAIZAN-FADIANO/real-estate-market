@@ -80,13 +80,26 @@ abstract public class User implements Serializable {
 /*--------- constructors --------------------------*/	
 	public User() {}
 
+	public User(UserType type, UserStatusType status, String login,
+			String password, String firstName, String lastName,
+			Date dateOfCreation) {
+		super();
+		this.type = type;
+		this.status = status;
+		this.login = login;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.dateOfCreation = dateOfCreation;
+	}
+	
 /*--------- END of constructors -------------------*/
 
-	enum UserType {
+	public enum UserType {
 		SUPER_ADMIN, ADMIN, REALTOR, REGISTERED_USER
 	}
 	
-	enum UserStatusType {
+	public enum UserStatusType {
 		ACTIVE, NOT_ACTIVE, DISCARDED;
 	}
 
@@ -183,7 +196,7 @@ abstract public class User implements Serializable {
 	
 	@Override
 	public String toString() {
-		return lastName + firstName + "(" + type + ")";
+		return lastName + firstName + "(" + login + ": " + type + ")";
 	}
 }
 

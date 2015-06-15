@@ -8,7 +8,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.*;
 import javax.faces.context.FacesContext;
 
-import com.stolser.ejb.UserEJB;
+import com.stolser.ejb.UserFacadeEJB;
 import com.stolser.jpa.User;
 
 @ManagedBean(name = "userController")
@@ -19,7 +19,7 @@ public class UserController {
 	private User user;
 		
 	@EJB 
-	private UserEJB userEJB;
+	private UserFacadeEJB userEJB;
 	
 	private List<User> usersList = new ArrayList<>();
 	
@@ -40,7 +40,7 @@ public class UserController {
 		newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
 		FacesContext.getCurrentInstance().addMessage(null, newMessage);
 		
-		usersList = userEJB.findAllUsers();
+		usersList = userEJB.getUsersFindAll();
 		
 		return displayUsers();		
 	}
@@ -53,7 +53,7 @@ public class UserController {
 /*-------placeholders for results data------------------------------------------------------- */   
 
 	public List<User> getUsersList() {
-		usersList = userEJB.findAllUsers();
+		usersList = userEJB.getUsersFindAll();
 		return usersList;
 	}
 	
@@ -67,11 +67,11 @@ public class UserController {
 		this.user = user;
 	}
 
-	public UserEJB getUserEJB() {
+	public UserFacadeEJB getUserEJB() {
 		return userEJB;
 	}
 
-	public void setUserEJB(UserEJB userEJB) {
+	public void setUserEJB(UserFacadeEJB userEJB) {
 		this.userEJB = userEJB;
 	}
 

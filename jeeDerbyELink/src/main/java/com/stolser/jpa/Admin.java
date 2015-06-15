@@ -1,6 +1,8 @@
 package com.stolser.jpa;
 
 import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -18,10 +20,16 @@ import javax.validation.constraints.*;
  * */
 @Entity
 @Table(name="ADMINS")
-public class Admin extends User implements Serializable {
+public class Admin extends User implements PostAuthor, Serializable {
 	private static final long serialVersionUID = 352L;
 	
 	public Admin() {}
+
+	public Admin(UserType type, UserStatusType status, String login,
+			String password, String firstName, String lastName,
+			Date dateOfCreation) {
+		super(type, status, login, password, firstName, lastName, dateOfCreation);
+	}
 
 }
 

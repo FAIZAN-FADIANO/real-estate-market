@@ -15,7 +15,11 @@ import javax.validation.constraints.*;
 @NamedQueries({
 	@NamedQuery(name="Post.findAll", query="select p from Post p"),
 	@NamedQuery(name="Post.findByCategory",
-			query="select p from Post p where p.category = :category")
+			query="select p from Post p where p.category = :category"),
+	@NamedQuery(name="Post.findByStatus",
+		query="select p from Post p where p.status = :status"),
+	@NamedQuery(name="Post.findByAuthor",
+		query="select p from Post p where p.author = :author")
 })
 @Table(name="POST")
 public class Post implements Serializable {
@@ -40,8 +44,8 @@ public class Post implements Serializable {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name="AUTHOR_ID")
-	private Admin author;
-	@OneToMany(mappedBy="post")
+	private PostAuthor author;
+	@OneToMany(mappedBy="post", orphanRemoval=true)
 	private Collection<PostComment> listOfComments;
 	@Column(name="CREATION_DATE")
 	@Temporal(TemporalType.DATE)
@@ -70,7 +74,7 @@ public class Post implements Serializable {
 	public Post() {}
 /*--------- END of constructors -------------------*/
 	
-	enum PostStatusType {
+	public enum PostStatusType {
 		ACTIVE, NOT_ACTIVE, DISCARDED;
 	}
 
@@ -99,11 +103,11 @@ public class Post implements Serializable {
 		this.status = status;
 	}
 
-	public Admin getAuthor() {
+	public PostAuthor getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(Admin author) {
+	public void setAuthor(PostAuthor author) {
 		this.author = author;
 	}
 

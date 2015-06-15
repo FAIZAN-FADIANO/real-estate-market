@@ -1,6 +1,7 @@
 package com.stolser.jpa;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -24,11 +25,16 @@ public class RegisteredUser extends User implements Serializable {
 	@Column(name="PRICE_CURRENCY")
 	@Enumerated(EnumType.STRING)
 	private EstateItem.PriceCurrencyType priceCurrency;
+	/**
+	 * Adding to and removing from this list performed by the class's clients
+	 * through public methods <code>addFavoriteEstateItem</code> and 
+	 * <code>removeFavoriteEstateItem</code>.
+	 * */
 	@ManyToMany
     @JoinTable( name = "REGIST_USERS_ESTATE",
             	joinColumns = @JoinColumn(name = "REGISTERED_USER_ID"),
             	inverseJoinColumns = @JoinColumn(name = "ESTATE_ITEM_ID"))
-	private List<EstateItem> favoriteList;
+	private List<EstateItem> favoriteEstateItems;
 /*--------- END of entity properties --------------*/
 
 /*--------- constructors --------------------------*/	
@@ -61,15 +67,27 @@ public class RegisteredUser extends User implements Serializable {
 		this.priceCurrency = priceCurrency;
 	}
 
-	public List<EstateItem> getFavoriteList() {
-		return favoriteList;
+	public List<EstateItem> getFavoriteEstateItems() {
+		if (favoriteEstateItems == null) {
+			favoriteEstateItems = new ArrayList<EstateItem>();
+		}
+		return favoriteEstateItems;
 	}
 
-	public void setFavoriteList(List<EstateItem> favoriteList) {
-		this.favoriteList = favoriteList;
+	public void setFavoriteEstateItems(List<EstateItem> favoriteEstateItems) {
+		this.favoriteEstateItems = favoriteEstateItems;
 	}
 	
 /*-------- END of getters and setters -------------*/
 
+	public EstateItem addFavoriteEstateItem(EstateItem newEstateItem) {
+		getFavoriteEstateItems().add(newEstateItem);
+		return newEstateItem;
+	}
+	
+	public EstateItem removeFavoriteEstateItem(EstateItem oldEstateItem) {
+		getFavoriteEstateItems().remove(oldEstateItem);
+		return oldEstateItem;
+	}
 
 }
