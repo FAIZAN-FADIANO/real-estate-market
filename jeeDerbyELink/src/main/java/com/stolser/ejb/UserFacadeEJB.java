@@ -2,8 +2,10 @@ package com.stolser.ejb;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -32,6 +34,16 @@ public class UserFacadeEJB {
 	
 	@EJB
 	private PostFacadeEJB postFacade;
+	
+	@PostConstruct
+	private void init() {
+		List<User> superAdminUsers = getUsersFindByType(User.UserType.SUPER_ADMIN);
+		if (superAdminUsers.size() == 0) {
+			Admin superAdmin = new Admin(User.UserType.SUPER_ADMIN, User.UserStatusType.ACTIVE, 
+					"superadmin", "12345", "Oleg", "Stoliarov", new Date());
+			persistEntity(superAdmin);
+		}
+	}
 	
 	public <T> T persistEntity(T entity) {
 		entityManager.persist(entity);
@@ -104,10 +116,18 @@ public class UserFacadeEJB {
     	return foundUsers;
     }
 /**
- * The method performs several checks on uniqueness and persists a new user object
- * only if those checks are passed. 
+ * The method performs several checks on uniqueness and required properties 
+ * and persists a new user object only if those checks are passed. 
  * */
     public User addNewUser(User userToAdd) {
+    	if ((userToAdd.getType() == null) || (userToAdd.getStatus() == null) ||
+    		(userToAdd.getLogin() == null) || (userToAdd.getPassword() == null) ||
+    		(userToAdd.getFirstName() == null) || (userToAdd.getLastName() == null) ||
+    		(userToAdd.getDateOfCreation() == null)) {
+			throw new RuntimeException("An attempt to add a new user to the DB with " + 
+					"some requiered properties equal null");
+		}
+    	
     	User.UserType newUserType = userToAdd.getType();
     	if (newUserType == User.UserType.SUPER_ADMIN) {
 			List<User> foundUsers = getUsersFindByType(newUserType);
@@ -223,9 +243,7 @@ public class UserFacadeEJB {
     	entityManager.remove(userToRemove);
     }
     
-    
-    
-    
+   
 
 }
 

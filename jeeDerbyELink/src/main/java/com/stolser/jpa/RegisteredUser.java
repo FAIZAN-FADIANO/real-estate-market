@@ -2,6 +2,7 @@ package com.stolser.jpa;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -39,6 +40,12 @@ public class RegisteredUser extends User implements Serializable {
 
 /*--------- constructors --------------------------*/	
 	public RegisteredUser() {}
+	
+	public RegisteredUser(UserType type, UserStatusType status, String login,
+			String password, String firstName, String lastName,
+			Date dateOfCreation) {
+		super(type, status, login, password, firstName, lastName, dateOfCreation);
+	}
 /*--------- END of constructors -------------------*/
 
 /*-------- getters and setters --------------------*/

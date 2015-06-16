@@ -44,7 +44,7 @@ public class Post implements Serializable {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name="AUTHOR_ID")
-	private PostAuthor author;
+	private User author;
 	@OneToMany(mappedBy="post", orphanRemoval=true)
 	private Collection<PostComment> listOfComments;
 	@Column(name="CREATION_DATE")
@@ -103,11 +103,15 @@ public class Post implements Serializable {
 		this.status = status;
 	}
 
-	public PostAuthor getAuthor() {
+	public User getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(PostAuthor author) {
+	public void setAuthor(User author) {
+		if (!(author instanceof PostAuthor)) {
+			throw new IllegalArgumentException("Only PostAuthor instances can be " +
+												"the author of posts.");
+		}
 		this.author = author;
 	}
 

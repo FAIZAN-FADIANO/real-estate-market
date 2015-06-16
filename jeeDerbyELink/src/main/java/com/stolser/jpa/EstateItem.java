@@ -3,6 +3,7 @@ package com.stolser.jpa;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -109,10 +110,14 @@ abstract public class EstateItem implements Serializable {
 	private String estateDescription;
 	@Column(name="OWNER_DESCRIPTION")
 	private String ownerDescription;
+	@NotNull
+	@Column(name="ICON")
+	private String icon;
 	@ElementCollection
 	@CollectionTable(name ="ESTATE_IMAGES")
-	@Column(name="IMAGES")
-	private List<String> images;
+	@MapKeyColumn(name="ORDER_NUMBER")
+	@Column(name="IMAGE_PATH")
+	private Map<Integer, String> images;
 	@Column(name="CONSTRUCTION_YEAR")
 	@Temporal(TemporalType.DATE)
 	@Past
@@ -290,11 +295,19 @@ abstract public class EstateItem implements Serializable {
 		this.ownerDescription = ownerDescription;
 	}
 
-	public List<String> getImages() {
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public Map<Integer, String> getImages() {
 		return images;
 	}
 
-	public void setImages(List<String> images) {
+	public void setImages(Map<Integer, String> images) {
 		this.images = images;
 	}
 
