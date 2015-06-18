@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<h:body>
+<ui:composition template="/WEB-INF/templates/MyTemplate.xhtml">
+		<ui:define name="content">
+		    <b:container id="content" styleClass="center">
+		        <b:row>
+		            <b:column>
+		                <h1>#{adminPanelRB.mainPageTopTitle}</h1>
+		            </b:column>
+		        </b:row>
+		        <b:row>
+		        	<b:column span="6" offset="3">
+		        		<h:outputText value="Welcome, #{loginBean.loggedInUser}"/>
+		        	</b:column>
+		        </b:row>
+		        <b:row>
+		        	<h:form>
+					<p:commandButton id="creatSuperAdmin" action="#{loginBean.adminPanelLogout}" 
+									ajax="false" value="Log out"></p:commandButton>
+				</h:form>
+		        </b:row>
+		    </b:container>
+		    </ui:define>
+</ui:composition>
+</h:body>
+</html>

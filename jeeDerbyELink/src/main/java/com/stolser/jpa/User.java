@@ -49,17 +49,17 @@ abstract public class User implements Serializable {
 	 * <span style="color:red";>Value MUST be unique.</span> Will be used in a URL.
 	 * */
 	@NotNull
-	@Pattern(regexp="^[a-zA-Z0-9-]{5-15}$")
+	@Pattern(regexp="^[a-zA-Z0-9-]{5,15}$")
 	private String login;
 	@NotNull
-	@Pattern(regexp="^.{5-15}$")
+	@Pattern(regexp="^.{5,15}$")
 	private String password;
 	@NotNull
-	@Pattern(regexp="^[a-zA-Z-]{1-20}$")
+	@Pattern(regexp="^[a-zA-Z-]{1,20}$")
 	@Column(name="FIRST_NAME")
 	private String firstName;
 	@NotNull
-	@Pattern(regexp="^[a-zA-Z-]{1-20}$")
+	@Pattern(regexp="^[a-zA-Z-]{1,20}$")
 	@Column(name="LAST_NAME")
 	private String lastName;
 	@NotNull
@@ -196,7 +196,7 @@ abstract public class User implements Serializable {
 	
 	@Override
 	public String toString() {
-		return lastName + firstName + "(" + login + ": " + type + ")";
+		return lastName + " " + firstName + " (" + login + ": " + type + ")";
 	}
 }
 

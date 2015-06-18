@@ -1,9 +1,12 @@
 package com.stolser.ejb;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -11,11 +14,13 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import com.stolser.PropertiesLoader;
 import com.stolser.jpa.Admin;
 import com.stolser.jpa.EstateItem;
 import com.stolser.jpa.Post;
@@ -34,15 +39,19 @@ public class UserFacadeEJB {
 	
 	@EJB
 	private PostFacadeEJB postFacade;
+	@EJB
+	private PropertiesLoader propLoader;
+	private Map<String, Properties> propUserMap;
 	
 	@PostConstruct
 	private void init() {
-		List<User> superAdminUsers = getUsersFindByType(User.UserType.SUPER_ADMIN);
+		propUserMap = propLoader.getPropUserMap();
+		/*List<User> superAdminUsers = getUsersFindByType(User.UserType.SUPER_ADMIN);
 		if (superAdminUsers.size() == 0) {
-			Admin superAdmin = new Admin(User.UserType.SUPER_ADMIN, User.UserStatusType.ACTIVE, 
+			User superAdmin = new Admin(User.UserType.SUPER_ADMIN, User.UserStatusType.ACTIVE, 
 					"superadmin", "12345", "Oleg", "Stoliarov", new Date());
 			persistEntity(superAdmin);
-		}
+		}*/
 	}
 	
 	public <T> T persistEntity(T entity) {
@@ -84,9 +93,8 @@ public class UserFacadeEJB {
     	if (type == User.UserType.SUPER_ADMIN) {
     		int foundUsersSize = foundUsers.size();
         	if ( foundUsersSize > 1) {
-    			throw new NonUniqueResultException("In the DB must be only one user " + 
-    						"with type = SUPER_ADMIN, but there are " + foundUsersSize + 
-    						" rows in the 'USERS' table with such type.");
+    			throw new NonUniqueResultException(MessageFormat.format(
+    					propUser().getProperty("nonUniqueSuperAdminErr"), foundUsersSize));
     		}
 		}
     	return foundUsers;
@@ -110,8 +118,8 @@ public class UserFacadeEJB {
     	List<User> foundUsers = query.getResultList();
     	int foundUsersSize = foundUsers.size();
     	if ( foundUsersSize > 1) {
-			throw new NonUniqueResultException("The property User.login MUST be unique, but " + 
-				"there are " + foundUsersSize + " rows in the 'USERS' table with login = " + login);
+			throw new NonUniqueResultException(MessageFormat.format(
+					propUser().getProperty("nonUniqueLoginErr"), foundUsersSize, login));
 		}
     	return foundUsers;
     }
@@ -124,46 +132,45 @@ public class UserFacadeEJB {
     		(userToAdd.getLogin() == null) || (userToAdd.getPassword() == null) ||
     		(userToAdd.getFirstName() == null) || (userToAdd.getLastName() == null) ||
     		(userToAdd.getDateOfCreation() == null)) {
-			throw new RuntimeException("An attempt to add a new user to the DB with " + 
-					"some requiered properties equal null");
+			throw new RuntimeException(propUser().getProperty("requiredPropsViolationErr"));
 		}
     	
     	User.UserType newUserType = userToAdd.getType();
     	if (newUserType == User.UserType.SUPER_ADMIN) {
 			List<User> foundUsers = getUsersFindByType(newUserType);
 			if (foundUsers.size() != 0) {
-				throw new RuntimeException("An attempt to add a user with " +
-					"type = SUPER_ADMIN and there is already a row in " + 
-					"the DB with such type (violated restriction: only one user " +
-						" with type = SUPER_ADMIN).");
+				throw new RuntimeException(propUser().getProperty("addSuperAdminViolationErr"));
 			}
 		}
     	
     	String newUserLogin = userToAdd.getLogin();
     	List<User> usersInDBWithSuchLogin = getUsersFindByLogin(newUserLogin);
     	if (usersInDBWithSuchLogin.size() != 0) {
-			throw new RuntimeException("There is already a user in DB with such " + 
-					"login (" + newUserLogin + ")");
+			throw new RuntimeException(MessageFormat.format(
+					propUser().getProperty("addUserLoginViolationErr"), newUserLogin));
 		}
     	
     	switch (newUserType) {
 		case SUPER_ADMIN:
 		case ADMIN:
 			if (!(userToAdd instanceof Admin)) {
-				throw new RuntimeException("An attempt to add a new user with type " + 
-						"SUPER_ADMIN or ADMIN that is not of class Admin.");
+				throw new RuntimeException(MessageFormat.format(
+						propUser().getProperty("addUserTypeViolationErr"), 
+						User.UserType.SUPER_ADMIN + " or " + User.UserType.ADMIN, "Admin"));
 			}
 			break;
 		case REALTOR:
 			if (!(userToAdd instanceof Realtor)) {
-				throw new RuntimeException("An attempt to add a new user with type " + 
-						"REALTOR that is not of class Realtor.");
+				throw new RuntimeException(MessageFormat.format(
+						propUser().getProperty("addUserTypeViolationErr"), 
+						User.UserType.REALTOR, "Realtor"));
 			}
 			break;
 		case REGISTERED_USER:
 			if (!(userToAdd instanceof RegisteredUser)) {
-				throw new RuntimeException("An attempt to add a new user with type " + 
-						"REGISTERED_USER that is not of class RegisteredUser.");
+				throw new RuntimeException(MessageFormat.format(
+						propUser().getProperty("addUserTypeViolationErr"), 
+						User.UserType.REGISTERED_USER, "RegisteredUser"));
 			}
 			break;
 		default:
@@ -183,13 +190,12 @@ public class UserFacadeEJB {
     	//adminToDiscard = (Admin) getUsersFindById(adminToDiscard.getId()).get(0);
     	
     	if (adminAssignee == null) {
-			throw new NullPointerException("Assignee admin cannot be null.");
+			throw new NullPointerException(propUser().getProperty("discardAdminNullErr"));
 		}
     	
     	User.UserType adminToDiscardType = adminToDiscard.getType();
     	if (adminToDiscardType == User.UserType.SUPER_ADMIN) {
-			throw new RuntimeException("An attempt to discard a user with " + 
-					"type SUPER_ADMIN that violates system restrictions.");
+			throw new RuntimeException(propUser().getProperty("discardSuperAdminViolationErr"));
 		}
     	
     	List<Post> adminToDiscardPosts = postFacade.getPostsFindByAuthor(adminToDiscard);
@@ -234,16 +240,21 @@ public class UserFacadeEJB {
     public void removeUser(User userToRemove) {
     	User.UserStatusType userToRemoveStatus = userToRemove.getStatus(); 
     	if (userToRemoveStatus != User.UserStatusType.DISCARDED) {
-			throw new RuntimeException("An attempt to remove a user with status " + 
-					userToRemoveStatus + ". Only users with status = DISCARDED can " + 
-					"be removed from the DB.");
+			throw new RuntimeException(MessageFormat.format(
+					propUser().getProperty("removeNotDiscardedUserErr"), userToRemoveStatus));
 		}
     	
     	userToRemove = getUsersFindById(userToRemove.getId()).get(0);
     	entityManager.remove(userToRemove);
     }
-    
-   
+/**
+ * Returns appropriate Properties object for current local on the fron-end
+ * */
+    private Properties propUser() {
+		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
+		Properties currentProperties = propUserMap.get(currentLocal);
+		return currentProperties;
+	}
 
 }
 

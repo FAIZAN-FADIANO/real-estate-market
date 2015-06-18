@@ -44,7 +44,7 @@ public class CustomLocaleConverter implements Converter {
             	return currentLocale;
             	
             } catch(NumberFormatException e) {
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", 
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error.", 
                 												"Not a valid customLocale."));
             }
         }

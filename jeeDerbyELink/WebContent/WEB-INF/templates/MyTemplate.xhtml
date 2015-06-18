@@ -10,15 +10,16 @@
 
 	<h:head>
 		<h:outputStylesheet library="css" name="main-style.css"/>
-		<h:outputScript library="js" name="jquery-1.11.2.min.js" />
+<!-- 		<h:outputScript library="js" name="jquery-1.11.2.min.js" /> -->
 		<h:outputScript library="js" name="common.js" />
+		<h:outputScript library="js" name="flowtype.js" />
 		
 	  	<title><ui:insert name="title">Hello World JSF - JPA - EJB</ui:insert></title>
 	</h:head>
 	<h:body>
 		    <ui:insert name="header">
 		    	<b:container id="header">
-			    	<b:row><b:column><p:messages id="topMessages" autoUpdate="true" /></b:column></b:row>
+			    	<!-- <b:row><b:column><p:messages id="topMessages" autoUpdate="true" /></b:column></b:row> -->
 			    	<b:row>
 			    		<b:column col-xs="10" offset-xs="2" col-sm="6" offset-sm="6" col-md="4" offset="8">
 			    			<p:graphicImage id="langSelectIcon" name="langSelectIcon.png" library="images"></p:graphicImage>
@@ -59,7 +60,13 @@
 				<!--<ui:include src="footer.xhtml"/>  -->
 		  </ui:insert>
 	
-	
+	<script>
+		$('body').flowtype({
+			minFont   : 12,
+			maxFont   : 20,
+			maximum   : 500
+		});
+	</script>
 	</h:body>
 </f:view>
 </html>

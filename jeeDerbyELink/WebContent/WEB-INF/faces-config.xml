@@ -19,9 +19,13 @@
             <base-name>stolser.i18n.general.entity.user</base-name>
             <var>userRB</var>
         </resource-bundle>
+        <resource-bundle>
+            <base-name>stolser.i18n.general.adminPanel.main</base-name>
+            <var>adminPanelRB</var>
+        </resource-bundle>
     </application>
     
-    <lifecycle>
+    <!-- <lifecycle>
 	    <phase-listener>com.stolser.LifeCycleListener</phase-listener>
-	</lifecycle>
+	</lifecycle> -->
 </faces-config>

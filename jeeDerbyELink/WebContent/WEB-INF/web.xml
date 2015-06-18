@@ -27,4 +27,18 @@
     <param-name>BootsFaces_USETHEME</param-name>
     <param-value>true</param-value>
   </context-param>
+<!--   <filter>
+  	<filter-name>LoggingFilter</filter-name>
+  	<filter-class>com.stolser.AuthFilter.java</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>LoggingFilter</filter-name>
+  	<url-pattern>/adminPanel/*</url-pattern>
+  	<url-pattern>/userPrivatePanel/*</url-pattern>
+  </filter-mapping> -->
+  
+  <!-- Session Configuration -->
+  <session-config>
+	<session-timeout>10</session-timeout>
+  </session-config>
 </web-app>
