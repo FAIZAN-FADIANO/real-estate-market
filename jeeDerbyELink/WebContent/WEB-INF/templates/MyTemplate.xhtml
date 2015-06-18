@@ -10,7 +10,6 @@
 
 	<h:head>
 		<h:outputStylesheet library="css" name="main-style.css"/>
-<!-- 		<h:outputScript library="js" name="jquery-1.11.2.min.js" /> -->
 		<h:outputScript library="js" name="common.js" />
 		<h:outputScript library="js" name="flowtype.js" />
 		
@@ -32,7 +31,8 @@
 						                <p:graphicImage name="#{lang.icon}" library="images"></p:graphicImage>
 						            </p:column>
 						            <p:column>
-						                <h:outputText value="#{lang.label} (#{lang.country})" />
+						                <h:outputText value="#{lang.label} (#{lang.country})" 
+						                				title="#{systemRB['langDescription'.concat(lang.country)]}"/>
 						            </p:column>
 			    				</p:selectOneMenu>
 			    			</h:form>

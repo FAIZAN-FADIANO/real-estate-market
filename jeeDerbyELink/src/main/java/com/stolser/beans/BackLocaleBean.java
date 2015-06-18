@@ -11,9 +11,9 @@ import javax.faces.bean.*;
 import com.stolser.CustomLocale;
 
 
-@ManagedBean (name = "frontLocale")
+@ManagedBean (name = "backLocale")
 @SessionScoped
-public class FrontLocaleBean implements Serializable {
+public class BackLocaleBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private List<CustomLocale> locales = new ArrayList<>();
@@ -27,30 +27,12 @@ public class FrontLocaleBean implements Serializable {
 		
 		locales.add(new CustomLocale(new Locale("ru", "RU"), "\u0420\u0443\u0441\u0441\u043A\u0438\u0439", 
 				"langIcons/ru-icon.png", "The language of Dmitri Mendeleev and Sergey Shnurov."));
-		locales.add(new CustomLocale(new Locale("de", "DE"), "German", "langIcons/de-icon.png", 
-				"The language of Goethe and Sigmund Freud."));
+		/*locales.add(new CustomLocale(new Locale("de", "DE"), "German", "langIcons/de-icon.png", 
+				"The language of Goethe and Sigmund Freud."));*/
 	}
-	
-//constructors	
-	public FrontLocaleBean() {}
-	
-	
-//---------------------
-	 
-	/*public void localeChanged(ValueChangeEvent e) {
-		
-		CustomLocale currentLocale = new CustomLocale();
-    	for (CustomLocale customLocale : locales) {
-			if (customLocale.getLangCode().equals(newValue)) {
-				currentLocale = customLocale;
-				break;
-			}
-		}
-    	
-		FacesContext.getCurrentInstance().getViewRoot().setLocale(currentLocale.getLocale());
-		
-	}*/
 
+	public BackLocaleBean() {}
+	
 	public CustomLocale getCurrentLocale() {
 		return currentLocale;
 	}

@@ -9,23 +9,24 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
-import com.stolser.beans.FrontLocaleBean;
+import com.stolser.beans.BackLocaleBean;
 
-@ManagedBean(name = "customLocaleConverter")
+@ManagedBean(name = "backLocaleConverter")
 @RequestScoped
-public class CustomLocaleConverter implements Converter {
+public class BackCustomLocaleConverter implements Converter {
 	
-	@ManagedProperty(value = "#{frontLocale}")
-	private FrontLocaleBean frontLocale;
+	@ManagedProperty(value = "#{backLocale}")
+	private BackLocaleBean backLocale;
 	
 	private List<CustomLocale> locales;
+
+	public BackCustomLocaleConverter() {}
 
 	@Override
 	public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
 		
-		locales = frontLocale.getLocales();
-		
-        if(value != null && value.trim().length() == 2) {
+		locales = backLocale.getLocales();
+		if(value != null && value.trim().length() == 2) {
             try {	
             	CustomLocale currentLocale = new CustomLocale();
             	for (CustomLocale customLocale : locales) {
@@ -34,40 +35,36 @@ public class CustomLocaleConverter implements Converter {
         				break;
         			}
         		}
-     	       	return currentLocale;
+     	
+            	return currentLocale;
             	
             } catch(NumberFormatException e) {
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error.", 
-   												"Not a valid customLocale."));
+                												"Not a valid customLocale."));
             }
         }
         else {
             return null;
         }
-    }
+	}
 
 	@Override
 	public String getAsString(FacesContext fc, UIComponent uic, Object object) {
-        if(object != null) {
+		
+		if(object != null) {
             return ((CustomLocale) object).getLangCode();
         }
         else {
             return null;
         }
-    }   
-	
-/*	private void addNewCustomMessage(String message) {
-		FacesMessage newMessage = new FacesMessage(message);
-		newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-		FacesContext.getCurrentInstance().addMessage(null, newMessage);
-	}*/
-
-	public FrontLocaleBean getFrontLocale() {
-		return frontLocale;
 	}
 
-	public void setFrontLocale(FrontLocaleBean frontLocale) {
-		this.frontLocale = frontLocale;
+	public BackLocaleBean getBackLocale() {
+		return backLocale;
+	}
+
+	public void setBackLocale(BackLocaleBean backLocale) {
+		this.backLocale = backLocale;
 	}
 
 }

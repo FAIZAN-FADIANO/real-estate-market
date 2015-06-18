@@ -1,0 +1,3 @@
+langDescriptionEn = Язык Уильяма Шекспир и Брюса Уиллиса.
+langDescriptionRu = Язык Дмитрия Менделеева и Сергея Шнурова.
+langDescriptionDe = Язык Гёте и Зигмунда Фрейда.

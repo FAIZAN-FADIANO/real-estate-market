@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+			   xmlns:ui="http://java.sun.com/jsf/facelets"
+			   xmlns:h="http://java.sun.com/jsf/html"
+			   xmlns:f="http://java.sun.com/jsf/core"
+			   xmlns:b="http://bootsfaces.net/ui"
+			   xmlns:p="http://primefaces.org/ui">
+<b:container id="header">
+   	<b:row>
+   		<b:column col-xs="10" offset-xs="2" col-sm="6" offset-sm="6" col-md="4" offset="8">
+   			<p:graphicImage id="langSelectIcon" name="langSelectIcon.png" library="images"></p:graphicImage>
+   			<h:form id="langSelect">
+   				<p:selectOneMenu value="#{backLocale.currentLocale}" converter="#{backLocaleConverter}" 
+   				onchange="submit()" effect="fade" var="lang" style="width:160px" immediate="true">
+   				 	<f:selectItems value="#{backLocale.locales}" var="locale"
+   				 	itemLabel="#{locale.label}" itemValue="#{locale}"></f:selectItems>
+   				 	<p:column style="width:10%">
+		                <p:graphicImage name="#{lang.icon}" library="images"></p:graphicImage>
+		            </p:column>
+		            <p:column>
+		                <h:outputText value="#{lang.label} (#{lang.country})" 
+		                				title="#{systemRB['langDescription'.concat(lang.country)]}"/>
+		            </p:column>
+   				</p:selectOneMenu>
+   			</h:form>
+   		</b:column>
+   	</b:row>
+   </b:container>
+</ui:composition>

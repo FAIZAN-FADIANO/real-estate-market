@@ -23,6 +23,10 @@
             <base-name>stolser.i18n.general.adminPanel.main</base-name>
             <var>adminPanelRB</var>
         </resource-bundle>
+        <resource-bundle>
+            <base-name>stolser.i18n.general.system.system</base-name>
+            <var>systemRB</var>
+        </resource-bundle>
     </application>
     
     <!-- <lifecycle>

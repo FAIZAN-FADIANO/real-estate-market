@@ -41,11 +41,11 @@ public class UserFacadeEJB {
 	private PostFacadeEJB postFacade;
 	@EJB
 	private PropertiesLoader propLoader;
-	private Map<String, Properties> propUserMap;
+	private Map<String, Properties> propSystemMap;
 	
 	@PostConstruct
 	private void init() {
-		propUserMap = propLoader.getPropUserMap();
+		propSystemMap = propLoader.getPropSystemMap();
 		/*List<User> superAdminUsers = getUsersFindByType(User.UserType.SUPER_ADMIN);
 		if (superAdminUsers.size() == 0) {
 			User superAdmin = new Admin(User.UserType.SUPER_ADMIN, User.UserStatusType.ACTIVE, 
@@ -94,7 +94,7 @@ public class UserFacadeEJB {
     		int foundUsersSize = foundUsers.size();
         	if ( foundUsersSize > 1) {
     			throw new NonUniqueResultException(MessageFormat.format(
-    					propUser().getProperty("nonUniqueSuperAdminErr"), foundUsersSize));
+    					getSystemProperties().getProperty("nonUniqueSuperAdminErr"), foundUsersSize));
     		}
 		}
     	return foundUsers;
@@ -119,7 +119,7 @@ public class UserFacadeEJB {
     	int foundUsersSize = foundUsers.size();
     	if ( foundUsersSize > 1) {
 			throw new NonUniqueResultException(MessageFormat.format(
-					propUser().getProperty("nonUniqueLoginErr"), foundUsersSize, login));
+					getSystemProperties().getProperty("nonUniqueLoginErr"), foundUsersSize, login));
 		}
     	return foundUsers;
     }
@@ -132,14 +132,14 @@ public class UserFacadeEJB {
     		(userToAdd.getLogin() == null) || (userToAdd.getPassword() == null) ||
     		(userToAdd.getFirstName() == null) || (userToAdd.getLastName() == null) ||
     		(userToAdd.getDateOfCreation() == null)) {
-			throw new RuntimeException(propUser().getProperty("requiredPropsViolationErr"));
+			throw new RuntimeException(getSystemProperties().getProperty("requiredPropsViolationErr"));
 		}
     	
     	User.UserType newUserType = userToAdd.getType();
     	if (newUserType == User.UserType.SUPER_ADMIN) {
 			List<User> foundUsers = getUsersFindByType(newUserType);
 			if (foundUsers.size() != 0) {
-				throw new RuntimeException(propUser().getProperty("addSuperAdminViolationErr"));
+				throw new RuntimeException(getSystemProperties().getProperty("addSuperAdminViolationErr"));
 			}
 		}
     	
@@ -147,7 +147,7 @@ public class UserFacadeEJB {
     	List<User> usersInDBWithSuchLogin = getUsersFindByLogin(newUserLogin);
     	if (usersInDBWithSuchLogin.size() != 0) {
 			throw new RuntimeException(MessageFormat.format(
-					propUser().getProperty("addUserLoginViolationErr"), newUserLogin));
+					getSystemProperties().getProperty("addUserLoginViolationErr"), newUserLogin));
 		}
     	
     	switch (newUserType) {
@@ -155,21 +155,21 @@ public class UserFacadeEJB {
 		case ADMIN:
 			if (!(userToAdd instanceof Admin)) {
 				throw new RuntimeException(MessageFormat.format(
-						propUser().getProperty("addUserTypeViolationErr"), 
+						getSystemProperties().getProperty("addUserTypeViolationErr"), 
 						User.UserType.SUPER_ADMIN + " or " + User.UserType.ADMIN, "Admin"));
 			}
 			break;
 		case REALTOR:
 			if (!(userToAdd instanceof Realtor)) {
 				throw new RuntimeException(MessageFormat.format(
-						propUser().getProperty("addUserTypeViolationErr"), 
+						getSystemProperties().getProperty("addUserTypeViolationErr"), 
 						User.UserType.REALTOR, "Realtor"));
 			}
 			break;
 		case REGISTERED_USER:
 			if (!(userToAdd instanceof RegisteredUser)) {
 				throw new RuntimeException(MessageFormat.format(
-						propUser().getProperty("addUserTypeViolationErr"), 
+						getSystemProperties().getProperty("addUserTypeViolationErr"), 
 						User.UserType.REGISTERED_USER, "RegisteredUser"));
 			}
 			break;
@@ -190,12 +190,12 @@ public class UserFacadeEJB {
     	//adminToDiscard = (Admin) getUsersFindById(adminToDiscard.getId()).get(0);
     	
     	if (adminAssignee == null) {
-			throw new NullPointerException(propUser().getProperty("discardAdminNullErr"));
+			throw new NullPointerException(getSystemProperties().getProperty("discardAdminNullErr"));
 		}
     	
     	User.UserType adminToDiscardType = adminToDiscard.getType();
     	if (adminToDiscardType == User.UserType.SUPER_ADMIN) {
-			throw new RuntimeException(propUser().getProperty("discardSuperAdminViolationErr"));
+			throw new RuntimeException(getSystemProperties().getProperty("discardSuperAdminViolationErr"));
 		}
     	
     	List<Post> adminToDiscardPosts = postFacade.getPostsFindByAuthor(adminToDiscard);
@@ -241,7 +241,7 @@ public class UserFacadeEJB {
     	User.UserStatusType userToRemoveStatus = userToRemove.getStatus(); 
     	if (userToRemoveStatus != User.UserStatusType.DISCARDED) {
 			throw new RuntimeException(MessageFormat.format(
-					propUser().getProperty("removeNotDiscardedUserErr"), userToRemoveStatus));
+					getSystemProperties().getProperty("removeNotDiscardedUserErr"), userToRemoveStatus));
 		}
     	
     	userToRemove = getUsersFindById(userToRemove.getId()).get(0);
@@ -250,9 +250,9 @@ public class UserFacadeEJB {
 /**
  * Returns appropriate Properties object for current local on the fron-end
  * */
-    private Properties propUser() {
+    private Properties getSystemProperties() {
 		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
-		Properties currentProperties = propUserMap.get(currentLocal);
+		Properties currentProperties = propSystemMap.get(currentLocal);
 		return currentProperties;
 	}
 

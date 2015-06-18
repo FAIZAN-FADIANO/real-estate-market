@@ -30,15 +30,24 @@ public class LoginBean implements Serializable{
 	private UserFacadeEJB userFacade;
 	@EJB
 	private PropertiesLoader propLoader;
-	private Map<String, Properties> propLoggingMap;
-	
-	private User loggedInUser;
+	private Map<String, Properties> propSystemMap;
+/**
+ * Is NOT null only for users that have permissions to access the Admin Panel 
+ * (active users with type != User.UserType.REGISTERED_USER). These users also can
+ * access the User Private Panel.
+ * */
+	private User loggedInUser; 
+/**
+ * Is NOT null only for users that have permissions to access only
+ * the User Private Panel (active users with type == User.UserType.REGISTERED_USER).
+ * */
+	private User signedInUser;
 	
 	public LoginBean() {}
 	
 	@PostConstruct
 	private void init() {
-		propLoggingMap = propLoader.getPropLoggingMap();
+		propSystemMap = propLoader.getPropSystemMap();
 	}
 
 	public String getEnteredLogin() {
@@ -61,14 +70,18 @@ public class LoginBean implements Serializable{
 		return loggedInUser;
 	}
 
+	public void setLoggedInUser(User loggedInUser) {
+		this.loggedInUser = loggedInUser;
+	}
+
 	public String adminPanelValidation() {
 		List<User> usersInDB = userFacade.getUsersFindByLogin(getEnteredLogin());
 		if (usersInDB.size() == 0) {	
 			// there are no users in the DB with such login
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-							propLogging().getProperty("invalidLoginErrSum"),
-							propLogging().getProperty("invalidLoginErrDetail")));
+							getSystemProperties().getProperty("invalidLoginErrSum"),
+							getSystemProperties().getProperty("invalidLoginErrDetail")));
 			return null;
 		}
 		
@@ -82,8 +95,8 @@ public class LoginBean implements Serializable{
 			// the entered password doesn't match the password in the DB
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-							propLogging().getProperty("invalidPassErrSum"),
-							propLogging().getProperty("invalidPassErrDetail")));
+							getSystemProperties().getProperty("invalidPassErrSum"),
+							getSystemProperties().getProperty("invalidPassErrDetail")));
 			return null;
 			
 		}
@@ -92,8 +105,8 @@ public class LoginBean implements Serializable{
 			// registered users don't have access to the Admin Panel
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, 
-							propLogging().getProperty("invalidTypeErrSum"), 
-							propLogging().getProperty("invalidTypeErrDetail")));
+							getSystemProperties().getProperty("invalidTypeErrSum"), 
+							getSystemProperties().getProperty("invalidTypeErrDetail")));
 			return null;
 		}
 		
@@ -101,33 +114,31 @@ public class LoginBean implements Serializable{
 			// the user is NOT active --> they don't have NO permissions
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, 
-							propLogging().getProperty("invalidStatusErrSum"), 
-							propLogging().getProperty("invalidStatusErrDetail")));
+							getSystemProperties().getProperty("invalidStatusErrSum"), 
+							getSystemProperties().getProperty("invalidStatusErrDetail")));
 			return null;
 		}
 		
-		System.out.println("inside adminPanelValidation(), before session...");
-        // get Http Session and store username
-        HttpSession session = SessionUtil.getSession();
-        session.setAttribute("username", userLogin);
-        session.setAttribute("usertype", userType);
         loggedInUser = user;
-        System.out.println("... before redirect to userListing");
+        
         return "/adminPanel/home?faces-redirect=true";
 	}
 	
 	public String adminPanelLogout() {
-        HttpSession session = SessionUtil.getSession();
-        session.invalidate();
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
+	            .getExternalContext().getSession(false);
+        LoginBean loginBean = (LoginBean)session.getAttribute("loginBean");
+        loginBean.setLoggedInUser(null);
+        
         return "/adminLogin?faces-redirect=true";
     }
 	
 /**
  * Returns appropriate Properties object for current local on the fron-end
  * */
-	private Properties propLogging() {
+	private Properties getSystemProperties() {
 		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
-		Properties currentProperties = propLoggingMap.get(currentLocal);
+		Properties currentProperties = propSystemMap.get(currentLocal);
 		return currentProperties;
 	}
 	

@@ -23,62 +23,35 @@ import javax.ejb.Stateless;
 @Startup
 public class PropertiesLoader {
 
-	private Map<String, Properties> propLoggingMap;
-	private Map<String, Properties> propUserMap;
+	private Map<String, Properties> propSystemMap;
 	 
     @PostConstruct
     public void init() {
-        propLoggingMap = new HashMap<>();
-        propUserMap = new HashMap<>();
-        
         ClassLoader classLoader = this.getClass().getClassLoader();
-         
-        // Loading all files for resource bundle logging.properties
-        String basicPathLogging = "stolser/i18n/general/logging";
-        Properties propLoggingEn = new Properties();
-        Properties propLoggingRu = new Properties();
-        Properties propLoggingDe = new Properties();
+        propSystemMap = new HashMap<>();
+                
+     // Loading all files for resource bundle system.properties
+        String basicPathSystem = "stolser/i18n/general/system/system";
+        Properties propSystemEn = new Properties();
+        Properties propSystemRu = new Properties();
+        Properties propSystemDe = new Properties();
         
         try {
-        	propLoggingEn.load(classLoader.getResourceAsStream(basicPathLogging + ".properties"));
-        	propLoggingRu.load(classLoader.getResourceAsStream(basicPathLogging + "_ru.properties"));
-        	propLoggingDe.load(classLoader.getResourceAsStream(basicPathLogging + "_de.properties"));
-        	propLoggingMap.put("en", propLoggingEn);
-        	propLoggingMap.put("ru", propLoggingRu);
-        	propLoggingMap.put("de", propLoggingDe);
-        	
-		} catch (IOException e) {
-			System.out.println("Exception arose during loading logging.properties.");
-		}
-        
-        // Loading all files for resource bundle entity/user.properties
-        String basicPathUser = "stolser/i18n/general/entity/user";
-        Properties propUserEn = new Properties();
-        Properties propUserRu = new Properties();
-        Properties propUserDe = new Properties();
-        
-        try {
-        	propUserEn.load(classLoader.getResourceAsStream(basicPathUser + ".properties"));
-        	propUserRu.load(classLoader.getResourceAsStream(basicPathUser + "_ru.properties"));
-        	propUserDe.load(classLoader.getResourceAsStream(basicPathUser + "_de.properties"));
-        	propUserMap.put("en", propUserEn);
-        	propUserMap.put("ru", propUserRu);
-        	propUserMap.put("de", propUserDe);
-        	
+        	propSystemEn.load(classLoader.getResourceAsStream(basicPathSystem + ".properties"));
+        	propSystemRu.load(classLoader.getResourceAsStream(basicPathSystem + "_ru.properties"));
+        	propSystemDe.load(classLoader.getResourceAsStream(basicPathSystem + "_de.properties"));
+        	propSystemMap.put("en", propSystemEn);
+        	propSystemMap.put("ru", propSystemRu);
+        	propSystemMap.put("de", propSystemDe);	
         } catch (IOException e) {
-        	System.out.println("Exception arose during loading entity/user.properties.");
+        	System.out.println("Exception arose during loading system/system.properties.");
         }
-         
     }
  
     public PropertiesLoader() {}
 
-	public Map<String, Properties> getPropLoggingMap() {
-		return propLoggingMap;
-	}
-
-	public Map<String, Properties> getPropUserMap() {
-		return propUserMap;
+	public Map<String, Properties> getPropSystemMap() {
+		return propSystemMap;
 	}
 
 

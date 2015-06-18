@@ -11,20 +11,21 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.*;
 
+import com.stolser.beans.LoginBean;
 import com.stolser.jpa.User;
 
 /**
  * Servlet Filter implementation class AuthFilter
  */
 @WebFilter(
-		description = "The main authentication and authorization filter", 
+		description = "An authentication and authorization filter for the Admin Panel", 
 		urlPatterns = { 
-				"/adminPanel/*", 
-				"/userPrivatePanel/*"
+				"/adminPanel/*",
+				"/adminLogin.jsf"
 		})
-public class AuthFilter implements Filter {
+public class AuthAdminPanelFilter implements Filter {
 
-    public AuthFilter() {}
+    public AuthAdminPanelFilter() {}
 
 
 	/**
@@ -32,33 +33,43 @@ public class AuthFilter implements Filter {
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
 			throws IOException, ServletException {
-
+		
 		try {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
 			HttpSession session = httpRequest.getSession(false);
+			LoginBean loginBean = (session != null) ? 
+						(LoginBean)session.getAttribute("loginBean") : null;
+			User loggedInUser = (loginBean != null) ? loginBean.getLoggedInUser() : null;
 			String requestedURI = httpRequest.getRequestURI();
 			
-			System.out.println("AuthFilter.doFilter(): username = " + session.getAttribute("username"));
-			
-			
-			if (requestedURI.indexOf("/adminPanel/") >= 0) {
-				if ((session != null) && (session.getAttribute("username") != null) &&
-					(session.getAttribute("usertype") != User.UserType.REGISTERED_USER)) {
+			if (requestedURI.indexOf("/adminLogin.jsf") >= 0) {
+				if (loggedInUser != null) {
+					/*This is a logged in user with permissions, so redirect to the Home page 
+					of the Admin Panel*/
+					httpResponse.sendRedirect(httpRequest.getContextPath() + 
+												"/adminPanel/home.jsf");
+				} else {
 					// pass the request along the filter chain
 					chain.doFilter(request, response);
-				} else {
-	// user didn't log in but asking for a page that is not allowed so take user to login page
-					httpResponse.sendRedirect(httpRequest.getContextPath() + 
-							"/adminLogin.jsf");   // Anonymous user. Redirect to login page
 				}
-			} else {
-				// pass the request along the filter chain
-				System.out.println("AuthFilter.doFilter(): Accessing the User Privat Panel.");
-				chain.doFilter(request, response);
+				
+			} else if (requestedURI.indexOf("/adminPanel/") >= 0) {
+				if (loggedInUser != null) {
+					User.UserType loggedInUserType = loggedInUser.getType();
+					/*This is a logged in user with permissions, so pass 
+					 * the request along the filter chain*/
+					chain.doFilter(request, response);
+				} else {
+					/*User didn't log in but asking for a page that is not allowed, 
+					 * so take user to the login page.*/
+					httpResponse.sendRedirect(httpRequest.getContextPath() + 
+							"/adminLogin.jsf");
+				}
 			}
+				
 		} catch (Exception e) {
-			System.out.println( e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
