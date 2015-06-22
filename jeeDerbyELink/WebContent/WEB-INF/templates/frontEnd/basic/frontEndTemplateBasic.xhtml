@@ -15,10 +15,13 @@
 		
 	  	<title><ui:insert name="title">Real Estate Home</ui:insert></title>
 	</h:head>
-	<h:body>
-	    <ui:insert name="header">
-	    	<ui:include src="header.xhtml"></ui:include>
-	    </ui:insert>
+	<h:body styleClass="frontEnd">
+		<b:container id="header">
+			<ui:insert name="header">
+		    	<ui:include src="header.xhtml"></ui:include>
+		    </ui:insert>
+		</b:container>
+	    
 
 		<ui:insert name="content">
 		  	<p>Content area from frontEndTemplateBasic.xhtml file</p>

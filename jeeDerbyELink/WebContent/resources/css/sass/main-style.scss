@@ -2,82 +2,148 @@ $bright-color: #ff0000;
 $normal-font-size: 14px;
 $colorTextTableBody: rgb(64, 124, 234);
 
-#header {
-  	margin-top: 10px;
-    /* min-height: 100px; */
-}
-
-#loggingTitle {
-	margin-top: 20px;
-	text-align: center;	
-}
-
-#loggingForm {
-	border-radius: 10px;
-	border: 1px solid;
-	box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
-/* 	font-size: 150%; */
-	padding-top: 10px;
-  	padding-bottom: 10px;
-  	margin-top: 50px;
-  
-	input, button {
-		width: 100%;
-		margin: 5px 0 20px;
-		padding: 5px;
-	}
-}
-
-.langSelectTop {
-	width: 100%;
-	max-width: 120px;
-}
-
-#langSelectIcon {
-	float: left;
-  	margin-right: 7px;
-  	margin-top: 5px;
-}
-
-#langSelect {
-	label {
-/* 		font-size: 125%; */
+/*------- Admin Panel -------*/
+.adminPanel {
+	
+	#header {
+	  	margin-top: 10px;
+	    /* min-height: 100px; */
 	}
 	
-	div .ui-selectonemenu-trigger {
-		width: auto;
-	}
-}
 
-#usersTable {
-	.columnsToggler {
+	#usersTable {
+		.columnsToggler {
+			float: right;
+			margin-top: 3px;
+		}
+		
+		.ui-datatable-header {
+			  height: 44px;
+	  		  line-height: 36px;
+		}
+		
+		.ui-datatable-tablewrapper {
+			overflow: hidden;
+		}
+	}
+	
+	.ui-datatable tbody td {
+		  text-align: center;
+		  color: $colorTextTableBody;
+	}
+	
+	.userTypeCell,
+	.userStatusCell {
+		text-transform: lowercase;
+	}
+	
+	.mainMenuTrigger {
+		display: none;
+	}
+	
+	.userTopMenuTrigger,
+	.langSelectIcon {
 		float: right;
-		margin-top: 3px;
+	}
+	.langSelectIcon {
+		width: 195px;
+		line-height: 1.2;
+	}
+}
+
+/*------- END of .adminPanel -------*/
+
+
+
+/*Logging Form*/
+	#loggingTitle {
+		margin-top: 20px;
+		text-align: center;	
+	}
+	 
+	#loggingFormWrapper {
+		border-radius: 10px;
+		border: 1px solid;
+		box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.3);
+	/* 	font-size: 150%; */
+		padding-top: 10px;
+	  	padding-bottom: 10px;
+	  	margin-top: 50px;
+	  
+		input, button {
+			width: 100%;
+			margin: 5px 0 20px;
+			padding: 5px;
+		}
+		
+		.logInButton {
+			width: 50%;
+			margin: 5px auto 20px;
+			display: block;
+		}
 	}
 	
-	.ui-datatable-header {
-		  height: 44px;
-  		  line-height: 36px;
+	.langSelectTop {
+		width: 100%;
+		max-width: 120px;
 	}
 	
-	.ui-datatable-tablewrapper {
-		overflow: hidden;
+	#langSelectIcon {
+		float: left;
+	  	margin-right: 7px;
+	  	margin-top: 5px;
+	}
+	
+	#langSelect {
+		label {
+	/* 		font-size: 125%; */
+		}
+		
+		div .ui-selectonemenu-trigger {
+			width: auto;
+		}
+	}
+/*END --- Logging Form --*/
+
+
+.ui-icon.fa {
+	width: 25px;
+}
+
+.mainMenu {
+	form {
+		div {
+		  width: 100%;
+		}
 	}
 }
 
-.ui-datatable tbody td {
-	  text-align: center;
-	  color: $colorTextTableBody;
+
+@media (max-width: 658px) {
+	.adminPanel {
+		.mainMenuTrigger {
+			display: block;
+		}
+	
+		.mainMenu {
+			display: none;
+		}
+		.mainContent {
+			width: 100%;
+		}
+	}
 }
 
-.userTypeCell,
-.userStatusCell {
-	text-transform: lowercase;
+
+
+
+
+/*------- Front End -------------*/
+.frontEnd {
+	#header {
+		margin-top: 10px;
+	}
 }
-
-
-
-
 
 
 

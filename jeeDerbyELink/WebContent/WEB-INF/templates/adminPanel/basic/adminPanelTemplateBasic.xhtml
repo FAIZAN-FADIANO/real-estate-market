@@ -15,19 +15,47 @@
 		
 	  	<title><ui:insert name="title">Real Estate Admin Panel</ui:insert></title>
 	</h:head>
-	<h:body> 
-	    <ui:insert name="header">
-	    	<ui:include src="header.xhtml"></ui:include>
-	    </ui:insert>
-
-		<ui:insert name="content">
-		  	<p>Content area from adminPanelTemplateBasic.xhtml file</p>
-		  	<!--  include your content file or uncomment the include below and create content.xhtml in this directory -->
-		 	<!-- <div> -->
-		  	<!-- <ui:include src="content.xhtml"/> -->  
-		  	<!-- </div> -->
-		</ui:insert>
-		
+	<h:body styleClass="adminPanel"> 
+		 
+		<b:container id="header" fluid="true">
+			<ui:insert name="header">
+		    	<ui:include src="header.xhtml"></ui:include>
+		    </ui:insert>
+			
+		</b:container>
+	    
+	     
+	    <b:container id="mainContentWrapper" fluid="true">
+	    	<b:row>
+	    		<b:column styleClass="mainMenu" col-xs="4" col-sm="3" span="2">
+	    			<h:form>
+	    				<p:menu toggleable="true">
+		    				<p:submenu label="#{systemRB.dashboardMenuLabel}" icon="fa fa-dashboard">
+		    					<p:menuitem value="#{systemRB.homeMenuLabel}" icon="fa fa-home" 
+		    								outcome="/adminPanel/home?faces-redirect=true"></p:menuitem>
+		    					<p:menuitem value="#{systemRB.monitorMenuLabel}" icon="fa fa-video-camera"></p:menuitem>
+		    				</p:submenu>
+		    				<p:submenu label="Users" icon="fa fa-user">
+		    					<p:menuitem value="All Users" icon="fa fa-users" 
+		    								outcome="/adminPanel/userListing?faces-redirect=true"></p:menuitem>
+		    					<p:menuitem value="Add New" icon="fa fa-user-plus"></p:menuitem>
+		    					<p:menuitem value="My Profile" icon="fa fa-male"></p:menuitem>
+			  				</p:submenu>
+	    				</p:menu>
+	    			</h:form>
+	    		</b:column>
+	    		<b:column id="mainContent" styleClass="mainContent" col-xs="8" col-sm="9" span="10">
+	    			<ui:insert name="content">
+					  	<p>Content area from adminPanelTemplateBasic.xhtml file</p>
+					  	<!--  include your content file or uncomment the include below and create content.xhtml in this directory -->
+					 	<!-- <div> -->
+					  	<!-- <ui:include src="content.xhtml"/> -->  
+					  	<!-- </div> -->
+					</ui:insert>
+	    		</b:column>
+	    	</b:row>
+	    </b:container>
+	
 		<ui:insert name="footer">
 		  	<p>Footer area from adminPanelTemplateBasic.xhtml file</p>
 		  	<!--  include your header file or uncomment the include below and create footer.xhtml in this directory -->
@@ -41,6 +69,7 @@
 			maximum   : 500
 		});
 	</script>
+	
 	</h:body>
 </f:view>
 </html>

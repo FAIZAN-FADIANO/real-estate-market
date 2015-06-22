@@ -18,5 +18,5 @@ userEmailLabel = эл. почта
 
 #Listing of users page
 listOfUsersMetaTitle = Список юзеров
-listOfUsersTableTitle = Список юзеров (общее количетсво {0} юзеров)
-showColumnsLabel = Показать колонки:
+listOfUsersTableTitle = Список юзеров ({0} юзеров)
+showColumnsLabel = Колонки:

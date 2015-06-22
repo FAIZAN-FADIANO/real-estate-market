@@ -12,24 +12,23 @@
 <h:body>
 <ui:composition template="/WEB-INF/templates/adminPanel/basic/adminPanelTemplateBasic.xhtml">
 		<ui:define name="content">
-		    <b:container id="content" styleClass="center">
 		        <b:row>
 		            <b:column>
 		                <h1>#{adminPanelRB.mainPageTopTitle}</h1>
 		            </b:column>
 		        </b:row>
 		        <b:row>
-		        	<b:column span="6" offset="3">
-		        		<h:outputText value="Welcome, #{loginBean.loggedInUser}"/>
+		        	<b:column>
+		        		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed hendrerit blandit commodo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In luctus mollis sodales. Mauris ac ligula dui. Nam ipsum dolor, suscipit vel sapien eu, porttitor feugiat nulla. Phasellus tempus ligula non euismod volutpat. Aenean pharetra metus id sem elementum, sit amet suscipit purus molestie. Suspendisse potenti.</p>
+						<p>Maecenas at arcu fermentum ligula semper auctor. Duis et dolor dolor. Nulla sit amet purus lectus. Nunc mollis lorem vitae purus laoreet vulputate ac at ligula. Integer erat odio, convallis in justo at, egestas malesuada tortor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam maximus rutrum lacus, eu sodales dui iaculis vitae. Donec velit velit, blandit non finibus non, gravida a ligula. Nam ornare cursus magna nec cursus. Suspendisse dapibus neque eu erat tempor pharetra. Phasellus eu odio ac velit malesuada suscipit vel vel purus. Morbi sagittis lacus nulla, in porttitor nibh tincidunt suscipit. Proin eget elementum quam. Mauris vel massa eget ante lobortis commodo eget vel est.</p>
+						<p>Sed egestas ac tortor et egestas. Ut in urna felis. Aliquam nulla magna, iaculis sit amet blandit quis, dignissim eget libero. Nulla in tortor ipsum. Nulla vel massa sed dolor hendrerit maximus. Proin eget commodo justo. Etiam quis neque risus. Donec sed finibus velit. Aliquam arcu nisl, faucibus ac urna sed, luctus varius tellus. Phasellus ac tempor ex. Vivamus ac dapibus lacus. Sed accumsan tincidunt lacinia. Aenean auctor sollicitudin ante non fermentum. Vestibulum eros enim, convallis eu orci eu, blandit sodales ante. Donec convallis, augue sit amet malesuada commodo, diam est commodo leo, et tempus dolor ex eu metus.</p>
+						<p>Pellentesque interdum sapien vel posuere condimentum. Suspendisse sit amet erat feugiat, condimentum tellus a, suscipit sapien. Morbi ultrices mattis porttitor. Donec ultricies nibh metus. Aliquam non bibendum libero. Donec faucibus elit vel porta dictum. Aenean in posuere enim, et congue velit.</p>
+						<p>Mauris urna massa, venenatis a placerat vel, faucibus vel diam. Proin fermentum ipsum est, ac fringilla sapien hendrerit id. Maecenas aliquam semper orci vel tempor. Aenean vitae turpis egestas, ultrices ipsum vel, condimentum purus. Nulla vel ligula condimentum, pulvinar felis eu, pellentesque arcu. Pellentesque eget est et erat accumsan interdum. Sed leo tellus, vehicula lobortis augue fermentum, facilisis lacinia nibh. Sed eget tincidunt nulla, nec luctus diam. Ut vehicula nec mi non efficitur. Curabitur porttitor tempor tellus, nec suscipit tellus tempor ac. In odio dui, venenatis sed fringilla et, viverra vitae est. Mauris ligula eros, pharetra consectetur mi sed, mattis facilisis magna. Pellentesque dictum eu odio ac maximus. Fusce eu sem velit. Donec est lorem, tincidunt quis justo vitae, ultrices finibus velit.</p>
 		        	</b:column>
 		        </b:row>
 		        <b:row>
-		        	<h:form>
-					<p:commandButton id="creatSuperAdmin" action="#{loginBean.adminPanelLogout}" 
-									ajax="false" value="Log out"></p:commandButton>
-				</h:form>
+
 		        </b:row>
-		    </b:container>
 		    </ui:define>
 </ui:composition>
 </h:body>

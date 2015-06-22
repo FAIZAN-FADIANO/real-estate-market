@@ -13,6 +13,9 @@ import javax.faces.bean.*;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.MenuModel;
+
 import com.stolser.PropertiesLoader;
 import com.stolser.ejb.UserFacadeEJB;
 import com.stolser.jpa.Admin;
@@ -50,35 +53,11 @@ public class LoginBean implements Serializable{
 		propSystemMap = propLoader.getPropSystemMap();
 	}
 
-	public String getEnteredLogin() {
-		return enteredLogin;
-	}
-
-	public void setEnteredLogin(String enteredLogin) {
-		this.enteredLogin = enteredLogin;
-	}
-
-	public String getEnteredPassword() {
-		return enteredPassword;
-	}
-
-	public void setEnteredPassword(String enteredPassword) {
-		this.enteredPassword = enteredPassword;
-	}
-	
-	public User getLoggedInUser() {
-		return loggedInUser;
-	}
-
-	public void setLoggedInUser(User loggedInUser) {
-		this.loggedInUser = loggedInUser;
-	}
-
 	public String adminPanelValidation() {
 		List<User> usersInDB = userFacade.getUsersFindByLogin(getEnteredLogin());
 		if (usersInDB.size() == 0) {	
 			// there are no users in the DB with such login
-			FacesContext.getCurrentInstance().addMessage(null, 
+			FacesContext.getCurrentInstance().addMessage("loggingForm:loginInput", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 							getSystemProperties().getProperty("invalidLoginErrSum"),
 							getSystemProperties().getProperty("invalidLoginErrDetail")));
@@ -93,7 +72,7 @@ public class LoginBean implements Serializable{
 		
 		if (!(userPassword.equals(getEnteredPassword()))) {  
 			// the entered password doesn't match the password in the DB
-			FacesContext.getCurrentInstance().addMessage(null, 
+			FacesContext.getCurrentInstance().addMessage("loggingForm:passwordInput", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 							getSystemProperties().getProperty("invalidPassErrSum"),
 							getSystemProperties().getProperty("invalidPassErrDetail")));
@@ -152,7 +131,37 @@ public class LoginBean implements Serializable{
 		
 		return "userListing";
 	}*/
+
+	public MenuModel getAdminPanelMenu() {
+		DefaultMenuModel model = new DefaultMenuModel();
+		
+		return model;
+	}
 	
+/*------------ getter and setters -----------*/
+	public String getEnteredLogin() {
+		return enteredLogin;
+	}
+
+	public void setEnteredLogin(String enteredLogin) {
+		this.enteredLogin = enteredLogin;
+	}
+
+	public String getEnteredPassword() {
+		return enteredPassword;
+	}
+
+	public void setEnteredPassword(String enteredPassword) {
+		this.enteredPassword = enteredPassword;
+	}
+	
+	public User getLoggedInUser() {
+		return loggedInUser;
+	}
+
+	public void setLoggedInUser(User loggedInUser) {
+		this.loggedInUser = loggedInUser;
+	}
 
 }
 

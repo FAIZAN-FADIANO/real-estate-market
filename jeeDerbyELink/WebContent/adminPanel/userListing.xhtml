@@ -15,50 +15,48 @@
 	<ui:define name="title">#{userRB.listOfUsersMetaTitle}</ui:define>
  
 	<ui:define name="content">
-		<b:container>
-			<b:row>
-				<p:dataTable id="usersTable" var="user" value="#{userController.usersList}" draggableColumns="true"
-								reflow="priority" emptyMessage="#{userRB.emptyMessage}">
-					<f:facet name="header">
-						<h:outputFormat value="#{userRB.listOfUsersTableTitle}">
-							<f:param value="#{fn:length(userController.usersList)}"></f:param>
-						</h:outputFormat>
-						<p:commandButton styleClass="columnsToggler" id="userColumnsToggler" type="button" 
-								value="#{userRB.showColumnsLabel}" icon="ui-icon-wrench"></p:commandButton>
-						<p:columnToggler trigger="userColumnsToggler" datasource="usersTable"></p:columnToggler>
-					</f:facet>
-					<p:column  headerText="#{userRB.userLastNameLabel}" footerText="#{userRB.userLastNameLabel}" 
-								priority="1" toggleable="false">
-						<p:outputLabel>#{user.lastName}</p:outputLabel>
-					</p:column>
-					<p:column  headerText="#{userRB.userFirstNameLabel}" footerText="#{userRB.userFirstNameLabel}" 
-								priority="1" toggleable="false">
-						<p:outputLabel>#{user.firstName}</p:outputLabel>
-					</p:column>
-					<p:column  headerText="#{userRB.userTypeLabel}" footerText="#{userRB.userTypeLabel}" 
-								priority="3" styleClass="userTypeCell">
-						<p:outputLabel>#{user.type}</p:outputLabel>
-					</p:column>
-					<p:column  headerText="#{userRB.userLoginLabel}" footerText="#{userRB.userLoginLabel}" 
-								priority="2">
-						<p:outputLabel>#{user.login}</p:outputLabel>
-					</p:column>
-					<p:column  headerText="#{userRB.userBirthdayLabel}" footerText="#{userRB.userBirthdayLabel}" 
-								priority="5">
-						<p:outputLabel>#{user.birthday}</p:outputLabel>
-					</p:column>
-					<p:column  headerText="#{userRB.userEmailLabel}" footerText="#{userRB.userEmailLabel}" 
-								priority="3" width="25%">
-						<p:outputLabel>#{user.email}</p:outputLabel>
-					</p:column>
-					<p:column  headerText="#{userRB.userStatusLabel}" footerText="#{userRB.userStatusLabel}" 
-								priority="2" width="10%" styleClass="userStatusCell">
-						<p:outputLabel>#{user.status}</p:outputLabel>
-					</p:column>
-				</p:dataTable>
-			</b:row>
+		<b:row>
+			<p:dataTable id="usersTable" var="user" value="#{userController.usersList}" draggableColumns="true"
+							reflow="priority" emptyMessage="#{userRB.emptyMessage}">
+				<f:facet name="header">
+					<h:outputFormat value="#{userRB.listOfUsersTableTitle}">
+						<f:param value="#{fn:length(userController.usersList)}"></f:param>
+					</h:outputFormat>
+					<p:commandButton styleClass="columnsToggler" id="userColumnsToggler" type="button" 
+							value="#{userRB.showColumnsLabel}" icon="fa fa-wrench"></p:commandButton>
+					<p:columnToggler trigger="userColumnsToggler" datasource="usersTable"></p:columnToggler>
+				</f:facet>
+				<p:column  headerText="#{userRB.userLastNameLabel}" footerText="#{userRB.userLastNameLabel}" 
+							priority="1" toggleable="false">
+					<p:outputLabel>#{user.lastName}</p:outputLabel>
+				</p:column>
+				<p:column  headerText="#{userRB.userFirstNameLabel}" footerText="#{userRB.userFirstNameLabel}" 
+							priority="1" toggleable="false">
+					<p:outputLabel>#{user.firstName}</p:outputLabel>
+				</p:column>
+				<p:column  headerText="#{userRB.userTypeLabel}" footerText="#{userRB.userTypeLabel}" 
+							priority="4" styleClass="userTypeCell">
+					<p:outputLabel>#{user.type}</p:outputLabel>
+				</p:column>
+				<p:column  headerText="#{userRB.userLoginLabel}" footerText="#{userRB.userLoginLabel}" 
+							priority="4">
+					<p:outputLabel>#{user.login}</p:outputLabel>
+				</p:column>
+				<p:column  headerText="#{userRB.userBirthdayLabel}" footerText="#{userRB.userBirthdayLabel}" 
+							priority="5">
+					<p:outputLabel>#{user.birthday}</p:outputLabel>
+				</p:column> 
+				<p:column  headerText="#{userRB.userEmailLabel}" footerText="#{userRB.userEmailLabel}" 
+							priority="5" width="25%">
+					<p:outputLabel>#{user.email}</p:outputLabel>
+				</p:column>
+				<p:column  headerText="#{userRB.userStatusLabel}" footerText="#{userRB.userStatusLabel}" 
+							priority="2" width="10%" styleClass="userStatusCell">
+					<p:outputLabel>#{user.status}</p:outputLabel>
+				</p:column>
+			</p:dataTable>
+		</b:row>
 
-		</b:container>
 	</ui:define>
 
 </ui:composition>

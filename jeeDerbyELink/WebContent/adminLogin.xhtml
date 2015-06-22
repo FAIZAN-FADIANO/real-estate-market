@@ -9,7 +9,7 @@
 <h:head></h:head>
 
 <h:body> 
-<ui:composition template="/WEB-INF/templates/adminPanel/basic/adminPanelTemplateBasic.xhtml">
+<ui:composition template="/WEB-INF/templates/frontEnd/basic/frontEndTemplateBasic.xhtml">
 
 	<ui:define name="title">#{loggingRB.adminLoginMetaTitle}</ui:define>
 
@@ -19,22 +19,29 @@
 	    		<b:column id="loggingTitle" ><h1 class="h2">#{loggingRB.adminLoginPageTitle}</h1></b:column>
 	    	</b:row>
 	    	<b:row>
-	    		<b:column id="loggingForm" span="6" offset="3" col-sm="8" offset-sm="2" 
-	    									col-xs="10" offset-xs="1">
-	    			<h:form>
-		    			<p:messages autoUpdate="true" showDetail="true"></p:messages>
+	    		<b:column id="loggingFormWrapper" col-sm="6" offset-sm="3" col-xs="8" offset-xs="2"
+	    											col-lg="4" offset-lg="4">
+	    			<p:messages autoUpdate="true" showDetail="true" globalOnly="true"></p:messages>
+	    			<h:form id="loggingForm">
+		    			 
 						<b:panelGrid colSpans="12">
 							<h:outputText value="#{loggingRB.loginLabel}"/>
-							<p:inputText placeholder="#{loggingRB.loginPlaceholder}" 
-										 value="#{loginBean.enteredLogin}"></p:inputText> 
+							<p:inputText id="loginInput" placeholder="#{loggingRB.loginPlaceholder}" 
+										 value="#{loginBean.enteredLogin}"
+										 required="true" requiredMessage="#{loggingRB.loginRequiredMessage}"></p:inputText>
+							<p:message for="loginInput"></p:message>
 							<h:outputText value="#{loggingRB.passwordLabel}" />
-							<p:inputText placeholder="#{loggingRB.passwordPlaceholder}" 
-										 value="#{loginBean.enteredPassword}"></p:inputText> 
-							<p:commandButton action="#{loginBean.adminPanelValidation}"
-											 value="#{loggingRB.enterButtonLabel}"></p:commandButton>   
+							<p:inputText id="passwordInput" placeholder="#{loggingRB.passwordPlaceholder}" 
+										 value="#{loginBean.enteredPassword}"
+										 required="true" requiredMessage="#{loggingRB.passwordRequiredMessage}"></p:inputText> 
+							<p:message for="passwordInput"></p:message>
+							<p:commandButton styleClass="logInButton" action="#{loginBean.adminPanelValidation}"
+											 value="#{loggingRB.enterButtonLabel}" 
+											 update="@form">
+											 </p:commandButton>   
 							<p:link value="#{loggingRB.lostPasswordLabel}" outcome="ImplicitObjects"></p:link>		
 							<p:link value="#{loggingRB.createAccountLabel}" outcome="ImplicitObjects"></p:link>
-	
+	 
 						</b:panelGrid>	
 					</h:form>	
 	    		</b:column>
