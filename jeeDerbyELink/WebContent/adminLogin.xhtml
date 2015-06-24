@@ -1,56 +1,67 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:p="http://primefaces.org/ui">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
 <h:head></h:head>
 
-<h:body> 
-<ui:composition template="/WEB-INF/templates/frontEnd/basic/frontEndTemplateBasic.xhtml">
+<h:body>
+  <ui:composition
+    template="/WEB-INF/templates/frontEnd/basic/frontEndTemplateBasic.xhtml">
 
-	<ui:define name="title">#{loggingRB.adminLoginMetaTitle}</ui:define>
+    <ui:define name="title">#{loggingRB.adminLoginMetaTitle}</ui:define>
 
-	<ui:define name="content">
-	    <b:container>
-	    	<b:row>
-	    		<b:column id="loggingTitle" ><h1 class="h2">#{loggingRB.adminLoginPageTitle}</h1></b:column>
-	    	</b:row>
-	    	<b:row>
-	    		<b:column id="loggingFormWrapper" col-sm="6" offset-sm="3" col-xs="8" offset-xs="2"
-	    											col-lg="4" offset-lg="4">
-	    			<p:messages autoUpdate="true" showDetail="true" globalOnly="true"></p:messages>
-	    			<h:form id="loggingForm">
-		    			 
-						<b:panelGrid colSpans="12">
-							<h:outputText value="#{loggingRB.loginLabel}"/>
-							<p:inputText id="loginInput" placeholder="#{loggingRB.loginPlaceholder}" 
-										 value="#{loginBean.enteredLogin}"
-										 required="true" requiredMessage="#{loggingRB.loginRequiredMessage}"></p:inputText>
-							<p:message for="loginInput"></p:message>
-							<h:outputText value="#{loggingRB.passwordLabel}" />
-							<p:inputText id="passwordInput" placeholder="#{loggingRB.passwordPlaceholder}" 
-										 value="#{loginBean.enteredPassword}"
-										 required="true" requiredMessage="#{loggingRB.passwordRequiredMessage}"></p:inputText> 
-							<p:message for="passwordInput"></p:message>
-							<p:commandButton styleClass="logInButton" action="#{loginBean.adminPanelValidation}"
-											 value="#{loggingRB.enterButtonLabel}" 
-											 update="@form">
-											 </p:commandButton>   
-							<p:link value="#{loggingRB.lostPasswordLabel}" outcome="ImplicitObjects"></p:link>		
-							<p:link value="#{loggingRB.createAccountLabel}" outcome="ImplicitObjects"></p:link>
-	 
-						</b:panelGrid>	
-					</h:form>	
-	    		</b:column>
-	    	</b:row>
-	    </b:container>
-		
-	</ui:define>
+    <ui:define name="content">
+      <b:row>
+        <b:column id="loggingTitle">
+          <h1 class="h2">#{loggingRB.adminLoginPageTitle}</h1>
+        </b:column>
+      </b:row>
+      <b:row>
+        <b:column id="loggingFormWrapper" col-sm="6" offset-sm="3"
+          col-xs="8" offset-xs="2" col-lg="4" offset-lg="4">
+          <p:messages autoUpdate="true" showDetail="true"
+            globalOnly="true"></p:messages>
+          <h:form id="loggingForm">
 
-</ui:composition>
-</h:body>	
+            <b:panelGrid colSpans="12">
+              <p:outputLabel for="loginInput"
+                value="#{loggingRB.loginLabel}" />
+              <p:inputText id="loginInput"
+                placeholder="#{loggingRB.loginPlaceholder}"
+                value="#{loginBean.enteredLogin}" tabindex="1"
+                required="true"
+                requiredMessage="#{loggingRB.loginRequiredMessage}"></p:inputText>
+              <p:message for="loginInput"></p:message>
+              <p:outputLabel value="#{loggingRB.passwordLabel}" for="passwordInput"></p:outputLabel>
+              <p:password id="passwordInput" placeholder="#{loggingRB.passwordPlaceholder}"
+                value="#{loginBean.enteredPassword}" required="true" tabindex="2"
+                requiredMessage="#{loggingRB.passwordRequiredMessage}" />
+              <p:message for="passwordInput"></p:message>
+              <p:commandButton styleClass="logInButton" tabindex="3"
+                action="#{loginBean.adminPanelValidation}"
+                value="#{loggingRB.enterButtonLabel}" update="@form">
+              </p:commandButton>
+              <p:link value="#{loggingRB.lostPasswordLabel}"
+                outcome="ImplicitObjects"></p:link>
+              <p:link value="#{loggingRB.createAccountLabel}"
+                outcome="ImplicitObjects"></p:link>
+
+            </b:panelGrid>
+          </h:form>
+        </b:column>
+      </b:row>
+
+      <script>
+  		$(document).ready(function() {
+  			$("#loggingForm :input:visible:enabled:first").focus();
+  		});
+      </script>
+    </ui:define>
+
+  </ui:composition>
+</h:body>
 
 </html>

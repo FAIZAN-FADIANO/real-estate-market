@@ -1,16 +1,21 @@
 package com.stolser.beans;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.*;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.model.menu.DefaultMenuModel;
@@ -25,9 +30,10 @@ import com.stolser.jpa.User;
 @SessionScoped
 public class LoginBean implements Serializable{
 	private static final long serialVersionUID = 1L;
-
+	
 	private String enteredLogin;
 	private String enteredPassword;
+	private String passwordRepeat;
 	
 	@EJB
 	private UserFacadeEJB userFacade;
@@ -99,6 +105,7 @@ public class LoginBean implements Serializable{
 		}
 		
         loggedInUser = user;
+        setPasswordRepeat(loggedInUser.getPassword());
         
         return "/adminPanel/home?faces-redirect=true";
 	}
@@ -111,6 +118,30 @@ public class LoginBean implements Serializable{
         
         return "/adminLogin?faces-redirect=true";
     }
+	
+	public String updateLoggedInUser() {
+	
+		try{
+			loggedInUser = userFacade.updateUserInDB(loggedInUser);
+			
+		} catch(Exception e) {
+			FacesMessage newMessage = new FacesMessage(MessageFormat.format(getSystemProperties()
+					.getProperty("updateUserErr"), loggedInUser));
+			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+			FacesContext.getCurrentInstance().addMessage(null, newMessage);
+			
+			loggedInUser = userFacade.refreshUserFromDB(loggedInUser);
+			
+			return null;
+		}
+		
+		FacesMessage newMessage = new FacesMessage(MessageFormat.format(getSystemProperties()
+				.getProperty("updateUserSuccessMessage"), loggedInUser));
+		newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
+		FacesContext.getCurrentInstance().addMessage(null, newMessage);
+		
+		return null;
+	}
 	
 /**
  * Returns appropriate Properties object for current local on the fron-end
@@ -137,6 +168,56 @@ public class LoginBean implements Serializable{
 		
 		return model;
 	}
+
+/**
+ * Validates user password on matching the pattern.
+ * */
+	public void passwordValidator(FacesContext context, UIComponent component, Object value)
+			throws ValidatorException {
+		
+		final String PASSWORD_PATTERN = "^.{5,15}$";
+	    Pattern pattern;
+	    Matcher matcher;
+	    pattern = Pattern.compile(PASSWORD_PATTERN);
+	    
+		String enteredPassword = value.toString();
+		matcher = pattern.matcher(enteredPassword);
+		
+		if( !matcher.matches() ) {
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+					.getProperty("loginValidatorMessage"));
+				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+				
+			throw new ValidatorException(newMessage);
+		}
+	}
+	
+	public void passwordRepeatValidator(FacesContext context, UIComponent component, Object value)
+			throws ValidatorException {
+		
+		String firstPassword = loggedInUser.getPassword();
+		String repeatPassword = value.toString();
+		
+		List<FacesMessage> messages = FacesContext.getCurrentInstance()
+				.getMessageList("myProfileInfo:myProfileForm:passwordFirst");
+		
+		if (messages.size() > 0) {
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+					.getProperty("passwordRepeatNotCorrectMessage"));
+				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+				
+			throw new ValidatorException(newMessage);
+		} else if ( !firstPassword.equals(repeatPassword) ) {
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+				.getProperty("passwordRepeatRequiredMessage"));
+			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+			
+			throw new ValidatorException(newMessage);
+		}
+		
+		FacesContext.getCurrentInstance()
+		.addMessage(null, new FacesMessage("passwordRepeatValidator: success!"));
+	}
 	
 /*------------ getter and setters -----------*/
 	public String getEnteredLogin() {
@@ -155,6 +236,14 @@ public class LoginBean implements Serializable{
 		this.enteredPassword = enteredPassword;
 	}
 	
+	public String getPasswordRepeat() {
+		return passwordRepeat;
+	}
+
+	public void setPasswordRepeat(String passwordRepeat) {
+		this.passwordRepeat = passwordRepeat;
+	}
+
 	public User getLoggedInUser() {
 		return loggedInUser;
 	}

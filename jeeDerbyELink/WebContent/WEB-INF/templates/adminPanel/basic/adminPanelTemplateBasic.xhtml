@@ -13,7 +13,7 @@
 		<h:outputScript library="js" name="common.js" />
 		<h:outputScript library="js" name="flowtype.js" />
 		
-	  	<title><ui:insert name="title">Real Estate Admin Panel</ui:insert></title>
+	  	<title><ui:insert name="title">#{adminPanelRB.defaultPageTitle}</ui:insert></title>
 	</h:head>
 	<h:body styleClass="adminPanel"> 
 		 
@@ -39,7 +39,8 @@
 		    					<p:menuitem value="All Users" icon="fa fa-users" 
 		    								outcome="/adminPanel/userListing?faces-redirect=true"></p:menuitem>
 		    					<p:menuitem value="Add New" icon="fa fa-user-plus"></p:menuitem>
-		    					<p:menuitem value="My Profile" icon="fa fa-male"></p:menuitem>
+		    					<p:menuitem value="My Profile" icon="fa fa-male"
+		    							outcome="/adminPanel/myProfile?faces-redirect=true"></p:menuitem>
 			  				</p:submenu>
 	    				</p:menu>
 	    			</h:form>
@@ -65,8 +66,9 @@
 	<script>
 		$('body').flowtype({
 			minFont   : 12,
-			maxFont   : 20,
-			maximum   : 500
+			maxFont   : 22,
+			maximum   : 1200,
+			fontRatio : 80
 		});
 	</script>
 	

@@ -22,14 +22,15 @@
 		    </ui:insert>
 		</b:container>
 	    
-
-		<ui:insert name="content">
-		  	<p>Content area from frontEndTemplateBasic.xhtml file</p>
-		  	<!--  include your content file or uncomment the include below and create content.xhtml in this directory -->
-		 	<!-- <div> -->
-		  	<!-- <ui:include src="content.xhtml"/> -->  
-		  	<!-- </div> -->
-		</ui:insert>
+		<b:container id="mainContentWrapper">
+			<ui:insert name="content">
+			  	<p>Content area from frontEndTemplateBasic.xhtml file</p>
+			  	<!--  include your content file or uncomment the include below and create content.xhtml in this directory -->
+			 	<!-- <div> -->
+			  	<!-- <ui:include src="content.xhtml"/> -->  
+			  	<!-- </div> -->
+			</ui:insert>
+		</b:container>
 		
 		<ui:insert name="footer">
 		  	<p>Footer area from frontEndTemplateBasic.xhtml file</p>

@@ -2,15 +2,43 @@ $bright-color: #ff0000;
 $normal-font-size: 14px;
 $colorTextTableBody: rgb(64, 124, 234);
 
+.clearBoth {
+	clear: both;
+}
+
+.blockAlignCenter {
+	display: block!important;
+ 	margin: 0 auto!important;
+}
+
+/* .panelGridWithoutBorder {
+	border: none;
+	tr, td {
+		border: none!important;
+	}
+} */
+
 /*------- Admin Panel -------*/
 .adminPanel {
+	h1, .h1 {
+		font-size: 2em;
+	}
+	h2, .h2 {
+	  font-size: 1.8em;
+	}
+	h3, .h3 {
+	  font-size: 1.7em;
+	}
+	h4, .h4 {
+	  font-size: 1.4em;
+	}
 	
 	#header {
 	  	margin-top: 10px;
 	    /* min-height: 100px; */
 	}
 	
-
+  
 	#usersTable {
 		.columnsToggler {
 			float: right;
@@ -32,8 +60,10 @@ $colorTextTableBody: rgb(64, 124, 234);
 		  color: $colorTextTableBody;
 	}
 	
-	.userTypeCell,
-	.userStatusCell {
+	#usersTable_head,
+	#usersTable_foot,
+	.userStatusCell,
+	.userTypeCell {
 		text-transform: lowercase;
 	}
 	
@@ -49,6 +79,28 @@ $colorTextTableBody: rgb(64, 124, 234);
 		width: 195px;
 		line-height: 1.2;
 	}
+	
+	table.ui-panelgrid {
+		width: 100%;
+	}
+	
+	.columnWidth-35 {
+		width: 35%;
+	}
+
+/*------- adminPanel/myProfile.xhtml -------*/
+	&.myProfile {
+		.panelGridWrapper {
+			margin-bottom: 15px;
+		}
+		
+		.myProfileForm {
+			.ui-message {
+				margin-left: 0px;
+			}
+		}
+	}
+/*------- END of adminPanel/myProfile.xhtml -------*/
 }
 
 /*------- END of .adminPanel -------*/
@@ -140,6 +192,19 @@ $colorTextTableBody: rgb(64, 124, 234);
 
 /*------- Front End -------------*/
 .frontEnd {
+	h1, .h1 {
+		font-size: 2em;
+	}
+	h2, .h2 {
+	  font-size: 1.8em;
+	}
+	h3, .h3 {
+	  font-size: 1.7em;
+	}
+	h4, .h4 {
+	  font-size: 1.4em;
+	}
+	
 	#header {
 		margin-top: 10px;
 	}

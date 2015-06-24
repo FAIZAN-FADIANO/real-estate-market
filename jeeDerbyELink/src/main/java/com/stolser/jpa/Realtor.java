@@ -5,8 +5,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
+
+import com.stolser.jpa.User.UserStatusType;
+import com.stolser.jpa.User.UserType;
 
 /**
  * Realtor entity: a concrete entity; represent a real estate agent that
@@ -42,7 +51,7 @@ public class Realtor extends User implements Serializable {
 	private List<String> phoneNumbers;
 	@Pattern(regexp="^[a-zA-Z][a-zA-Z0-9]{5,31}$")
 	private String skype;
-	private String photo;
+	
 	
 /*--------- END of entity properties --------------*/
 
@@ -88,13 +97,7 @@ public class Realtor extends User implements Serializable {
 		this.skype = skype;
 	}
 
-	public String getPhoto() {
-		return photo;
-	}
-
-	public void setPhoto(String photo) {
-		this.photo = photo;
-	}
+	
 	
 /*-------- END of getters and setters -------------*/
 	

@@ -1,3 +1,44 @@
 langDescriptionEn = Язык Уильяма Шекспир и Брюса Уиллиса.
 langDescriptionRu = Язык Дмитрия Менделеева и Сергея Шнурова.
 langDescriptionDe = Язык Гёте и Зигмунда Фрейда.
+
+#Errors
+invalidLoginErrSum = Неверный логин!
+invalidLoginErrDetail = Извините, но системе незнаком такой логин.
+invalidPassErrSum = Неверный пароль!
+invalidPassErrDetail = Пароль не соответствует введенному логину.
+invalidTypeErrSum = Доступ запрешен!
+invalidTypeErrDetail = У Вас нет прав для входа в Админ Панель.
+invalidStatusErrSum = Доступ запрешен!
+invalidStatusErrDetail = Этот пользователь неактивен. Обратитесь к Вашему системному администратору за помощью
+nonUniqueSuperAdminErr = In the DB must be only one user with type = SUPER_ADMIN, but there are {0} rows in the 'USERS' table with such type
+nonUniqueLoginErr = The property User.login MUST be unique, but there are {0} rows in the 'USERS' table with login = {1}
+requiredPropsViolationErr = An attempt to add a new user to the DB with some required properties equal null
+addSuperAdminViolationErr = An attempt to add a user with type = SUPER_ADMIN and there is already a row in the DB with such type (violated restriction: only one user with type = SUPER_ADMIN)
+addUserLoginViolationErr = There is already a user in DB with such login ({0})
+addUserTypeViolationErr = An attempt to add a new user with type {0} that is not of class {1}
+discardAdminNullErr = Assignee admin cannot be null
+discardSuperAdminViolationErr = An attempt to discard a user with type SUPER_ADMIN that violates system restrictions
+removeNotDiscardedUserErr = An attempt to remove a user with status {0}. Only users with status = DISCARDED can be removed from the DB
+updateUserErr = Неудача! Юзер {0} НЕ был обновлен
+updateUserSuccessMessage = Юзер {0} был обновлен
+passwordRepeatRequiredMessage = Пароли не совпадают
+passwordRepeatNotCorrectMessage = Ваш Пароль не корректный
+
+loginValidatorMessage = Должен содержать от 5 до 15 символов (буквы, цифры и тире)
+passwordValidatorMessage = Должен содержать от 5 до 15 символов
+firstLastNameValidatorMessage = Должен содержать от 1 до 20 символов (буквы и тире)
+
+
+passwordChangePromptLabel = Введите новый Пароль
+weakPasswordFeedbackLabel = Это должно быть шутка?!
+goodPasswordFeedbackLabel = Намно лучше...
+strongPasswordFeedbackLabel = Отлично!
+
+
+#Admin Panel Menu
+dashboardMenuLabel = Dashboard
+homeMenuLabel = Home
+monitorMenuLabel = Monitor
+myProfileMenuLabel = My Profile
+logOutMenuLabel = Log out

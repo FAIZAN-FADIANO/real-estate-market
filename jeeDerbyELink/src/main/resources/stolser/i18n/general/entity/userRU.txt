@@ -6,15 +6,24 @@ userRealtorDescription =  A real estate agent. Has an access to the back-end. Ca
 userClientLabel = клиент
 userClientDescription =  A registered user of the front-end, doesn't have an access to the back-end. Have access to Private Panel with some extra functionality.
 #User's properties
-userFirstNameLabel = имя
-userLastNameLabel = фамилия
-userTypeLabel = тип
-userStatusLabel = статус
-userLoginLabel = логин
-userPasswordLabel = пароль
-userBirthdayLabel = день рождения
-userEmailLabel = эл. почта
-
+userIdLabel = ID
+userTypeLabel = Роль юзера
+userStatusLabel = Статус
+userLoginLabel = Логин
+userPasswordLabel = Пароль
+userFirstNameLabel = Имя
+userLastNameLabel = Фамилия
+userDateOfCreationLable = Дата создания
+userBirthdayLabel = День рождения
+userEmailLabel = Почта
+userPhotoLable = Фото
+realtorManagedItemsLable = Управляемая недвижимость
+realtorPhoneNumbersLable = Телефонные номера
+realtorSkypeLable = Skype
+regUserFavoriteEstateLable = Избранная недвижимость
+homeAreaUnitLable = Единица площади помещения
+plotAreaUnitLable = Единица площади участка
+priceCurrencyLable = Валюта цены
 
 #Listing of users page
 listOfUsersMetaTitle = Список юзеров

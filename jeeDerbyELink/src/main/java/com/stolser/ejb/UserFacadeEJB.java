@@ -54,15 +54,6 @@ public class UserFacadeEJB {
 		}*/
 	}
 	
-	public <T> T persistEntity(T entity) {
-		entityManager.persist(entity);
-		return entity;
-	}
-	
-	public <T> T mergeEntity(T entity) {
-		return entityManager.merge(entity);
-	}
-	  
     public List<User> getUsersFindAll() {
     	TypedQuery<User> query = entityManager
     			.createNamedQuery("User.findAll", User.class);
@@ -124,63 +115,54 @@ public class UserFacadeEJB {
     	return foundUsers;
     }
 /**
- * The method performs several checks on uniqueness and required properties 
- * and persists a new user object only if those checks are passed. 
+ * Tries to persist a new user. Throw an exception if some checks are not passed. 
  * */
     public User addNewUser(User userToAdd) {
-    	if ((userToAdd.getType() == null) || (userToAdd.getStatus() == null) ||
-    		(userToAdd.getLogin() == null) || (userToAdd.getPassword() == null) ||
-    		(userToAdd.getFirstName() == null) || (userToAdd.getLastName() == null) ||
-    		(userToAdd.getDateOfCreation() == null)) {
-			throw new RuntimeException(getSystemProperties().getProperty("requiredPropsViolationErr"));
-		}
     	
-    	User.UserType newUserType = userToAdd.getType();
-    	if (newUserType == User.UserType.SUPER_ADMIN) {
-			List<User> foundUsers = getUsersFindByType(newUserType);
-			if (foundUsers.size() != 0) {
-				throw new RuntimeException(getSystemProperties().getProperty("addSuperAdminViolationErr"));
-			}
-		}
-    	
-    	String newUserLogin = userToAdd.getLogin();
-    	List<User> usersInDBWithSuchLogin = getUsersFindByLogin(newUserLogin);
-    	if (usersInDBWithSuchLogin.size() != 0) {
-			throw new RuntimeException(MessageFormat.format(
-					getSystemProperties().getProperty("addUserLoginViolationErr"), newUserLogin));
-		}
-    	
-    	switch (newUserType) {
-		case SUPER_ADMIN:
-		case ADMIN:
-			if (!(userToAdd instanceof Admin)) {
-				throw new RuntimeException(MessageFormat.format(
-						getSystemProperties().getProperty("addUserTypeViolationErr"), 
-						User.UserType.SUPER_ADMIN + " or " + User.UserType.ADMIN, "Admin"));
-			}
-			break;
-		case REALTOR:
-			if (!(userToAdd instanceof Realtor)) {
-				throw new RuntimeException(MessageFormat.format(
-						getSystemProperties().getProperty("addUserTypeViolationErr"), 
-						User.UserType.REALTOR, "Realtor"));
-			}
-			break;
-		case REGISTERED_USER:
-			if (!(userToAdd instanceof RegisteredUser)) {
-				throw new RuntimeException(MessageFormat.format(
-						getSystemProperties().getProperty("addUserTypeViolationErr"), 
-						User.UserType.REGISTERED_USER, "RegisteredUser"));
-			}
-			break;
-		default:
-			assert false;
-			break;
-		}
-    	
+    	userToAdd = systemRestrictionCheck(userToAdd);
     	persistEntity(userToAdd);
+    	
     	return userToAdd;
     }
+    
+/**
+ * Tries to update (merge) a user passed as a parameter. 
+ * Throws an exception if:
+ * <ul>
+ * <li>there is no user in the DB with such id;</li>
+ * <li>some checks are not passed;</li>
+ * </ul> 
+ * */
+    public User updateUserInDB(User userToUpdate) {
+    	
+    	List<User> usersInDB = getUsersFindById(userToUpdate.getId());
+    	if (usersInDB.size() == 0) {
+			throw new RuntimeException(getSystemProperties()
+					.getProperty("noUserInDBWithID"));
+		}
+    	
+    	userToUpdate = systemRestrictionCheck(userToUpdate);
+    	
+    	return mergeEntity(userToUpdate);
+    }
+    
+/**
+ * Refreshes user object passed as a parameter by the data from the DB.
+ * Throws an exception if there is no user in DB with such id.
+ * */
+    public User refreshUserFromDB(User userToRefresh) {
+    	
+    	List<User> usersInDB = getUsersFindById(userToRefresh.getId());
+    	if (usersInDB.size() == 0) {
+			throw new RuntimeException(getSystemProperties()
+					.getProperty("noUserInDBWithID"));
+		}
+    	
+    	User userFromDB = usersInDB.get(0);
+    	    	
+    	return userFromDB;
+    }
+    
 /**
  * After successful completion of this method the user has status = 
  * User.UserStatusType.DISCARDED and is put into the Recycle Bin on
@@ -247,6 +229,82 @@ public class UserFacadeEJB {
     	userToRemove = getUsersFindById(userToRemove.getId()).get(0);
     	entityManager.remove(userToRemove);
     }
+    
+/**
+ * The method performs several checks on uniqueness and required properties.
+ * Throws an Exception if some restrictions are violated or
+ * returns the same object.
+ * */
+    private User systemRestrictionCheck(User userToCheck) {
+    	if ((userToCheck.getType() == null) || (userToCheck.getStatus() == null) ||
+        		(userToCheck.getLogin() == null) || (userToCheck.getPassword() == null) ||
+        		(userToCheck.getFirstName() == null) || (userToCheck.getLastName() == null) ||
+        		(userToCheck.getDateOfCreation() == null)) {
+    			throw new RuntimeException(getSystemProperties().getProperty("requiredPropsViolationErr"));
+    		}
+        	
+        	User.UserType newUserType = userToCheck.getType();
+        	if (newUserType == User.UserType.SUPER_ADMIN) {
+    			List<User> foundUsers = getUsersFindByType(newUserType);	
+    			
+    			if (foundUsers.size() != 0) {
+    				/*In the DB there is a user with type SUPER_ADMIN. If it has 
+    				 * the same id as the if of the userToCheck than OK.
+    				 * If these ids are different then throw an exception.*/
+    				int IDofUserToCheck = userToCheck.getId();
+        			int IDofUserInDB = foundUsers.get(0).getId();
+    				if (IDofUserToCheck != IDofUserInDB) {
+    					throw new RuntimeException(getSystemProperties()
+    							.getProperty("addSuperAdminViolationErr"));
+					}
+    			}
+    		}
+        	
+        	String LoginOfUserToCheck = userToCheck.getLogin();
+        	List<User> usersInDBWithSuchLogin = getUsersFindByLogin(LoginOfUserToCheck);
+        	if (usersInDBWithSuchLogin.size() != 0) {
+        		/*In the DB there is a user with type login. If it has 
+				 * the same id as the if of the userToCheck than OK.
+				 * If these ids are different then throw an exception.*/
+				int IDofUserToCheck = userToCheck.getId();
+    			int IDofUserInDB = usersInDBWithSuchLogin.get(0).getId();
+				if (IDofUserToCheck != IDofUserInDB) {
+					throw new RuntimeException(MessageFormat.format(getSystemProperties()
+							.getProperty("addUserLoginViolationErr"), LoginOfUserToCheck));
+				}
+    		}
+        	
+        	switch (newUserType) {
+    		case SUPER_ADMIN:
+    		case ADMIN:
+    			if (!(userToCheck instanceof Admin)) {
+    				throw new RuntimeException(MessageFormat.format(
+    						getSystemProperties().getProperty("addUserTypeViolationErr"), 
+    						User.UserType.SUPER_ADMIN + " or " + User.UserType.ADMIN, "Admin"));
+    			}
+    			break;
+    		case REALTOR:
+    			if (!(userToCheck instanceof Realtor)) {
+    				throw new RuntimeException(MessageFormat.format(
+    						getSystemProperties().getProperty("addUserTypeViolationErr"), 
+    						User.UserType.REALTOR, "Realtor"));
+    			}
+    			break;
+    		case REGISTERED_USER:
+    			if (!(userToCheck instanceof RegisteredUser)) {
+    				throw new RuntimeException(MessageFormat.format(
+    						getSystemProperties().getProperty("addUserTypeViolationErr"), 
+    						User.UserType.REGISTERED_USER, "RegisteredUser"));
+    			}
+    			break;
+    		default:
+    			assert false;
+    			break;
+    		}
+        	
+        	return userToCheck;
+    }
+    
 /**
  * Returns appropriate Properties object for current local on the fron-end
  * */
@@ -254,6 +312,20 @@ public class UserFacadeEJB {
 		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
 		Properties currentProperties = propSystemMap.get(currentLocal);
 		return currentProperties;
+	}
+    
+	private <T> T persistEntity(T entity) {
+		entityManager.persist(entity);
+		return entity;
+	}
+	
+	private <T> T mergeEntity(T entity) {
+		return entityManager.merge(entity);
+	}
+
+	private <T> T refreshEntity(T entity) {
+		entityManager.refresh(entity);
+		return entity;
 	}
 
 }

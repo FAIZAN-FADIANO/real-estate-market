@@ -3,18 +3,11 @@ adminLoginPageTitle = Войдите, что-бы получить доступ 
 loginBlockLegend = Вход в систему
 loginLabel = Логин
 loginPlaceholder = Введите Ваш Логин
+loginRequiredMessage = Please, enter your login
 passwordLabel = Пароль
 passwordPlaceholder = Введите Ваш Пароль
+passwordRequiredMessage = Please, enter your password
+passwordRepeatRequiredMessage = Повторите Пароль
 enterButtonLabel = Войти
 createAccountLabel = Воздать новый Аккаунт
 lostPasswordLabel = Забыли свой пароль?
-
-#Errors
-invalidLoginErrSum = Неверный логин!
-invalidLoginErrDetail = Извините, но системе незнаком такой логин.
-invalidPassErrSum = Неверный пароль!
-invalidPassErrDetail = Пароль не соответствует введенному логину.
-invalidTypeErrSum = Доступ запрешен!
-invalidTypeErrDetail = У Вас нет прав для входа в Админ Панель.
-invalidStatusErrSum = Доступ запрешен!
-invalidStatusErrDetail = Этот пользователь неактивен. Обратитесь к Вашему системному администратору за помощью.

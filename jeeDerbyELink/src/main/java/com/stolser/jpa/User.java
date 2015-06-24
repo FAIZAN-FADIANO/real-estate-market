@@ -8,35 +8,30 @@ import javax.validation.constraints.*;
 
 /**
  * User entity: An abstract entity, and the root of an inheritance hierarchy.
- * Has one of the types defined in the <code>UserType</code> enum type.
- * Each type determines access rights on the back-end and messages and 
- * UI elements on the front-end.
+ * Has one of the types defined in the <code>UserType</code> enum type. Each
+ * type determines access rights on the back-end and messages and UI elements on
+ * the front-end.
  * */
 @Entity
 @NamedQueries({
-	@NamedQuery(name="User.findAll", query="select u from User u"),
-	@NamedQuery(name="User.findByType",
-		query="select u from User u where u.type = :type"),
-	@NamedQuery(name="User.findByStatus", 
-		query="select u from User u where u.status = :status"),
-	@NamedQuery(name="User.findByLogin", 
-		query="select u from User u where u.login = :login")
-})
+		@NamedQuery(name = "User.findAll", query = "select u from User u"),
+		@NamedQuery(name = "User.findByType", query = "select u from User u where u.type = :type"),
+		@NamedQuery(name = "User.findByStatus",
+				query = "select u from User u where u.status = :status"),
+		@NamedQuery(name = "User.findByLogin",
+				query = "select u from User u where u.login = :login") })
 @Table(name = "USERS")
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="DISCRIM_TYPE")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "DISCRIM_TYPE")
 abstract public class User implements Serializable {
 	private static final long serialVersionUID = 351L;
-
+	
 	@Id
-	@Column(name="USER_PK")
-	@TableGenerator(name="userIdGenerator",
-					table="SEQUENCE_STORAGE",
-					pkColumnName="SEQUENCE_NAME",
-					pkColumnValue="USERS.USER_PK",
-					valueColumnName="SEQUENCE_VALUE",
-					initialValue=1, allocationSize=1)
-	@GeneratedValue(strategy=GenerationType.TABLE, generator="userIdGenerator")
+	@Column(name = "USER_PK")
+	@TableGenerator(name = "userIdGenerator", table = "SEQUENCE_STORAGE",
+			pkColumnName = "SEQUENCE_NAME", pkColumnValue = "USERS.USER_PK",
+			valueColumnName = "SEQUENCE_VALUE", initialValue = 1, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "userIdGenerator")
 	private int id;
 	@NotNull
 	@Column(name = "USER_TYPE")
@@ -46,43 +41,46 @@ abstract public class User implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private UserStatusType status;
 	/**
-	 * <span style="color:red";>Value MUST be unique.</span> Will be used in a URL.
+	 * <span style="color:red";>Value MUST be unique.</span> Will be used in a
+	 * URL.
 	 * */
 	@NotNull
-	@Pattern(regexp="^[a-zA-Z0-9-]{5,15}$")
+	@Pattern(regexp = "^[a-zA-Z0-9-]{5,15}$")
 	private String login;
 	@NotNull
-	@Pattern(regexp="^.{5,15}$")
+	@Pattern(regexp = "^.{5,15}$")
 	private String password;
 	@NotNull
-	@Pattern(regexp="^[a-zA-Z-]{1,20}$")
-	@Column(name="FIRST_NAME")
+	@Pattern(regexp = "^[a-zA-Z-]{1,20}$")
+	@Column(name = "FIRST_NAME")
 	private String firstName;
 	@NotNull
-	@Pattern(regexp="^[a-zA-Z-]{1,20}$")
-	@Column(name="LAST_NAME")
+	@Pattern(regexp = "^[a-zA-Z-]{1,20}$")
+	@Column(name = "LAST_NAME")
 	private String lastName;
 	@NotNull
 	@Temporal(TemporalType.DATE)
-	@Column(name="CREATION_DATE")
+	@Column(name = "CREATION_DATE")
 	private Date dateOfCreation;
 	@Temporal(TemporalType.DATE)
 	@Past
 	private Date birthday;
-	@Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\." + 
-					"[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@" + 
-			"(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+	@Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\." + "[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@"
+			+ "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
 	private String email;
+	private String photo;
 	@Version
 	private int version;
-/*--------- END of entity properties --------------*/
+	/*--------- END of entity properties --------------*/
 
-/*--------- constructors --------------------------*/	
-	public User() {}
+	
 
-	public User(UserType type, UserStatusType status, String login,
-			String password, String firstName, String lastName,
-			Date dateOfCreation) {
+	/*--------- constructors --------------------------*/
+	public User() {
+	}
+
+	public User(UserType type, UserStatusType status, String login, String password,
+			String firstName, String lastName, Date dateOfCreation) {
 		super();
 		this.type = type;
 		this.status = status;
@@ -92,18 +90,18 @@ abstract public class User implements Serializable {
 		this.lastName = lastName;
 		this.dateOfCreation = dateOfCreation;
 	}
-	
-/*--------- END of constructors -------------------*/
+
+	/*--------- END of constructors -------------------*/
 
 	public enum UserType {
 		SUPER_ADMIN, ADMIN, REALTOR, REGISTERED_USER
 	}
-	
+
 	public enum UserStatusType {
 		ACTIVE, NOT_ACTIVE, DISCARDED;
 	}
 
-/*-------- getters and setters ---------*/
+	/*-------- getters and setters ---------*/
 	public int getId() {
 		return id;
 	}
@@ -183,6 +181,14 @@ abstract public class User implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
 
 	public int getVersion() {
 		return version;
@@ -192,29 +198,11 @@ abstract public class User implements Serializable {
 		this.version = version;
 	}
 
-/*-------- END of getters and setters ---------*/
-	
+	/*-------- END of getters and setters ---------*/
+
 	@Override
 	public String toString() {
-		return lastName + " " + firstName + " (" + login + ": " + type + ")";
+		return lastName + " " + firstName + " (" + login + ")";
 	}
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

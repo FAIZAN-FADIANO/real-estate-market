@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+</h:head>
+<h:body>
+  <ui:composition
+    template="/WEB-INF/templates/adminPanel/basic/adminPanelTemplateBasic.xhtml">
+    <ui:define name="title">#{adminPanelRB.myProfilePageTitle}</ui:define>
+
+
+    <ui:define name="content">
+      <b:row>
+        <b:column col-xs="12">
+          <h1>
+            <h:outputFormat value="#{adminPanelRB.myProfileTopTitle}">
+              <f:param value="#{loginBean.loggedInUser}"></f:param>
+            </h:outputFormat>
+          </h1>
+        </b:column>
+      </b:row>
+      <b:row>
+        <p:tabView id="myProfileInfo" dynamic="true" cache="false">
+          <p:tab title="#{adminPanelRB.myProfileGeneralTabLabel}"
+            titletip="#{adminPanelRB.myProfileGeneralTabLabel}">
+            <h:form id="myProfileForm" styleClass="myProfileForm"> 
+              <p:growl id="growl" globalOnly="true" autoUpdate="true"></p:growl>    
+              <b:column col-xs="12" span="6" styleClass="panelGridWrapper">
+                <p:panelGrid>
+  
+                    <p:row>
+                      <p:column styleClass="columnWidth-35">
+                        <p:outputLabel for="myProfileType" value="#{userRB.userTypeLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <h:outputText id="myProfileType"
+                          value="#{loginBean.loggedInUser.type}"></h:outputText>
+                      </p:column>
+                    </p:row>
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel for="myProfileLogin" value="#{userRB.userLoginLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <h:outputText id="myProfileLogin"
+                          value="#{loginBean.loggedInUser.login}">
+                        </h:outputText>
+                      </p:column>
+                    </p:row>
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="passFirstLabel" styleClass="update" 
+                                for="passwordFirst" value="#{userRB.userPasswordLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <p:password id="passwordFirst" styleClass="update"
+                          value="#{loginBean.loggedInUser.password}" required="true"
+                          requiredMessage="#{loggingRB.passwordRequiredMessage}"
+                          validator="#{loginBean.passwordValidator}"
+                          validatorMessage="#{systemRB.passwordValidatorMessage}"
+                          feedback="true" promptLabel="#{systemRB.passwordChangePromptLabel}"
+                          weakLabel="#{systemRB.weakPasswordFeedbackLabel}"
+                          goodLabel="#{systemRB.goodPasswordFeedbackLabel}"
+                          strongLabel="#{systemRB.strongPasswordFeedbackLabel}" 
+                          title="#{systemRB.loginValidatorMessage}"
+                          redisplay="true"
+                          onfocus="$('.repeatPasswordRow').show('slow');">
+                          <p:ajax process="@this"
+                                  update="@this passwordFirstMsg passwordSecondMsg passFirstLabel" 
+                                  event="blur"></p:ajax>
+                        </p:password>
+                        <p:message id="passwordFirstMsg" styleClass="update" for="passwordFirst">
+                            </p:message>
+                      </p:column>
+                    </p:row>
+                    <p:row class="repeatPasswordRow" style="display: none;">
+                      <p:column>
+                        <p:outputLabel id="passSecondLabel" for="passwordSecond"
+                            styleClass="update" value="#{userRB.userPasswordRepeatLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <p:password id="passwordSecond" styleClass="update" 
+                          value="#{loginBean.passwordRepeat}"
+                          required="true" requiredMessage="#{loggingRB.passwordRepeatRequiredMessage}"
+                          validator="#{loginBean.passwordRepeatValidator}"
+                          feedback="false" title="#{systemRB.loginValidatorMessage}"
+                          redisplay="true">
+                          <p:ajax process="@this passwordFirst"
+                                  update="@this passwordSecondMsg passSecondLabel" 
+                                  event="blur"></p:ajax>
+                        </p:password>
+                        <p:message id="passwordSecondMsg" styleClass="update" for="passwordSecond">
+                            </p:message>
+                      </p:column>
+                    </p:row>
+
+  
+                </p:panelGrid>
+              </b:column>
+              <b:column col-xs="12" span="6" styleClass="panelGridWrapper">
+                <p:panelGrid>
+                    <p:row>
+                      <p:column styleClass="columnWidth-35">
+                        <p:outputLabel for="myProfileDateOfCreation" value="#{userRB.userDateOfCreationLable}: " />
+                      </p:column>
+                      <p:column>
+                        <h:outputText id="myProfileDateOfCreation"
+                          value="#{loginBean.loggedInUser.dateOfCreation}"></h:outputText>
+                      </p:column>
+                    </p:row>
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel styleClass="update" for="birthdayField" 
+                          value="#{userRB.userBirthdayLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <p:calendar id="birthdayField" styleClass="update"
+                          navigator="true" effect="slide"
+                          pattern="MM/dd/yyyy" maxdate="01/01/2000" yearRange="c-30:c"
+                          title="#{userRB.birthdayInputTitle}" readonlyInput="true"
+                          value="#{loginBean.loggedInUser.birthday}"/> 
+                      </p:column>
+                    </p:row>
+                </p:panelGrid>
+              </b:column>
+              <div class="clearBoth"/>
+              <b:row>
+                <b:column col-xs="12">
+                  <p:commandButton actionListener="#{loginBean.updateLoggedInUser}" 
+                    value="#{adminPanelRB.myProfileSaveButtonLabel}"
+                    update="@(.update)" styleClass="blockAlignCenter"
+                    oncomplete="repeatPasswordRowHide()"
+                    />
+                  
+                </b:column>
+              </b:row>
+            </h:form>
+          </p:tab>
+
+        </p:tabView>
+      </b:row>
+      
+          <script>
+            $( document ).ready(function() {
+              $('body').addClass('myProfile');
+            });
+          </script>
+    </ui:define>
+
+  </ui:composition>
+
+</h:body>
+</html>
