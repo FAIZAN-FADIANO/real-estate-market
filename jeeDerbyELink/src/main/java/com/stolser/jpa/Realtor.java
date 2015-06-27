@@ -49,7 +49,7 @@ public class Realtor extends User implements Serializable {
 	@CollectionTable(name ="REALTOR_PHONES")
 	@Column(name="PHONE_NUMBERS")
 	private List<String> phoneNumbers;
-	@Pattern(regexp="^[a-zA-Z][a-zA-Z0-9]{5,31}$")
+	@Pattern(regexp="(^[a-zA-Z][a-zA-Z0-9]{5,31}$)|(^$)")
 	private String skype;
 	
 	

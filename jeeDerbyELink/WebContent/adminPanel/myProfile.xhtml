@@ -18,7 +18,10 @@
 
     <ui:define name="content">
       <b:row>
-        <b:column col-xs="12">
+        <b:column col-xs="2" id="userPhotoWrapper" styleClass="userPhotoWrapper" 
+        style="background-image: url('/jeeDerbyELink${loginBean.userPhotoPath}');">
+        </b:column>
+        <b:column col-xs="10">
           <h1>
             <h:outputFormat value="#{adminPanelRB.myProfileTopTitle}">
               <f:param value="#{loginBean.loggedInUser}"></f:param>
@@ -30,8 +33,117 @@
         <p:tabView id="myProfileInfo" dynamic="true" cache="false">
           <p:tab title="#{adminPanelRB.myProfileGeneralTabLabel}"
             titletip="#{adminPanelRB.myProfileGeneralTabLabel}">
-            <h:form id="myProfileForm" styleClass="myProfileForm"> 
-              <p:growl id="growl" globalOnly="true" autoUpdate="true"></p:growl>    
+            <h:form id="myProfileForm" styleClass="myProfileForm" enctype="multipart/form-data"> 
+              <p:growl id="growl" globalOnly="true" autoUpdate="true"></p:growl>
+              <b:column col-xs="12" span="6" styleClass="panelGridWrapper">
+                <p:panelGrid>
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="firstNameLabel" styleClass="update" for="firstName" 
+                          value="#{userRB.userFirstNameLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <p:inputText id="firstName" value="#{loginBean.loggedInUser.firstName}"
+                          required="true" requiredMessage="#{userRB.thisFieldIsRequiredMes}"
+                          validator="#{loginBean.firstLastNameValidator}" styleClass="update"
+                          title="#{systemRB.firstLastNameValidatorMessage}">
+                          <p:ajax process="@this" 
+                             update="@this firstNameLabel firstNameMsg"
+                             event="blur"></p:ajax>
+                        </p:inputText>
+                        <p:message id="firstNameMsg" styleClass="update" for="firstName">
+                            </p:message>
+                      </p:column>
+                    </p:row>
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="lastNameLabel" styleClass="update" for="lastName" 
+                          value="#{userRB.userLastNameLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <p:inputText id="lastName" value="#{loginBean.loggedInUser.lastName}"
+                          required="true" requiredMessage="#{userRB.thisFieldIsRequiredMes}"
+                          validator="#{loginBean.firstLastNameValidator}" styleClass="update"
+                          title="#{systemRB.firstLastNameValidatorMessage}">
+                          <p:ajax process="@this" 
+                             update="@this lastNameLabel lastNameMsg"
+                             event="blur"></p:ajax>
+                        </p:inputText>
+                        <p:message id="lastNameMsg" styleClass="update" for="lastName">
+                            </p:message>
+                      </p:column>
+                    </p:row>      
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel styleClass="update" for="birthdayField" 
+                          value="#{userRB.userBirthdayLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <p:calendar id="birthdayField" styleClass="update"
+                          navigator="true" effect="slide"
+                          pattern="MM/dd/yyyy" maxdate="01/01/2000" yearRange="c-30:c"
+                          title="#{userRB.birthdayInputTitle}" readonlyInput="true"
+                          value="#{loginBean.loggedInUser.birthday}"/> 
+                      </p:column>
+                    </p:row>
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="emailLabel" styleClass="update" for="email" 
+                          value="#{userRB.userEmailLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <p:inputText id="email" value="#{loginBean.loggedInUser.email}"
+                          validator="#{loginBean.emailValidator}" styleClass="update"
+                          title="#{systemRB.emailValidatorMessage}">
+                          <p:ajax process="@this" 
+                             update="@this emailLabel emailMsg"
+                             event="blur"></p:ajax>
+                        </p:inputText>
+                        <p:message id="emailMsg" styleClass="update" for="email">
+                            </p:message>
+                      </p:column>
+                    </p:row>
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel value="#{userRB.userPhotoLable}" for="uploadedPhoto"/><br />
+                        <p:outputLabel id="userPhotoRestrictions" 
+                          value="#{systemRB.userPhotoRestrictionsLabel}" 
+                          styleClass="userPhotoRestrictions"/>
+                        <p:tooltip for="userPhotoRestrictions" styleClass="tooltipBlock"
+                          escape="false" trackMouse="true"
+                          value="#{systemRB.userPhotoTooltipMessage}"/>
+                      </p:column>
+                      <p:column>
+                        <p:fileUpload id="uploadedPhoto" auto="true" 
+                          fileUploadListener="#{loginBean.uploadedPhotoHandler}"
+                          allowTypes="/(\.|\/)(jpg)$/" sizeLimit="51200"
+                          invalidFileMessage="#{systemRB.userPhotoInvalidFileMessage}"
+                          invalidSizeMessage="#{systemRB.userPhotoInvalidSizeMessage}"
+                          update="userPhotoWrapper" oncomplete="resizeUserPhoto();"
+                          uploadLabel="#{systemRB.photoUploadLabel}"
+                          cancelLabel="#{systemRB.photoCancelLabel}"
+                          label="#{systemRB.photoBrowseLabel}"/>
+                      </p:column>
+                    </p:row>
+                    <p:row rendered="${loginBean.loggedInUser.type == 'REALTOR'}">
+                      <p:column>
+                        <p:outputLabel id="skypeLabel" styleClass="update" for="skype" 
+                          value="#{userRB.realtorSkypeLable}: " />
+                      </p:column>
+                      <p:column>
+                        <p:inputText id="skype" value="#{loginBean.loggedInUser.skype}"
+                          validator="#{loginBean.skypeValidator}" styleClass="update"
+                          title="#{systemRB.skypeValidatorMessage}">
+                          <p:ajax process="@this" 
+                             update="@this skypeLabel skypeMsg"
+                             event="blur"></p:ajax>
+                        </p:inputText>
+                        <p:message id="skypeMsg" styleClass="update" for="skype">
+                            </p:message>
+                      </p:column>
+                    </p:row>
+                </p:panelGrid>
+              </b:column> 
               <b:column col-xs="12" span="6" styleClass="panelGridWrapper">
                 <p:panelGrid>
   
@@ -40,7 +152,7 @@
                         <p:outputLabel for="myProfileType" value="#{userRB.userTypeLabel}: " />
                       </p:column>
                       <p:column>
-                        <h:outputText id="myProfileType"
+                        <h:outputText id="myProfileType" styleClass="readOnlyField"
                           value="#{loginBean.loggedInUser.type}"></h:outputText>
                       </p:column>
                     </p:row>
@@ -49,7 +161,7 @@
                         <p:outputLabel for="myProfileLogin" value="#{userRB.userLoginLabel}: " />
                       </p:column>
                       <p:column>
-                        <h:outputText id="myProfileLogin"
+                        <h:outputText id="myProfileLogin" styleClass="readOnlyField"
                           value="#{loginBean.loggedInUser.login}">
                         </h:outputText>
                       </p:column>
@@ -100,34 +212,16 @@
                             </p:message>
                       </p:column>
                     </p:row>
-
-  
-                </p:panelGrid>
-              </b:column>
-              <b:column col-xs="12" span="6" styleClass="panelGridWrapper">
-                <p:panelGrid>
                     <p:row>
                       <p:column styleClass="columnWidth-35">
                         <p:outputLabel for="myProfileDateOfCreation" value="#{userRB.userDateOfCreationLable}: " />
                       </p:column>
                       <p:column>
-                        <h:outputText id="myProfileDateOfCreation"
+                        <h:outputText id="myProfileDateOfCreation" styleClass="readOnlyField"
                           value="#{loginBean.loggedInUser.dateOfCreation}"></h:outputText>
                       </p:column>
                     </p:row>
-                    <p:row>
-                      <p:column>
-                        <p:outputLabel styleClass="update" for="birthdayField" 
-                          value="#{userRB.userBirthdayLabel}: " />
-                      </p:column>
-                      <p:column>
-                        <p:calendar id="birthdayField" styleClass="update"
-                          navigator="true" effect="slide"
-                          pattern="MM/dd/yyyy" maxdate="01/01/2000" yearRange="c-30:c"
-                          title="#{userRB.birthdayInputTitle}" readonlyInput="true"
-                          value="#{loginBean.loggedInUser.birthday}"/> 
-                      </p:column>
-                    </p:row>
+  
                 </p:panelGrid>
               </b:column>
               <div class="clearBoth"/>
@@ -150,6 +244,16 @@
           <script>
             $( document ).ready(function() {
               $('body').addClass('myProfile');
+              
+              $('.myProfileForm .ui-panelgrid-cell').has('.readOnlyField').css({
+            	  "padding-top": "9px",
+            	  "padding-bottom": "9px"
+              });
+              
+              resizeUserPhoto();
+              $( window ).resize(function() {
+            	  resizeUserPhoto(); 
+              });
             });
           </script>
     </ui:define>

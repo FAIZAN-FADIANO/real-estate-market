@@ -65,8 +65,9 @@ abstract public class User implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@Past
 	private Date birthday;
-	@Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\." + "[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@"
-			+ "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+	@Pattern(regexp = "([a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\." 
+			+ "[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@"
+			+ "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)|(^$)")
 	private String email;
 	private String photo;
 	@Version

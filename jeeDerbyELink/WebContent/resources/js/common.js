@@ -9,6 +9,10 @@ function repeatPasswordRowHide() {
 	
 }
 
-function myAlert() {
-	alert('Hello World');
+function resizeUserPhoto() {
+	var widthUserPhotoWrapper = $('.userPhotoWrapper').css('width');
+    $('.userPhotoWrapper').css({
+  	  "height": widthUserPhotoWrapper,
+  	  "border-radius": "50%"
+    });
 }

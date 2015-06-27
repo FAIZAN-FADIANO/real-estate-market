@@ -1,6 +1,13 @@
 package com.stolser.beans;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
@@ -16,8 +23,11 @@ import javax.faces.bean.*;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.MenuModel;
 
@@ -33,7 +43,9 @@ public class LoginBean implements Serializable{
 	
 	private String enteredLogin;
 	private String enteredPassword;
+	
 	private String passwordRepeat;
+	private UploadedFile uploadedUserPhoto;
 	
 	@EJB
 	private UserFacadeEJB userFacade;
@@ -122,6 +134,7 @@ public class LoginBean implements Serializable{
 	public String updateLoggedInUser() {
 	
 		try{
+			
 			loggedInUser = userFacade.updateUserInDB(loggedInUser);
 			
 		} catch(Exception e) {
@@ -215,10 +228,133 @@ public class LoginBean implements Serializable{
 			throw new ValidatorException(newMessage);
 		}
 		
-		FacesContext.getCurrentInstance()
-		.addMessage(null, new FacesMessage("passwordRepeatValidator: success!"));
+		/*FacesContext.getCurrentInstance()
+		.addMessage(null, new FacesMessage("passwordRepeatValidator: success!"));*/
 	}
 	
+	public void firstLastNameValidator(FacesContext context, UIComponent component, Object value)
+			throws ValidatorException {
+		
+		final String NAME_PATTERN = "^[a-zA-Z-]{1,20}$";
+	    Pattern pattern;
+	    Matcher matcher;
+	    pattern = Pattern.compile(NAME_PATTERN);
+	    
+		String enteredName = value.toString();
+		matcher = pattern.matcher(enteredName);
+		
+		if( !matcher.matches() ) {
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+					.getProperty("firstLastNameValidatorMessage"));
+				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+				
+			throw new ValidatorException(newMessage);
+		}
+	}
+	
+	public void emailValidator(FacesContext context, UIComponent component, Object value)
+			throws ValidatorException {
+		
+		final String EMAIL_PATTERN = "([a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\." 
+			+ "[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@"
+			+ "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)|(^$)";
+	    Pattern pattern;
+	    Matcher matcher;
+	    pattern = Pattern.compile(EMAIL_PATTERN);
+	    
+		String enteredEmail = value.toString();
+		matcher = pattern.matcher(enteredEmail);
+		
+		if( !matcher.matches() ) {
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+					.getProperty("emailValidatorMessage"));
+				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+				
+			throw new ValidatorException(newMessage);
+		}
+	}
+	
+	public void skypeValidator(FacesContext context, UIComponent component, Object value)
+			throws ValidatorException {
+		
+		final String SKYPE_PATTERN = "(^[a-zA-Z][a-zA-Z0-9]{5,31}$)|(^$)";
+	    Pattern pattern;
+	    Matcher matcher;
+	    pattern = Pattern.compile(SKYPE_PATTERN);
+	    
+		String enteredSkype = value.toString();
+		matcher = pattern.matcher(enteredSkype);
+		
+		if( !matcher.matches() ) {
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+					.getProperty("skypeValidatorMessage"));
+				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+				
+			throw new ValidatorException(newMessage);
+		}
+	}
+/**
+ * Tries to create a new image on the server with a unique name for each user 
+ * in the /applications/uploads/images/folder or throws an Exception. 
+ */
+	public void uploadedPhotoHandler(FileUploadEvent e) {
+		UploadedFile uploadedFile = e.getFile();
+		/* get the absolute path of the destination folder for uploaded images*/
+		String separator = File.separator;
+		String imageUploadedFolderPath = System.getProperty("com.sun.aas.instanceRoot") 
+				+ separator + "applications" + separator + "uploads" 
+				+ separator + "images";
+		File imageUploadedFolder = new File(imageUploadedFolderPath);
+		/* get the name of the newly created image. All user's photos are unique.*/
+		String newImageName = "photoOfUser-" + getLoggedInUser().getLogin() + ".jpg";
+		File uploadedPhoto = new File(imageUploadedFolder, newImageName);
+		
+		try(InputStream input = uploadedFile.getInputstream()) {
+			Files.copy(input, uploadedPhoto.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			
+			System.out.println("File has been uploaded. \nuserPhotoName = " + newImageName + 
+					"; \nfull path = " + uploadedPhoto);
+			
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+					.getProperty("photoUploadedSuccessMes"));
+			newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
+			FacesContext.getCurrentInstance().addMessage(null, newMessage);
+			
+			getLoggedInUser().setPhoto("/images/" + newImageName);
+			
+		} catch (IOException ioe) {
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+					.getProperty("photoUploadedFailureMes"));
+			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+			FacesContext.getCurrentInstance().addMessage(null, newMessage);
+			
+			System.out.println("the new file with name= " + newImageName + 
+					" has NOT been uploaded. \nFull path= " + uploadedPhoto);
+			ioe.printStackTrace();
+		}
+		
+	}
+	
+/*------------ getters without fiels --------*/
+/**
+ * Returns the path of the photo that is stored in the DB 
+ * (if it has been uploaded already), or the path to the default photo.
+ * */
+	public String getUserPhotoPath() {
+		
+		String userPhotoPath = "";
+		String loggedInUserPhoto = getLoggedInUser().getPhoto();
+		
+		if ((loggedInUserPhoto == null) || ("".equals(loggedInUserPhoto))) {
+			userPhotoPath = "/images/unknownUser.jpg";
+		} else {
+			userPhotoPath = loggedInUserPhoto;
+		}
+		
+		return userPhotoPath;
+	}
+	
+/*------------ END of getters without fiels --------*/
 /*------------ getter and setters -----------*/
 	public String getEnteredLogin() {
 		return enteredLogin;
@@ -242,6 +378,14 @@ public class LoginBean implements Serializable{
 
 	public void setPasswordRepeat(String passwordRepeat) {
 		this.passwordRepeat = passwordRepeat;
+	}
+
+	public UploadedFile getUploadedUserPhoto() {
+		return uploadedUserPhoto;
+	}
+
+	public void setUploadedUserPhoto(UploadedFile uploadedUserPhoto) {
+		this.uploadedUserPhoto = uploadedUserPhoto;
 	}
 
 	public User getLoggedInUser() {

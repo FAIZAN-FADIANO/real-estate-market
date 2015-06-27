@@ -1,6 +1,9 @@
 $bright-color: #ff0000;
 $normal-font-size: 14px;
+$tooltipFontSize: 85%;
 $colorTextTableBody: rgb(64, 124, 234);
+
+/* ----- General css ---------- */
 
 .clearBoth {
 	clear: both;
@@ -10,6 +13,17 @@ $colorTextTableBody: rgb(64, 124, 234);
 	display: block!important;
  	margin: 0 auto!important;
 }
+
+.tooltipBlock {
+	font-size: $tooltipFontSize;
+}
+
+.userPhotoRestrictions {
+	font-size: $tooltipFontSize!important; 
+	color: red;
+}
+
+/* ----- END of General css ---------- */
 
 /* .panelGridWithoutBorder {
 	border: none;
@@ -98,6 +112,11 @@ $colorTextTableBody: rgb(64, 124, 234);
 			.ui-message {
 				margin-left: 0px;
 			}
+		}
+		
+		.userPhotoWrapper {
+  			background-size: cover;
+  			height: 150px;
 		}
 	}
 /*------- END of adminPanel/myProfile.xhtml -------*/
