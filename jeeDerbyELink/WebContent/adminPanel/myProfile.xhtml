@@ -5,7 +5,8 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+  xmlns:b="http://bootsfaces.net/ui" 
+  xmlns:p="http://primefaces.org/ui">
 
 <h:head>
 
@@ -28,7 +29,7 @@
             </h:outputFormat>
           </h1>
         </b:column>
-      </b:row>
+      </b:row> 
       <b:row>
         <p:tabView id="myProfileInfo" dynamic="true" cache="false">
           <p:tab title="#{adminPanelRB.myProfileGeneralTabLabel}"
@@ -44,10 +45,11 @@
                       </p:column>
                       <p:column>
                         <p:inputText id="firstName" value="#{loginBean.loggedInUser.firstName}"
+                          placeholder="#{adminPanelRB.firstNamePlaceholderMessage}"
                           required="true" requiredMessage="#{userRB.thisFieldIsRequiredMes}"
-                          validator="#{loginBean.firstLastNameValidator}" styleClass="update"
+                          validator="#{userValidators.firstLastNameValidator}" styleClass="update"
                           title="#{systemRB.firstLastNameValidatorMessage}">
-                          <p:ajax process="@this" 
+                          <p:ajax process="@this"
                              update="@this firstNameLabel firstNameMsg"
                              event="blur"></p:ajax>
                         </p:inputText>
@@ -62,8 +64,9 @@
                       </p:column>
                       <p:column>
                         <p:inputText id="lastName" value="#{loginBean.loggedInUser.lastName}"
+                          placeholder="#{adminPanelRB.lastNamePlaceholderMessage}"
                           required="true" requiredMessage="#{userRB.thisFieldIsRequiredMes}"
-                          validator="#{loginBean.firstLastNameValidator}" styleClass="update"
+                          validator="#{userValidators.firstLastNameValidator}" styleClass="update"
                           title="#{systemRB.firstLastNameValidatorMessage}">
                           <p:ajax process="@this" 
                              update="@this lastNameLabel lastNameMsg"
@@ -81,7 +84,7 @@
                       <p:column>
                         <p:calendar id="birthdayField" styleClass="update"
                           navigator="true" effect="slide"
-                          pattern="MM/dd/yyyy" maxdate="01/01/2000" yearRange="c-30:c"
+                          pattern="dd/MM/yyyy" maxdate="01/01/2000" yearRange="c-30:c"
                           title="#{userRB.birthdayInputTitle}" readonlyInput="true"
                           value="#{loginBean.loggedInUser.birthday}"/> 
                       </p:column>
@@ -93,7 +96,8 @@
                       </p:column>
                       <p:column>
                         <p:inputText id="email" value="#{loginBean.loggedInUser.email}"
-                          validator="#{loginBean.emailValidator}" styleClass="update"
+                          placeholder="#{adminPanelRB.emailPlaceholderMessage}"
+                          validator="#{userValidators.emailValidator}" styleClass="update"
                           title="#{systemRB.emailValidatorMessage}">
                           <p:ajax process="@this" 
                              update="@this emailLabel emailMsg"
@@ -102,7 +106,7 @@
                         <p:message id="emailMsg" styleClass="update" for="email">
                             </p:message>
                       </p:column>
-                    </p:row>
+                    </p:row> 
                     <p:row>
                       <p:column>
                         <p:outputLabel value="#{userRB.userPhotoLable}" for="uploadedPhoto"/><br />
@@ -114,7 +118,7 @@
                           value="#{systemRB.userPhotoTooltipMessage}"/>
                       </p:column>
                       <p:column>
-                        <p:fileUpload id="uploadedPhoto" auto="true" 
+                        <p:fileUpload id="uploadedPhoto" styleClass="uploadedPhoto" auto="true" 
                           fileUploadListener="#{loginBean.uploadedPhotoHandler}"
                           allowTypes="/(\.|\/)(jpg)$/" sizeLimit="51200"
                           invalidFileMessage="#{systemRB.userPhotoInvalidFileMessage}"
@@ -132,7 +136,8 @@
                       </p:column>
                       <p:column>
                         <p:inputText id="skype" value="#{loginBean.loggedInUser.skype}"
-                          validator="#{loginBean.skypeValidator}" styleClass="update"
+                          placeholder="#{adminPanelRB.skypePlaceholderMessage}"
+                          validator="#{userValidators.skypeValidator}" styleClass="update"
                           title="#{systemRB.skypeValidatorMessage}">
                           <p:ajax process="@this" 
                              update="@this skypeLabel skypeMsg"
@@ -148,7 +153,7 @@
                 <p:panelGrid>
   
                     <p:row>
-                      <p:column styleClass="columnWidth-35">
+                      <p:column styleClass="columnWidth-40">
                         <p:outputLabel for="myProfileType" value="#{userRB.userTypeLabel}: " />
                       </p:column>
                       <p:column>
@@ -174,8 +179,9 @@
                       <p:column>
                         <p:password id="passwordFirst" styleClass="update"
                           value="#{loginBean.loggedInUser.password}" required="true"
+                          placeholder="#{adminPanelRB.passwordPlaceholderMessage}"
                           requiredMessage="#{loggingRB.passwordRequiredMessage}"
-                          validator="#{loginBean.passwordValidator}"
+                          validator="#{userValidators.passwordValidator}"
                           validatorMessage="#{systemRB.passwordValidatorMessage}"
                           feedback="true" promptLabel="#{systemRB.passwordChangePromptLabel}"
                           weakLabel="#{systemRB.weakPasswordFeedbackLabel}"
@@ -200,6 +206,7 @@
                       <p:column>
                         <p:password id="passwordSecond" styleClass="update" 
                           value="#{loginBean.passwordRepeat}"
+                          placeholder="#{adminPanelRB.repeatPasswordPlaceholderMessage}"
                           required="true" requiredMessage="#{loggingRB.passwordRepeatRequiredMessage}"
                           validator="#{loginBean.passwordRepeatValidator}"
                           feedback="false" title="#{systemRB.loginValidatorMessage}"
@@ -213,12 +220,15 @@
                       </p:column>
                     </p:row>
                     <p:row>
-                      <p:column styleClass="columnWidth-35">
-                        <p:outputLabel for="myProfileDateOfCreation" value="#{userRB.userDateOfCreationLable}: " />
+                      <p:column styleClass="columnWidth-40">
+                        <p:outputLabel for="myProfileDateOfCreation" 
+                          value="#{userRB.userDateOfCreationLable}: "></p:outputLabel>
                       </p:column>
                       <p:column>
                         <h:outputText id="myProfileDateOfCreation" styleClass="readOnlyField"
-                          value="#{loginBean.loggedInUser.dateOfCreation}"></h:outputText>
+                          value="#{loginBean.loggedInUser.dateOfCreation}">
+                          <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                        </h:outputText>
                       </p:column>
                     </p:row>
   
@@ -230,7 +240,7 @@
                   <p:commandButton actionListener="#{loginBean.updateLoggedInUser}" 
                     value="#{adminPanelRB.myProfileSaveButtonLabel}"
                     update="@(.update)" styleClass="blockAlignCenter"
-                    oncomplete="repeatPasswordRowHide()"
+                    oncomplete="repeatPasswordRowHide(); reloadUserPhoto();"
                     />
                   
                 </b:column>
@@ -246,13 +256,17 @@
               $('body').addClass('myProfile');
               
               $('.myProfileForm .ui-panelgrid-cell').has('.readOnlyField').css({
-            	  "padding-top": "9px",
-            	  "padding-bottom": "9px"
+            	  "padding-top": "12px",
+            	  "padding-bottom": "12px"
               });
               
               resizeUserPhoto();
               $( window ).resize(function() {
             	  resizeUserPhoto(); 
+              });
+              
+              $('.uploadedPhoto .ui-fileupload-choose').click(function() {
+            	  $(this).addClass('userPhotoChanged');
               });
             });
           </script>

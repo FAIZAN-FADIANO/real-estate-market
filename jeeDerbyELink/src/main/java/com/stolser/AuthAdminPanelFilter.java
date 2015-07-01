@@ -11,6 +11,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.stolser.beans.LoginBean;
 import com.stolser.jpa.User;
 
@@ -24,6 +27,8 @@ import com.stolser.jpa.User;
 				"/adminLogin.jsf"
 		})
 public class AuthAdminPanelFilter implements Filter {
+	
+	private final Logger logger = LoggerFactory.getLogger(AuthAdminPanelFilter.class);
 
     public AuthAdminPanelFilter() {}
 

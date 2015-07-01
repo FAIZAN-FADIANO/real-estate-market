@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">   <!-- or TRACE for all messages during the initialization -->
+    <Properties>
+        <Property name="LOG_DIR">C:\GlassFish-server\glassfish4\glassfish\domains\realestate\logs\myLogs</Property>
+        <Property name="ARCHIVE">${LOG_DIR}\myRollingLogs\archive</Property>
+        <Property name="PATTERN">%-5level %d{dd-MM HH:mm} %c:%M(%L): %m%n</Property>
+    </Properties> 
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${PATTERN}" />
+        </Console>
+        <File name="ErrorLogFile" fileName="${LOG_DIR}\error.log" 
+            immediateFlush="false" append="true">
+            <PatternLayout pattern="${PATTERN}"/>
+<!--             <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/> -->
+        </File>
+        <File name="LoggingInAdminPanelLogFile" fileName="${LOG_DIR}\adminPanelLoggingIn.log" 
+            immediateFlush="false" append="true">
+            <MarkerFilter marker="adminPanelLoggingIn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${PATTERN}"/>
+        </File>
+        <RollingFile name="RollingLogFile"
+                     fileName="${LOG_DIR}\myRollingLogs\all.log"
+                     filePattern="${ARCHIVE}\all.log.%d{yyyy-MM-dd-hh-mm}.gz"
+                     immediateFlush="false" append="true">
+            <PatternLayout pattern="${PATTERN}"/>
+            <TimeBasedTriggeringPolicy/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="RollingLogFile" />
+        </Root>
+<!--         <Logger name="com.stolser.beans.LoginBean" level="trace" additivity="true"></Logger>
+        <Logger name="com.stolser.beans.LoginBean" level="info" additivity="false">
+            <AppenderRef ref="LoggingInAdminPanelLogFile"/>
+        </Logger> -->
+        
+    </Loggers>
+</Configuration>

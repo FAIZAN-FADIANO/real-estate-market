@@ -1,77 +1,87 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-	  xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:b="http://bootsfaces.net/ui"
-      xmlns:p="http://primefaces.org/ui">
-<f:view locale="#{backLocale.currentLocale.langCode}">    
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+<f:view locale="#{backLocale.currentLocale.langCode}">
 
-	<h:head>
-		<h:outputStylesheet library="css" name="main-style.css"/>
-		<h:outputScript library="js" name="common.js" />
-		<h:outputScript library="js" name="flowtype.js" />
-		
-	  	<title><ui:insert name="title">#{adminPanelRB.defaultPageTitle}</ui:insert></title>
-	</h:head>
-	<h:body styleClass="adminPanel"> 
-		 
-		<b:container id="header" fluid="true">
-			<ui:insert name="header">
-		    	<ui:include src="header.xhtml"></ui:include>
-		    </ui:insert>
-			
-		</b:container>
-	    
-	     
-	    <b:container id="mainContentWrapper" fluid="true">
-	    	<b:row>
-	    		<b:column styleClass="mainMenu" col-xs="4" col-sm="3" span="2">
-	    			<h:form>
-	    				<p:menu toggleable="true">
-		    				<p:submenu label="#{systemRB.dashboardMenuLabel}" icon="fa fa-dashboard">
-		    					<p:menuitem value="#{systemRB.homeMenuLabel}" icon="fa fa-home" 
-		    								outcome="/adminPanel/home?faces-redirect=true"></p:menuitem>
-		    					<p:menuitem value="#{systemRB.monitorMenuLabel}" icon="fa fa-video-camera"></p:menuitem>
-		    				</p:submenu>
-		    				<p:submenu label="Users" icon="fa fa-user">
-		    					<p:menuitem value="All Users" icon="fa fa-users" 
-		    								outcome="/adminPanel/userListing?faces-redirect=true"></p:menuitem>
-		    					<p:menuitem value="Add New" icon="fa fa-user-plus"></p:menuitem>
-		    					<p:menuitem value="My Profile" icon="fa fa-male"
-		    							outcome="/adminPanel/myProfile?faces-redirect=true"></p:menuitem>
-			  				</p:submenu>
-	    				</p:menu>
-	    			</h:form>
-	    		</b:column>
-	    		<b:column id="mainContent" styleClass="mainContent" col-xs="8" col-sm="9" span="10">
-	    			<ui:insert name="content">
-					  	<p>Content area from adminPanelTemplateBasic.xhtml file</p>
-					  	<!--  include your content file or uncomment the include below and create content.xhtml in this directory -->
-					 	<!-- <div> -->
-					  	<!-- <ui:include src="content.xhtml"/> -->  
-					  	<!-- </div> -->
-					</ui:insert>
-	    		</b:column>
-	    	</b:row>
-	    </b:container>
-	
-		<ui:insert name="footer">
-		  	<p>Footer area from adminPanelTemplateBasic.xhtml file</p>
-		  	<!--  include your header file or uncomment the include below and create footer.xhtml in this directory -->
-		<!--<ui:include src="footer.xhtml"/>  -->
-		</ui:insert>
-	
-	<script>
-		$('body').flowtype({
-			minFont   : 12,
-			maxFont   : 22,
-			maximum   : 1200,
-			fontRatio : 80
-		});
-	</script>
-	
-	</h:body>
+  <h:head>
+    <h:outputStylesheet library="css" name="main-style.css" />
+    <h:outputScript library="js" name="common.js" />
+    <h:outputScript library="js" name="flowtype.js" />
+
+    <title><ui:insert name="title">#{adminPanelRB.defaultPageTitle}</ui:insert></title>
+  </h:head>
+  <h:body styleClass="adminPanel">
+
+    <b:container id="header" fluid="true">
+      <ui:insert name="header">
+        <ui:include src="header.xhtml"></ui:include>
+      </ui:insert>
+
+    </b:container>
+
+
+    <b:container id="mainContentWrapper" fluid="true">
+      <b:row>
+        <b:column styleClass="mainMenu" col-xs="4" col-sm="3" span="2">
+          <h:form>
+            <p:panelMenu>
+              <p:submenu label="#{systemRB.dashboardMenuLabel}"
+                icon="fa fa-dashboard" expanded="true">
+                <p:menuitem value="#{systemRB.homeMenuLabel}"
+                  icon="fa fa-home"
+                  outcome="/adminPanel/home?faces-redirect=true"></p:menuitem>
+                <p:menuitem value="#{systemRB.monitorMenuLabel}"
+                  icon="fa fa-video-camera"></p:menuitem>
+              </p:submenu>
+              <p:submenu label="Users" icon="fa fa-user" expanded="true">
+                <p:menuitem value="Show all Users" icon="fa fa-users"
+                  outcome="/adminPanel/userListing?faces-redirect=true"></p:menuitem>
+                <p:submenu label="Add new User">
+                  <p:menuitem value="Add new Admin"
+                    icon="fa fa-user-plus"
+                    outcome="/adminPanel/addNewUser?usertype=admin"></p:menuitem>
+                  <p:menuitem value="Add new Realtor"
+                    icon="fa fa-user-plus"
+                    outcome="/adminPanel/addNewUser?usertype=realtor"></p:menuitem>
+                </p:submenu>
+                <p:menuitem value="My Profile" icon="fa fa-male"
+                  outcome="/adminPanel/myProfile?faces-redirect=true"></p:menuitem>
+              </p:submenu>
+            </p:panelMenu>
+          </h:form>
+        </b:column>
+        <b:column id="mainContent" styleClass="mainContent" col-xs="8"
+          col-sm="9" span="10">
+          <ui:insert name="content">
+            <p>Content area from adminPanelTemplateBasic.xhtml file</p>
+            <!--  include your content file or uncomment the include below and create content.xhtml in this directory -->
+            <!-- <div> -->
+            <!-- <ui:include src="content.xhtml"/> -->
+            <!-- </div> -->
+          </ui:insert>
+        </b:column>
+      </b:row>
+    </b:container>
+
+    <ui:insert name="footer">
+      <p>Footer area from adminPanelTemplateBasic.xhtml file</p>
+      <!--  include your header file or uncomment the include below and create footer.xhtml in this directory -->
+      <!--<ui:include src="footer.xhtml"/>  -->
+    </ui:insert>
+
+    <script>
+					$('body').flowtype({
+						minFont : 12,
+						maxFont : 22,
+						maximum : 1200,
+						fontRatio : 80
+					});
+				</script>
+
+  </h:body>
 </f:view>
 </html>

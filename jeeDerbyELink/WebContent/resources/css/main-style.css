@@ -1,24 +1,31 @@
 /* ----- General css ---------- */
-/* line 8, sass/main-style.scss */
+/* line 16, sass/main-style.scss */
 .clearBoth {
   clear: both;
 }
 
-/* line 12, sass/main-style.scss */
+/* line 20, sass/main-style.scss */
 .blockAlignCenter {
   display: block!important;
   margin: 0 auto!important;
 }
 
-/* line 17, sass/main-style.scss */
+/* line 25, sass/main-style.scss */
 .tooltipBlock {
   font-size: 85%;
 }
 
-/* line 21, sass/main-style.scss */
+/* line 29, sass/main-style.scss */
 .userPhotoRestrictions {
   font-size: 85% !important;
   color: red;
+}
+
+/* line 36, sass/main-style.scss */
+.panelGridWrapper .ui-widget-content .ui-panelgrid-cell + .ui-panelgrid-cell {
+  text-align: center;
+  padding-top: 7px;
+  padding-bottom: 7px;
 }
 
 /* ----- END of General css ---------- */
@@ -29,89 +36,101 @@
 	}
 } */
 /*------- Admin Panel -------*/
-/* line 36, sass/main-style.scss */
+/* line 52, sass/main-style.scss */
 .adminPanel {
   /*------- adminPanel/myProfile.xhtml -------*/
   /*------- END of adminPanel/myProfile.xhtml -------*/
 }
-/* line 37, sass/main-style.scss */
+/* line 53, sass/main-style.scss */
 .adminPanel h1, .adminPanel .h1 {
   font-size: 2em;
 }
-/* line 40, sass/main-style.scss */
+/* line 56, sass/main-style.scss */
 .adminPanel h2, .adminPanel .h2 {
   font-size: 1.8em;
 }
-/* line 43, sass/main-style.scss */
+/* line 59, sass/main-style.scss */
 .adminPanel h3, .adminPanel .h3 {
   font-size: 1.7em;
 }
-/* line 46, sass/main-style.scss */
+/* line 62, sass/main-style.scss */
 .adminPanel h4, .adminPanel .h4 {
   font-size: 1.4em;
 }
-/* line 50, sass/main-style.scss */
+/* line 66, sass/main-style.scss */
 .adminPanel #header {
   margin-top: 10px;
   /* min-height: 100px; */
 }
-/* line 57, sass/main-style.scss */
+/* line 73, sass/main-style.scss */
 .adminPanel #usersTable .columnsToggler {
   float: right;
   margin-top: 3px;
 }
-/* line 62, sass/main-style.scss */
+/* line 78, sass/main-style.scss */
 .adminPanel #usersTable .ui-datatable-header {
   height: 44px;
   line-height: 36px;
 }
-/* line 67, sass/main-style.scss */
+/* line 83, sass/main-style.scss */
 .adminPanel #usersTable .ui-datatable-tablewrapper {
   overflow: hidden;
 }
-/* line 72, sass/main-style.scss */
+/* line 88, sass/main-style.scss */
 .adminPanel .ui-datatable tbody td {
   text-align: center;
   color: #407cea;
 }
-/* line 80, sass/main-style.scss */
+/* line 96, sass/main-style.scss */
 .adminPanel #usersTable_head,
 .adminPanel #usersTable_foot,
 .adminPanel .userStatusCell,
 .adminPanel .userTypeCell {
   text-transform: lowercase;
 }
-/* line 84, sass/main-style.scss */
+/* line 100, sass/main-style.scss */
 .adminPanel .mainMenuTrigger {
   display: none;
 }
-/* line 89, sass/main-style.scss */
+/* line 105, sass/main-style.scss */
 .adminPanel .userTopMenuTrigger,
 .adminPanel .langSelectIcon {
   float: right;
 }
-/* line 92, sass/main-style.scss */
+/* line 108, sass/main-style.scss */
 .adminPanel .langSelectIcon {
   width: 195px;
   line-height: 1.2;
 }
-/* line 97, sass/main-style.scss */
+/* line 113, sass/main-style.scss */
 .adminPanel table.ui-panelgrid {
   width: 100%;
 }
-/* line 101, sass/main-style.scss */
+/* line 117, sass/main-style.scss */
 .adminPanel .columnWidth-35 {
   width: 35%;
 }
-/* line 107, sass/main-style.scss */
-.adminPanel.myProfile .panelGridWrapper {
+/* line 120, sass/main-style.scss */
+.adminPanel .columnWidth-40 {
+  width: 40%;
+}
+/* line 125, sass/main-style.scss */
+.adminPanel .panelGridWrapper .ui-panelgrid {
   margin-bottom: 15px;
 }
-/* line 112, sass/main-style.scss */
+/* line 129, sass/main-style.scss */
+.adminPanel .panelGridWrapper input {
+  width: 100%;
+}
+/* line 133, sass/main-style.scss */
+.adminPanel .panelGridWrapper .ui-message {
+  margin: 0px;
+}
+/* line 143, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .ui-message {
   margin-left: 0px;
 }
-/* line 117, sass/main-style.scss */
+/* line 148, sass/main-style.scss */
 .adminPanel.myProfile .userPhotoWrapper {
   background-size: cover;
   height: 150px;
@@ -119,13 +138,13 @@
 
 /*------- END of .adminPanel -------*/
 /*Logging Form*/
-/* line 130, sass/main-style.scss */
+/* line 161, sass/main-style.scss */
 #loggingTitle {
   margin-top: 20px;
   text-align: center;
 }
 
-/* line 135, sass/main-style.scss */
+/* line 166, sass/main-style.scss */
 #loggingFormWrapper {
   border-radius: 10px;
   border: 1px solid;
@@ -135,84 +154,84 @@
   padding-bottom: 10px;
   margin-top: 50px;
 }
-/* line 144, sass/main-style.scss */
+/* line 175, sass/main-style.scss */
 #loggingFormWrapper input, #loggingFormWrapper button {
   width: 100%;
   margin: 5px 0 20px;
   padding: 5px;
 }
-/* line 150, sass/main-style.scss */
+/* line 181, sass/main-style.scss */
 #loggingFormWrapper .logInButton {
   width: 50%;
   margin: 5px auto 20px;
   display: block;
 }
 
-/* line 157, sass/main-style.scss */
+/* line 188, sass/main-style.scss */
 .langSelectTop {
   width: 100%;
   max-width: 120px;
 }
 
-/* line 162, sass/main-style.scss */
+/* line 193, sass/main-style.scss */
 #langSelectIcon {
   float: left;
   margin-right: 7px;
   margin-top: 5px;
 }
 
-/* line 169, sass/main-style.scss */
+/* line 200, sass/main-style.scss */
 #langSelect label {
   /* 		font-size: 125%; */
 }
-/* line 173, sass/main-style.scss */
+/* line 204, sass/main-style.scss */
 #langSelect div .ui-selectonemenu-trigger {
   width: auto;
 }
 
 /*END --- Logging Form --*/
-/* line 180, sass/main-style.scss */
+/* line 211, sass/main-style.scss */
 .ui-icon.fa {
   width: 25px;
 }
 
-/* line 186, sass/main-style.scss */
+/* line 217, sass/main-style.scss */
 .mainMenu form div {
   width: 100%;
 }
 
 @media (max-width: 658px) {
-  /* line 195, sass/main-style.scss */
+  /* line 226, sass/main-style.scss */
   .adminPanel .mainMenuTrigger {
     display: block;
   }
-  /* line 199, sass/main-style.scss */
+  /* line 230, sass/main-style.scss */
   .adminPanel .mainMenu {
     display: none;
   }
-  /* line 202, sass/main-style.scss */
+  /* line 233, sass/main-style.scss */
   .adminPanel .mainContent {
     width: 100%;
   }
 }
 /*------- Front End -------------*/
-/* line 214, sass/main-style.scss */
+/* line 245, sass/main-style.scss */
 .frontEnd h1, .frontEnd .h1 {
   font-size: 2em;
 }
-/* line 217, sass/main-style.scss */
+/* line 248, sass/main-style.scss */
 .frontEnd h2, .frontEnd .h2 {
   font-size: 1.8em;
 }
-/* line 220, sass/main-style.scss */
+/* line 251, sass/main-style.scss */
 .frontEnd h3, .frontEnd .h3 {
   font-size: 1.7em;
 }
-/* line 223, sass/main-style.scss */
+/* line 254, sass/main-style.scss */
 .frontEnd h4, .frontEnd .h4 {
   font-size: 1.4em;
 }
-/* line 227, sass/main-style.scss */
+/* line 258, sass/main-style.scss */
 .frontEnd #header {
   margin-top: 10px;
 }

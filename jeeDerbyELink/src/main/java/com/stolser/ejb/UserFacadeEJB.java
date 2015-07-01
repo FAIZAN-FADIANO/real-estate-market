@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 
 
 import javax.faces.context.FacesContext;
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
@@ -28,11 +29,14 @@ import com.stolser.jpa.Realtor;
 import com.stolser.jpa.RegisteredUser;
 import com.stolser.jpa.User;
 
+import org.slf4j.*;
 /**
  * Session Bean implementation class UserEJB
  */
 @Stateless
 public class UserFacadeEJB {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserFacadeEJB.class);
 	
 	@PersistenceContext(unitName = "derby")
 	private EntityManager entityManager;
@@ -121,7 +125,7 @@ public class UserFacadeEJB {
     	
     	userToAdd = systemRestrictionCheck(userToAdd);
     	persistEntity(userToAdd);
-    	
+
     	return userToAdd;
     }
     
@@ -240,7 +244,8 @@ public class UserFacadeEJB {
         		(userToCheck.getLogin() == null) || (userToCheck.getPassword() == null) ||
         		(userToCheck.getFirstName() == null) || (userToCheck.getLastName() == null) ||
         		(userToCheck.getDateOfCreation() == null)) {
-    			throw new RuntimeException(getSystemProperties().getProperty("requiredPropsViolationErr"));
+    			throw new RuntimeException(getSystemProperties()
+    					.getProperty("requiredPropsViolationErr"));
     		}
         	
         	User.UserType newUserType = userToCheck.getType();
@@ -249,7 +254,7 @@ public class UserFacadeEJB {
     			
     			if (foundUsers.size() != 0) {
     				/*In the DB there is a user with type SUPER_ADMIN. If it has 
-    				 * the same id as the if of the userToCheck than OK.
+    				 * the same id as the id of the userToCheck than OK.
     				 * If these ids are different then throw an exception.*/
     				int IDofUserToCheck = userToCheck.getId();
         			int IDofUserInDB = foundUsers.get(0).getId();
@@ -263,8 +268,8 @@ public class UserFacadeEJB {
         	String LoginOfUserToCheck = userToCheck.getLogin();
         	List<User> usersInDBWithSuchLogin = getUsersFindByLogin(LoginOfUserToCheck);
         	if (usersInDBWithSuchLogin.size() != 0) {
-        		/*In the DB there is a user with type login. If it has 
-				 * the same id as the if of the userToCheck than OK.
+        		/*In the DB there is a user with such login. If it has 
+				 * the same id as the id of the userToCheck than OK.
 				 * If these ids are different then throw an exception.*/
 				int IDofUserToCheck = userToCheck.getId();
     			int IDofUserInDB = usersInDBWithSuchLogin.get(0).getId();
@@ -306,26 +311,45 @@ public class UserFacadeEJB {
     }
     
 /**
- * Returns appropriate Properties object for current local on the fron-end
+ * Returns appropriate Properties object for current local on the front-end
  * */
     private Properties getSystemProperties() {
-		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
+		String currentLocal = FacesContext.getCurrentInstance().getViewRoot()
+				.getLocale().toString();
 		Properties currentProperties = propSystemMap.get(currentLocal);
 		return currentProperties;
 	}
     
 	private <T> T persistEntity(T entity) {
-		entityManager.persist(entity);
-		return entity;
+		try {
+			entityManager.persist(entity);
+			return entity;
+			
+		} catch (Exception eee) {
+			throw new RuntimeException(getSystemProperties()
+					.getProperty("failureDuringPersistanceMessage"), eee);
+		}
 	}
 	
 	private <T> T mergeEntity(T entity) {
-		return entityManager.merge(entity);
+		try {
+			return entityManager.merge(entity);
+			
+		} catch (Exception eee) {
+			throw new RuntimeException(getSystemProperties()
+					.getProperty("failureDuringMergingMessage"), eee);
+		}
 	}
 
 	private <T> T refreshEntity(T entity) {
-		entityManager.refresh(entity);
-		return entity;
+		try {
+			entityManager.refresh(entity);
+			return entity;
+			
+		} catch (Exception eee) {
+			throw new RuntimeException(getSystemProperties()
+					.getProperty("failureDuringRefreshingMessage"), eee);
+		}
 	}
 
 }

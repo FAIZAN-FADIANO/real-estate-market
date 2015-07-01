@@ -9,6 +9,18 @@ function repeatPasswordRowHide() {
 	
 }
 
+function reloadUserPhoto() {
+	if ($('.userPhotoChanged').length > 0) {
+		var myTimeout = setTimeout( 
+			function(){
+				location.reload(true);
+				clearTimeout(myTimeout);
+			}, 2000);
+		
+		
+	}
+}
+
 function resizeUserPhoto() {
 	var widthUserPhotoWrapper = $('.userPhotoWrapper').css('width');
     $('.userPhotoWrapper').css({

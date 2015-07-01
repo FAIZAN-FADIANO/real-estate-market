@@ -20,7 +20,7 @@
             <var>userRB</var>
         </resource-bundle>
         <resource-bundle>
-            <base-name>stolser.i18n.general.adminPanel.main</base-name>
+            <base-name>stolser.i18n.general.adminPanel.adminPanel</base-name>
             <var>adminPanelRB</var>
         </resource-bundle>
         <resource-bundle>

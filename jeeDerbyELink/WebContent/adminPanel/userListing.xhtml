@@ -28,31 +28,33 @@
 				</f:facet>
 				<p:column  headerText="#{userRB.userLastNameLabel}" footerText="#{userRB.userLastNameLabel}" 
 							priority="1" toggleable="false">
-					<p:outputLabel>#{user.lastName}</p:outputLabel>
+					<p:outputLabel value="#{user.lastName}"></p:outputLabel>
 				</p:column>
 				<p:column  headerText="#{userRB.userFirstNameLabel}" footerText="#{userRB.userFirstNameLabel}" 
 							priority="1" toggleable="false">
-					<p:outputLabel>#{user.firstName}</p:outputLabel>
+					<p:outputLabel value="#{user.firstName}"></p:outputLabel>
 				</p:column>
 				<p:column  headerText="#{userRB.userTypeLabel}" footerText="#{userRB.userTypeLabel}" 
 							priority="4" styleClass="userTypeCell">
-					<p:outputLabel>#{user.type}</p:outputLabel>
+					<p:outputLabel value="#{user.type}"></p:outputLabel>
 				</p:column>
 				<p:column  headerText="#{userRB.userLoginLabel}" footerText="#{userRB.userLoginLabel}" 
 							priority="4">
-					<p:outputLabel>#{user.login}</p:outputLabel>
+					<p:outputLabel  value="#{user.login}"></p:outputLabel>
 				</p:column>
 				<p:column  headerText="#{userRB.userBirthdayLabel}" footerText="#{userRB.userBirthdayLabel}" 
 							priority="5">
-					<p:outputLabel>#{user.birthday}</p:outputLabel>
+					<p:outputLabel  value="#{user.birthday}">
+                      <f:convertDateTime pattern="dd-MM-yyyy"/>
+                    </p:outputLabel>
 				</p:column> 
 				<p:column  headerText="#{userRB.userEmailLabel}" footerText="#{userRB.userEmailLabel}" 
 							priority="5" width="25%">
-					<p:outputLabel>#{user.email}</p:outputLabel>
+					<p:outputLabel  value="#{user.email}"></p:outputLabel>
 				</p:column>
 				<p:column  headerText="#{userRB.userStatusLabel}" footerText="#{userRB.userStatusLabel}" 
 							priority="2" width="10%" styleClass="userStatusCell">
-					<p:outputLabel>#{user.status}</p:outputLabel>
+					<p:outputLabel  value="#{user.status}"></p:outputLabel>
 				</p:column>
 			</p:dataTable>
 		</b:row>

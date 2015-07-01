@@ -30,6 +30,10 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.MenuModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import com.stolser.PropertiesLoader;
 import com.stolser.ejb.UserFacadeEJB;
@@ -40,6 +44,7 @@ import com.stolser.jpa.User;
 @SessionScoped
 public class LoginBean implements Serializable{
 	private static final long serialVersionUID = 1L;
+	private final Logger logger = LoggerFactory.getLogger(LoginBean.class);
 	
 	private String enteredLogin;
 	private String enteredPassword;
@@ -70,8 +75,13 @@ public class LoginBean implements Serializable{
 	private void init() {
 		propSystemMap = propLoader.getPropSystemMap();
 	}
-
+/**
+ * Verifies user's login, password, type and status and if everything is OK
+ * redirects to the adminLogin.xhtml page.
+ * */
 	public String adminPanelValidation() {
+		Marker logInMarker = MarkerFactory.getMarker("adminPanelLoggingIn");
+		
 		List<User> usersInDB = userFacade.getUsersFindByLogin(getEnteredLogin());
 		if (usersInDB.size() == 0) {	
 			// there are no users in the DB with such login
@@ -94,9 +104,13 @@ public class LoginBean implements Serializable{
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 							getSystemProperties().getProperty("invalidPassErrSum"),
 							getSystemProperties().getProperty("invalidPassErrDetail")));
+			
+			logger.info(logInMarker, "For login = {} incorrect password ({}) entered.",
+					userLogin, userPassword);
+			
 			return null;
 			
-		}
+		} 
 		
 		if (userType == User.UserType.REGISTERED_USER) {
 			// registered users don't have access to the Admin Panel
@@ -116,7 +130,10 @@ public class LoginBean implements Serializable{
 			return null;
 		}
 		
+        logger.info(logInMarker, "A user ({}) has been logged in.", user);
+        
         loggedInUser = user;
+        /* For the use on the myProfile.xhtml page.*/
         setPasswordRepeat(loggedInUser.getPassword());
         
         return "/adminPanel/home?faces-redirect=true";
@@ -126,8 +143,9 @@ public class LoginBean implements Serializable{
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
 	            .getExternalContext().getSession(false);
         LoginBean loginBean = (LoginBean)session.getAttribute("loginBean");
-        loginBean.setLoggedInUser(null);
         
+        loginBean.setLoggedInUser(null);
+   
         return "/adminLogin?faces-redirect=true";
     }
 	
@@ -138,26 +156,30 @@ public class LoginBean implements Serializable{
 			loggedInUser = userFacade.updateUserInDB(loggedInUser);
 			
 		} catch(Exception e) {
-			FacesMessage newMessage = new FacesMessage(MessageFormat.format(getSystemProperties()
-					.getProperty("updateUserErr"), loggedInUser));
+			String errorMessage = MessageFormat.format(getSystemProperties()
+					.getProperty("updateUserErr"), loggedInUser);
+			FacesMessage newMessage = new FacesMessage(errorMessage);
 			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
 			FacesContext.getCurrentInstance().addMessage(null, newMessage);
+			logger.error(errorMessage, e);
 			
 			loggedInUser = userFacade.refreshUserFromDB(loggedInUser);
 			
 			return null;
 		}
 		
-		FacesMessage newMessage = new FacesMessage(MessageFormat.format(getSystemProperties()
-				.getProperty("updateUserSuccessMessage"), loggedInUser));
+		String successMessage = MessageFormat.format(getSystemProperties()
+				.getProperty("updateUserSuccessMessage"), loggedInUser);
+		FacesMessage newMessage = new FacesMessage(successMessage);
 		newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
 		FacesContext.getCurrentInstance().addMessage(null, newMessage);
+		logger.debug(successMessage);
 		
 		return null;
 	}
 	
 /**
- * Returns appropriate Properties object for current local on the fron-end
+ * Returns appropriate Properties object for current local on the front-end
  * */
 	private Properties getSystemProperties() {
 		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
@@ -176,39 +198,22 @@ public class LoginBean implements Serializable{
 		return "userListing";
 	}*/
 
-	public MenuModel getAdminPanelMenu() {
+/*	public MenuModel getAdminPanelMenu() {
 		DefaultMenuModel model = new DefaultMenuModel();
 		
 		return model;
-	}
+	}*/
+	
 
 /**
- * Validates user password on matching the pattern.
+ * Checks whether the second password value on the myProfile.xhtml page 
+ * matches the first password value. 
+ * The method is used for already logged in user.
  * */
-	public void passwordValidator(FacesContext context, UIComponent component, Object value)
-			throws ValidatorException {
-		
-		final String PASSWORD_PATTERN = "^.{5,15}$";
-	    Pattern pattern;
-	    Matcher matcher;
-	    pattern = Pattern.compile(PASSWORD_PATTERN);
-	    
-		String enteredPassword = value.toString();
-		matcher = pattern.matcher(enteredPassword);
-		
-		if( !matcher.matches() ) {
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("loginValidatorMessage"));
-				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-				
-			throw new ValidatorException(newMessage);
-		}
-	}
-	
 	public void passwordRepeatValidator(FacesContext context, UIComponent component, Object value)
 			throws ValidatorException {
 		
-		String firstPassword = loggedInUser.getPassword();
+		String firstPassword = getLoggedInUser().getPassword();
 		String repeatPassword = value.toString();
 		
 		List<FacesMessage> messages = FacesContext.getCurrentInstance()
@@ -227,72 +232,8 @@ public class LoginBean implements Serializable{
 			
 			throw new ValidatorException(newMessage);
 		}
-		
-		/*FacesContext.getCurrentInstance()
-		.addMessage(null, new FacesMessage("passwordRepeatValidator: success!"));*/
 	}
-	
-	public void firstLastNameValidator(FacesContext context, UIComponent component, Object value)
-			throws ValidatorException {
-		
-		final String NAME_PATTERN = "^[a-zA-Z-]{1,20}$";
-	    Pattern pattern;
-	    Matcher matcher;
-	    pattern = Pattern.compile(NAME_PATTERN);
-	    
-		String enteredName = value.toString();
-		matcher = pattern.matcher(enteredName);
-		
-		if( !matcher.matches() ) {
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("firstLastNameValidatorMessage"));
-				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-				
-			throw new ValidatorException(newMessage);
-		}
-	}
-	
-	public void emailValidator(FacesContext context, UIComponent component, Object value)
-			throws ValidatorException {
-		
-		final String EMAIL_PATTERN = "([a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\." 
-			+ "[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@"
-			+ "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)|(^$)";
-	    Pattern pattern;
-	    Matcher matcher;
-	    pattern = Pattern.compile(EMAIL_PATTERN);
-	    
-		String enteredEmail = value.toString();
-		matcher = pattern.matcher(enteredEmail);
-		
-		if( !matcher.matches() ) {
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("emailValidatorMessage"));
-				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-				
-			throw new ValidatorException(newMessage);
-		}
-	}
-	
-	public void skypeValidator(FacesContext context, UIComponent component, Object value)
-			throws ValidatorException {
-		
-		final String SKYPE_PATTERN = "(^[a-zA-Z][a-zA-Z0-9]{5,31}$)|(^$)";
-	    Pattern pattern;
-	    Matcher matcher;
-	    pattern = Pattern.compile(SKYPE_PATTERN);
-	    
-		String enteredSkype = value.toString();
-		matcher = pattern.matcher(enteredSkype);
-		
-		if( !matcher.matches() ) {
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("skypeValidatorMessage"));
-				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-				
-			throw new ValidatorException(newMessage);
-		}
-	}
+
 /**
  * Tries to create a new image on the server with a unique name for each user 
  * in the /applications/uploads/images/folder or throws an Exception. 
@@ -312,13 +253,12 @@ public class LoginBean implements Serializable{
 		try(InputStream input = uploadedFile.getInputstream()) {
 			Files.copy(input, uploadedPhoto.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			
-			System.out.println("File has been uploaded. \nuserPhotoName = " + newImageName + 
-					"; \nfull path = " + uploadedPhoto);
-			
 			FacesMessage newMessage = new FacesMessage(getSystemProperties()
 					.getProperty("photoUploadedSuccessMes"));
 			newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
 			FacesContext.getCurrentInstance().addMessage(null, newMessage);
+			logger.debug("A new file with the full path = {} has been uploaded.",
+					uploadedPhoto);
 			
 			getLoggedInUser().setPhoto("/images/" + newImageName);
 			
@@ -328,20 +268,18 @@ public class LoginBean implements Serializable{
 			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
 			FacesContext.getCurrentInstance().addMessage(null, newMessage);
 			
-			System.out.println("the new file with name= " + newImageName + 
-					" has NOT been uploaded. \nFull path= " + uploadedPhoto);
-			ioe.printStackTrace();
+			logger.error("A new file with the full path = {} has NOT been uploaded.",
+					uploadedPhoto, ioe);
 		}
 		
 	}
 	
-/*------------ getters without fiels --------*/
+/*------------ getters without fields --------*/
 /**
  * Returns the path of the photo that is stored in the DB 
  * (if it has been uploaded already), or the path to the default photo.
  * */
 	public String getUserPhotoPath() {
-		
 		String userPhotoPath = "";
 		String loggedInUserPhoto = getLoggedInUser().getPhoto();
 		

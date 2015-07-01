@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<h:body>
+<ui:composition template="/WEB-INF/templates/adminPanel/basic/adminPanelTemplateBasic.xhtml">
+	<ui:define name="title">
+      <h:outputFormat value="#{adminPanelRB.addNewUserTabTitle}">
+        <f:param value="#{userController.newUserTypeLabel}"></f:param>
+      </h:outputFormat>
+    </ui:define>
+ 
+	<ui:define name="content">
+      <b:row>
+        <b:column col-xs="12">
+                <h1>
+                  <h:outputFormat value="#{adminPanelRB.addNewUserPageTopTitle}">
+                    <f:param value="#{adminPanelRB.createNewUserButtonLable}"></f:param>
+                    <f:param value="#{userController.newUserTypeLabel}"></f:param>
+                  </h:outputFormat>
+               </h1>
+        </b:column>
+      </b:row>
+      <h:form id="addNewUserForm" styleClass="addNewUserForm"> 
+              <p:growl id="growl" globalOnly="true" autoUpdate="true"></p:growl>
+              <b:column col-xs="12" span="6" styleClass="panelGridWrapper">
+                <p:panelGrid>
+                    <p:row>
+                      <p:column styleClass="columnWidth-40">
+                        <p:outputLabel for="newUserType" value="#{userRB.userTypeLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <h:outputText id="newUserType" styleClass="readOnlyField"
+                          value="#{userController.newUser.type}"></h:outputText>
+                      </p:column>
+                    </p:row>
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="newUserLoginLabel" styleClass="update" 
+                          for="newUserLogin" value="#{userRB.userLoginLabel}: "/>
+                      </p:column>
+                      <p:column>
+                        <p:inputText id="newUserLogin" value="#{userController.newUser.login}"
+                          required="true" requiredMessage="#{loggingRB.loginRequiredMessage}"
+                          validator="#{userValidators.loginValidator}" styleClass="update"
+                          title="#{systemRB.loginValidatorMessage}" 
+                          placeholder="#{adminPanelRB.loginPlaceholderMessage}">
+                          <p:ajax process="@this" 
+                             update="@this newUserLoginLabel newUserLoginMsg"
+                             event="blur"></p:ajax>
+                        </p:inputText>
+                        <p:message id="newUserLoginMsg" styleClass="update" 
+                                    for="newUserLogin" />
+                      </p:column>
+                    </p:row>
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="passwordFirstLabel" styleClass="update" 
+                                for="passwordFirst" value="#{userRB.userPasswordLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <p:password id="passwordFirst" styleClass="update"
+                          placeholder="#{adminPanelRB.passwordPlaceholderMessage}"
+                          value="#{userController.newUser.password}" required="true"
+                          requiredMessage="#{loggingRB.passwordRequiredMessage}"
+                          validator="#{userValidators.passwordValidator}"
+                          validatorMessage="#{systemRB.passwordValidatorMessage}"
+                          feedback="true" promptLabel="#{systemRB.passwordChangePromptLabel}"
+                          weakLabel="#{systemRB.weakPasswordFeedbackLabel}"
+                          goodLabel="#{systemRB.goodPasswordFeedbackLabel}"
+                          strongLabel="#{systemRB.strongPasswordFeedbackLabel}" 
+                          title="#{systemRB.loginValidatorMessage}"
+                          redisplay="true">
+                          <p:ajax process="@this"
+                                  update="@this passwordFirstMsg passwordFirstLabel" 
+                                  event="blur"></p:ajax>
+                        </p:password>
+                        <p:message id="passwordFirstMsg" styleClass="update" for="passwordFirst">
+                            </p:message>
+                      </p:column>
+                    </p:row>
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="passwordSecondLabel" for="passwordSecond"
+                            styleClass="update" value="#{userRB.userPasswordRepeatLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <p:password id="passwordSecond" styleClass="update" 
+                          value="#{userController.passwordRepeat}"
+                          placeholder="#{adminPanelRB.repeatPasswordPlaceholderMessage}"
+                          required="true" requiredMessage="#{loggingRB.passwordRepeatRequiredMessage}"
+                          validator="#{userController.passwordRepeatValidator}"
+                          feedback="false" title="#{systemRB.loginValidatorMessage}"
+                          redisplay="true">
+                          <p:ajax process="@this passwordFirst"
+                                  update="@this passwordSecondMsg passwordSecondLabel" 
+                                  event="blur"></p:ajax>
+                        </p:password>
+                        <p:message id="passwordSecondMsg" styleClass="update" for="passwordSecond">
+                            </p:message>
+                      </p:column>
+                    </p:row>
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="firstNameLabel" styleClass="update" for="firstName" 
+                          value="#{userRB.userFirstNameLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <p:inputText id="firstName" value="#{userController.newUser.firstName}"
+                          placeholder="#{adminPanelRB.firstNamePlaceholderMessage}"
+                          required="true" requiredMessage="#{userRB.thisFieldIsRequiredMes}"
+                          validator="#{userValidators.firstLastNameValidator}" styleClass="update"
+                          title="#{systemRB.firstLastNameValidatorMessage}">
+                          <p:ajax process="@this" 
+                             update="@this firstNameLabel firstNameMsg"
+                             event="blur"></p:ajax>
+                        </p:inputText>
+                        <p:message id="firstNameMsg" styleClass="update" for="firstName">
+                            </p:message>
+                      </p:column>
+                    </p:row>
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="lastNameLabel" styleClass="update" for="lastName" 
+                          value="#{userRB.userLastNameLabel}: " />
+                      </p:column>
+                      <p:column>
+                        <p:inputText id="lastName" value="#{userController.newUser.lastName}"
+                          placeholder="#{adminPanelRB.lastNamePlaceholderMessage}"
+                          required="true" requiredMessage="#{userRB.thisFieldIsRequiredMes}"
+                          validator="#{userValidators.firstLastNameValidator}" styleClass="update"
+                          title="#{systemRB.firstLastNameValidatorMessage}">
+                          <p:ajax process="@this" 
+                             update="@this lastNameLabel lastNameMsg"
+                             event="blur"></p:ajax>
+                        </p:inputText>
+                        <p:message id="lastNameMsg" styleClass="update" for="lastName">
+                            </p:message>
+                      </p:column>
+                    </p:row>      
+                </p:panelGrid>
+                <b:row>
+                  <b:column col-xs="12">
+                    <p:commandButton action="#{userController.addNewUser}" 
+                      value="#{adminPanelRB.createNewUserButtonLable}"
+                      update="@(.update)" styleClass="blockAlignCenter"/>
+                  </b:column>
+                </b:row>
+              </b:column> 
+              
+            </h:form>
+            
+            <script>
+            $( document ).ready(function() {
+                $('.addNewUserForm .ui-panelgrid-cell').has('.readOnlyField').css({
+              	  "padding-top": "9px",
+              	  "padding-bottom": "9px"
+                });
+            });
+            </script>
+    </ui:define>
+
+</ui:composition>
+</h:body>
+</html>

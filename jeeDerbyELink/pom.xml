@@ -4,6 +4,7 @@
   <artifactId>jeeDerbyELink</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   
+  
     <dependencies>
   	<dependency>
   		<groupId>junit</groupId>
@@ -35,13 +36,11 @@
 		<artifactId>javax.ejb-api</artifactId>
 		<version>3.2</version>
 	</dependency>
-	
 	<dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
         <version>3.1.0</version>
     </dependency>
-        
 	<dependency>
 		<groupId>javax.validation</groupId>
 		<artifactId>validation-api</artifactId>
@@ -58,6 +57,30 @@
 	    <version>0.6.6</version>
 	    <scope>compile</scope>
 	</dependency>
+<!-- SLF4j with Log4j implementation -->
+<!-- 	  <dependency>
+	    <groupId>org.apache.logging.log4j</groupId>
+	    <artifactId>log4j-api</artifactId>
+	    <version>2.3</version>
+	  </dependency> -->
+	  <dependency>
+	    <groupId>org.apache.logging.log4j</groupId>
+	    <artifactId>log4j-core</artifactId>
+	    <version>2.3</version>
+	  </dependency>
+<!-- SLF4J Bridge -->
+	  <dependency>
+	    <groupId>org.apache.logging.log4j</groupId>
+	    <artifactId>log4j-slf4j-impl</artifactId>
+	    <version>2.3</version>
+	  </dependency>
+<!-- SLF4J API Module -->
+<!-- 	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-api</artifactId>
+		<version>1.7.12</version>
+	</dependency> -->
+<!-- END of SLF4j with Log4j implementation -->
 	
 <!-- 	<dependency>
 	  <groupId>org.apache.shiro</groupId>

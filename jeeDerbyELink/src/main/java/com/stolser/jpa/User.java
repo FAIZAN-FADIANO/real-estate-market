@@ -128,7 +128,9 @@ abstract public class User implements Serializable {
 	}
 
 	public String getLogin() {
+		
 		return login;
+/*		return (login == null) ? "" : login;*/
 	}
 
 	public void setLogin(String login) {

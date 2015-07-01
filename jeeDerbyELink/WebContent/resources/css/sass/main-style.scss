@@ -3,6 +3,14 @@ $normal-font-size: 14px;
 $tooltipFontSize: 85%;
 $colorTextTableBody: rgb(64, 124, 234);
 
+@mixin cool-cells($align, $padding) {
+	text-align: $align;
+	padding: {
+		top: $padding;
+		bottom: $padding;
+	}
+}
+
 /* ----- General css ---------- */
 
 .clearBoth {
@@ -21,6 +29,14 @@ $colorTextTableBody: rgb(64, 124, 234);
 .userPhotoRestrictions {
 	font-size: $tooltipFontSize!important; 
 	color: red;
+}
+
+.panelGridWrapper {
+	.ui-widget-content {
+		.ui-panelgrid-cell + .ui-panelgrid-cell {
+			@include cool-cells(center, 7px);
+		}
+}
 }
 
 /* ----- END of General css ---------- */
@@ -101,13 +117,28 @@ $colorTextTableBody: rgb(64, 124, 234);
 	.columnWidth-35 {
 		width: 35%;
 	}
-
-/*------- adminPanel/myProfile.xhtml -------*/
-	&.myProfile {
-		.panelGridWrapper {
+	.columnWidth-40 {
+		width: 40%;
+	}
+	
+	.panelGridWrapper {
+		.ui-panelgrid {
 			margin-bottom: 15px;
 		}
 		
+		input {
+			width: 100%;
+		}
+		
+		.ui-message {
+			margin: 0px;
+		}
+		
+	}
+
+/*------- adminPanel/myProfile.xhtml -------*/
+	&.myProfile {
+				
 		.myProfileForm {
 			.ui-message {
 				margin-left: 0px;
