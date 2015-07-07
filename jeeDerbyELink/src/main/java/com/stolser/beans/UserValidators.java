@@ -1,5 +1,6 @@
 package com.stolser.beans;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -14,11 +15,19 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.stolser.PropertiesLoader;
+import com.stolser.ejb.UserFacadeEJB;
+import com.stolser.jpa.User;
 
 @ManagedBean(name = "userValidators")
 @SessionScoped
 public class UserValidators {
+	private final Logger logger = LoggerFactory.getLogger(UserValidators.class);
+	@EJB
+	private UserFacadeEJB userFacade;
 	@EJB
 	private PropertiesLoader propLoader;
 	private Map<String, Properties> propSystemMap;
@@ -42,10 +51,20 @@ public class UserValidators {
 		matcher = pattern.matcher(enteredLogin);
 		
 		if( !matcher.matches() ) {
-			FacesMessage newMessage = new FacesMessage("value = " + value + " " + getSystemProperties()
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
 					.getProperty("loginValidatorMessage"));
-				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
 				
+			throw new ValidatorException(newMessage);
+		}
+		
+		List<User> usersInDB = userFacade.getUsersFindByLogin(enteredLogin);
+		if (usersInDB.size() != 0) {	
+			/*there is already a user in the DB with such login*/
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+					.getProperty("loginExistValidatorMessage"));
+			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+			
 			throw new ValidatorException(newMessage);
 		}
 	}
@@ -76,6 +95,7 @@ public class UserValidators {
 	public void firstLastNameValidator(FacesContext context, UIComponent component, Object value)
 			throws ValidatorException {
 		
+		logger.trace("the beginning of the validator...");
 		final String NAME_PATTERN = "^[a-zA-Z-]{1,20}$";
 	    Pattern pattern;
 	    Matcher matcher;
@@ -91,6 +111,7 @@ public class UserValidators {
 				
 			throw new ValidatorException(newMessage);
 		}
+		logger.trace("the end of the validator...");
 	}
 	
 	public void emailValidator(FacesContext context, UIComponent component, Object value)

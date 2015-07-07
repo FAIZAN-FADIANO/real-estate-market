@@ -38,7 +38,7 @@ public class UserController {
 	@EJB
 	private PropertiesLoader propLoader;
 	private Map<String, Properties> propSystemMap;
-	
+/** For displaying users on the userListing.xhtml page*/
 	private List<User> usersList = new ArrayList<>();
 	
 //-------END of properties-------
@@ -109,16 +109,11 @@ public class UserController {
 	
 /*-------END of placeholders for results data------------------------------------------------------- */    
 	
-/**
- * Returns appropriate Properties object for current local on the front-end
- * */
-    private Properties getSystemProperties() {
-		String currentLocal = FacesContext.getCurrentInstance().getViewRoot()
-				.getLocale().toString();
-		Properties currentProperties = propSystemMap.get(currentLocal);
-		return currentProperties;
+	public int sortByUserType(Object user1, Object user2) {
+		
+		return 0;
 	}
-
+	
 /**
  * Checks whether the second password value on the addNewUser.xhtml page 
  * matches the first password value. 
@@ -194,5 +189,14 @@ public class UserController {
 	}
 /*---------------END of getters and setters----------------------------------------------- */ 
 
+/**
+ * Returns appropriate Properties object for current local on the front-end
+ * */
+    private Properties getSystemProperties() {
+		String currentLocal = FacesContext.getCurrentInstance().getViewRoot()
+				.getLocale().toString();
+		Properties currentProperties = propSystemMap.get(currentLocal);
+		return currentProperties;
+	}
 
 }

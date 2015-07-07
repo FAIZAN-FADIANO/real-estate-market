@@ -6,7 +6,8 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:b="http://bootsfaces.net/ui" 
-  xmlns:p="http://primefaces.org/ui">
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 <h:head>
 
@@ -39,7 +40,7 @@
               <b:column col-xs="12" span="6" styleClass="panelGridWrapper">
                 <p:panelGrid>
                     <p:row>
-                      <p:column>
+                      <p:column styleClass="columnWidth-40">
                         <p:outputLabel id="firstNameLabel" styleClass="update" for="firstName" 
                           value="#{userRB.userFirstNameLabel}: " />
                       </p:column>
@@ -147,6 +148,56 @@
                             </p:message>
                       </p:column>
                     </p:row>
+                    <p:row rendered="${loginBean.loggedInUser.type == 'REALTOR'}">
+                      <p:column>
+                        <p:outputLabel id="phoneNumbersLabel" styleClass="update" 
+                          value="#{userRB.realtorPhoneNumbersLable}: " />
+                      </p:column>
+                      <p:column> 
+                        <p:commandButton id="addNewPhoneNumber" 
+                          styleClass="addNewPhoneNumber"
+                          value="#{userRB.addPhoneNumberButtonLable}"
+                          actionListener="#{loginBean.addNewPhoneNumber}"
+                          update="phoneNumbersWrapper"
+                          icon="fa fa-plus" iconPos="right" />
+                        <p:tooltip for="addNewPhoneNumber" styleClass="tooltipBlock"
+                          escape="false" trackMouse="true"
+                          value="#{userRB.addPhoneNumberButtonTooltip}"/>
+                        <p:commandButton id="deletePhoneNumbers" 
+                          styleClass="deletePhoneNumbers"
+                          value="#{userRB.deletePhoneNumbersButtonLable}"
+                          type="button" onclick="PF('deletingConfirm').show()"
+                          icon="fa fa-remove" iconPos="right" />
+                        <p:tooltip for="deletePhoneNumbers" styleClass="tooltipBlock"
+                          escape="false" trackMouse="true"
+                          value="#{userRB.deletePhoneNumbersButtonTooltip}"/>
+                        <div class="clearboth"></div>
+                        
+                        <p:panel id="phoneNumbersWrapper" styleClass="phoneNumbersWrapper update">
+                          <ui:repeat id="phoneNumbersRepeat" var="phoneNumber" varStatus="status"
+                            value="#{loginBean.loggedInUser.phoneNumbers}" >
+                            <div id="phoneNumberRow-#{status.index}" class="phoneNumberRow">
+                              <p:selectBooleanCheckbox id="phoneNumberCheckbox" styleClass="update"
+                                 value="#{loginBean.arePhoneNumbersDeleted[status.index]}"/>
+                              <p:inputMask id="phoneNumberInput" styleClass="update"
+                                mask="(999) 999 99 99" value="#{loginBean.loggedInUser.phoneNumbers[status.index]}"/>
+                            </div>
+                          </ui:repeat>
+                        </p:panel>
+                        <p:confirmDialog widgetVar="deletingConfirm" 
+                          header="#{userRB.deletePhoneNumbersConfirmationTitle}"
+                          message="#{userRB.deletePhoneNumbersConfirmationMessage}"
+                          severity="alert" hideEffect="puff" width="350"
+                          closeOnEscape="true">
+                          <p:commandButton value="#{userRB.deletePhoneNumbersYes}" 
+                            oncomplete="PF('deletingConfirm').hide()"
+                            actionListener="#{loginBean.deletePhoneNumber}"
+                            update="phoneNumbersWrapper" styleClass="floatLeftButton"/>
+                          <p:commandButton value="#{userRB.deletePhoneNumbersNo}" 
+                            onclick="PF('deletingConfirm').hide()" type="button" styleClass="floatRightButton"/>
+                        </p:confirmDialog>
+                      </p:column>
+                    </p:row>
                 </p:panelGrid>
               </b:column> 
               <b:column col-xs="12" span="6" styleClass="panelGridWrapper">
@@ -220,14 +271,14 @@
                       </p:column>
                     </p:row>
                     <p:row>
-                      <p:column styleClass="columnWidth-40">
+                      <p:column>
                         <p:outputLabel for="myProfileDateOfCreation" 
                           value="#{userRB.userDateOfCreationLable}: "></p:outputLabel>
                       </p:column>
                       <p:column>
                         <h:outputText id="myProfileDateOfCreation" styleClass="readOnlyField"
                           value="#{loginBean.loggedInUser.dateOfCreation}">
-                          <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                          <f:convertDateTime pattern="dd.MM.yyyy"/>
                         </h:outputText>
                       </p:column>
                     </p:row>

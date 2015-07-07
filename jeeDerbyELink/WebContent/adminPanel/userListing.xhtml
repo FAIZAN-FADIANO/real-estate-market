@@ -2,65 +2,87 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:b="http://bootsfaces.net/ui"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 <h:head></h:head>
 <h:body>
-<ui:composition template="/WEB-INF/templates/adminPanel/basic/adminPanelTemplateBasic.xhtml">
-	<ui:define name="title">#{userRB.listOfUsersMetaTitle}</ui:define>
- 
-	<ui:define name="content">
-		<b:row>
-			<p:dataTable id="usersTable" var="user" value="#{userController.usersList}" draggableColumns="true"
-							reflow="priority" emptyMessage="#{userRB.emptyMessage}">
-				<f:facet name="header">
-					<h:outputFormat value="#{userRB.listOfUsersTableTitle}">
-						<f:param value="#{fn:length(userController.usersList)}"></f:param>
-					</h:outputFormat>
-					<p:commandButton styleClass="columnsToggler" id="userColumnsToggler" type="button" 
-							value="#{userRB.showColumnsLabel}" icon="fa fa-wrench"></p:commandButton>
-					<p:columnToggler trigger="userColumnsToggler" datasource="usersTable"></p:columnToggler>
-				</f:facet>
-				<p:column  headerText="#{userRB.userLastNameLabel}" footerText="#{userRB.userLastNameLabel}" 
-							priority="1" toggleable="false">
-					<p:outputLabel value="#{user.lastName}"></p:outputLabel>
-				</p:column>
-				<p:column  headerText="#{userRB.userFirstNameLabel}" footerText="#{userRB.userFirstNameLabel}" 
-							priority="1" toggleable="false">
-					<p:outputLabel value="#{user.firstName}"></p:outputLabel>
-				</p:column>
-				<p:column  headerText="#{userRB.userTypeLabel}" footerText="#{userRB.userTypeLabel}" 
-							priority="4" styleClass="userTypeCell">
-					<p:outputLabel value="#{user.type}"></p:outputLabel>
-				</p:column>
-				<p:column  headerText="#{userRB.userLoginLabel}" footerText="#{userRB.userLoginLabel}" 
-							priority="4">
-					<p:outputLabel  value="#{user.login}"></p:outputLabel>
-				</p:column>
-				<p:column  headerText="#{userRB.userBirthdayLabel}" footerText="#{userRB.userBirthdayLabel}" 
-							priority="5">
-					<p:outputLabel  value="#{user.birthday}">
-                      <f:convertDateTime pattern="dd-MM-yyyy"/>
-                    </p:outputLabel>
-				</p:column> 
-				<p:column  headerText="#{userRB.userEmailLabel}" footerText="#{userRB.userEmailLabel}" 
-							priority="5" width="25%">
-					<p:outputLabel  value="#{user.email}"></p:outputLabel>
-				</p:column>
-				<p:column  headerText="#{userRB.userStatusLabel}" footerText="#{userRB.userStatusLabel}" 
-							priority="2" width="10%" styleClass="userStatusCell">
-					<p:outputLabel  value="#{user.status}"></p:outputLabel>
-				</p:column>
-			</p:dataTable>
-		</b:row>
+  <ui:composition
+    template="/WEB-INF/templates/adminPanel/basic/adminPanelTemplateBasic.xhtml">
+    <ui:define name="title">#{userRB.listOfUsersMetaTitle}</ui:define>
 
-	</ui:define>
+    <ui:define name="content">
+      <b:row>
+        <b:column col-xs="12">
+          <h1>
+            <h:outputFormat
+              value="#{adminPanelRB.userListingPageTopTitle}">
+            </h:outputFormat>
+          </h1>
+        </b:column>
+      </b:row>
+      <b:row>
+        <p:dataTable id="usersTable" var="user" rows="10" paginator="true"
+          paginatorAlwaysVisible="false" resizableColumns="true"
+          value="#{userController.usersList}" draggableColumns="true"
+          draggableRows="true"
+          reflow="priority" emptyMessage="#{userRB.emptyMessage}">
+          <f:facet name="header">
+            <h:outputFormat value="#{userRB.listOfUsersTableTitle}">
+              <f:param value="#{fn:length(userController.usersList)}"></f:param>
+            </h:outputFormat>
+            <p:commandButton styleClass="columnsToggler"
+              id="userColumnsToggler" type="button"
+              value="#{userRB.showColumnsLabel}" icon="fa fa-wrench"></p:commandButton>
+            <p:columnToggler trigger="userColumnsToggler"
+              datasource="usersTable"></p:columnToggler>
+          </f:facet>
+<ui:remove>          
+          <p:column headerText="#{userRB.userPhotoLable}"
+            priority="1" toggleable="false">
+            <p:button id="userPhoto" icon="fa fa-search-plus"></p:button>
+            <p:tooltip for="userPhoto">
+              <p:graphicImage value=""></p:graphicImage>
+            </p:tooltip>
+          </p:column>
+</ui:remove>
+          <p:column headerText="#{userRB.userLastNameLabel}"
+            priority="1" toggleable="false">
+            <p:outputLabel value="#{user.lastName}"></p:outputLabel>
+          </p:column>
+          <p:column headerText="#{userRB.userFirstNameLabel}"
+            priority="1" toggleable="false">
+            <p:outputLabel value="#{user.firstName}"></p:outputLabel>
+          </p:column>
+          <p:column headerText="#{userRB.userTypeLabel}" sortBy="#{user.type}" priority="4"
+            sortable="true" styleClass="userTypeCell">
+            <p:outputLabel value="#{user.type}"></p:outputLabel>
+          </p:column>
+          <p:column headerText="#{userRB.userLoginLabel}" priority="4">
+            <p:outputLabel value="#{user.login}"></p:outputLabel>
+          </p:column>
+          <p:column headerText="#{userRB.userBirthdayLabel}"
+            priority="5">
+            <p:outputLabel value="#{user.birthday}">
+              <f:convertDateTime pattern="dd.MM.yyyy" />
+            </p:outputLabel>
+          </p:column>
+          <p:column headerText="#{userRB.userEmailLabel}" priority="5"
+            width="25%">
+            <p:outputLabel value="#{user.email}"></p:outputLabel>
+          </p:column>
+          <p:column headerText="#{userRB.userStatusLabel}" priority="2"
+            width="10%" styleClass="userStatusCell">
+            <p:outputLabel value="#{user.status}"></p:outputLabel>
+          </p:column>
+        </p:dataTable>
+      </b:row>
 
-</ui:composition>
+    </ui:define>
+
+  </ui:composition>
 </h:body>
 </html>

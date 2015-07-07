@@ -1,7 +1,9 @@
 package com.stolser.jpa;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -31,6 +33,14 @@ public class Admin extends User implements PostAuthor, Serializable {
 	public Admin(UserType type, UserStatusType status, String login, String password,
 			String firstName, String lastName, Date dateOfCreation) {
 		super(type, status, login, password, firstName, lastName, dateOfCreation);
+	}
+	
+	public List<String> getPhoneNumbers() {
+		return null;
+	}
+	
+	public String getSkype() {
+		return null;
 	}
 
 }

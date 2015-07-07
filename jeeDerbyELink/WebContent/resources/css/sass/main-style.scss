@@ -12,6 +12,12 @@ $colorTextTableBody: rgb(64, 124, 234);
 }
 
 /* ----- General css ---------- */
+.floatLeftButton {
+	float: left;
+}
+.floatRightButton {
+	float: right;
+}
 
 .clearBoth {
 	clear: both;
@@ -142,6 +148,38 @@ $colorTextTableBody: rgb(64, 124, 234);
 		.myProfileForm {
 			.ui-message {
 				margin-left: 0px;
+			}
+			
+			.addNewPhoneNumber {
+				float: left;
+				color: rgb(21, 137, 21);
+  				background-color: rgba(11, 158, 11, 0.5);
+			}
+			
+			.deletePhoneNumbers {
+				float: right;
+				color: rgb(219, 9, 9);
+  				background-color: rgba(192, 23, 23, 0.51);
+			}
+			
+			.phoneNumbersWrapper {
+				float: left;
+  				margin-top: 10px;
+  				width: 100%;
+  				
+  				& > div {
+  					width: 100%;
+  					
+  				}
+  				
+  				.phoneNumberRow {
+  					margin-bottom: 10px;
+  				}
+  				
+  				input {
+  					width: 85%;
+  					margin-left: 4%;
+  				}
 			}
 		}
 		

@@ -9,12 +9,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -22,6 +24,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.*;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -38,8 +41,21 @@ import org.slf4j.MarkerFactory;
 import com.stolser.PropertiesLoader;
 import com.stolser.ejb.UserFacadeEJB;
 import com.stolser.jpa.Admin;
+import com.stolser.jpa.Realtor;
 import com.stolser.jpa.User;
-
+/**
+ * Used for managing sessions and updating logged in user's info. 
+ * Contains public methods:<br>
+ * <ul>
+ * <li>adminPanelValidation();</li>
+ * <li>adminPanelLogout();</li>
+ * <li>updateLoggedInUser();</li>
+ * <li>passwordRepeatValidator();</li>
+ * <li>uploadedPhotoHandler();</li>
+ * <li>getUserPhotoPath();</li>
+ * <li></li>
+ * </ul>
+ * */
 @ManagedBean(name="loginBean")
 @SessionScoped
 public class LoginBean implements Serializable{
@@ -51,6 +67,7 @@ public class LoginBean implements Serializable{
 	
 	private String passwordRepeat;
 	private UploadedFile uploadedUserPhoto;
+	private List<Boolean> arePhoneNumbersDeleted;
 	
 	@EJB
 	private UserFacadeEJB userFacade;
@@ -62,18 +79,14 @@ public class LoginBean implements Serializable{
  * (active users with type != User.UserType.REGISTERED_USER). These users also can
  * access the User Private Panel.
  * */
-	private User loggedInUser; 
-/**
- * Is NOT null only for users that have permissions to access only
- * the User Private Panel (active users with type == User.UserType.REGISTERED_USER).
- * */
-	private User signedInUser;
+	private User loggedInUser;
 	
 	public LoginBean() {}
 	
 	@PostConstruct
 	private void init() {
 		propSystemMap = propLoader.getPropSystemMap();
+		arePhoneNumbersDeleted = new ArrayList<Boolean>();
 	}
 /**
  * Verifies user's login, password, type and status and if everything is OK
@@ -136,6 +149,14 @@ public class LoginBean implements Serializable{
         /* For the use on the myProfile.xhtml page.*/
         setPasswordRepeat(loggedInUser.getPassword());
         
+        if (loggedInUser instanceof Realtor) {
+        	List<String> phoneNumbers = ((Realtor)loggedInUser).getPhoneNumbers();
+        	arePhoneNumbersDeleted.clear(); 
+        	for (int i = 0; i < phoneNumbers.size(); i++) {
+				arePhoneNumbersDeleted.add(false);
+			} 
+		}
+        
         return "/adminPanel/home?faces-redirect=true";
 	}
 	
@@ -152,6 +173,19 @@ public class LoginBean implements Serializable{
 	public String updateLoggedInUser() {
 	
 		try{
+			/*Removing empty phone numbers*/
+			if (loggedInUser instanceof Realtor) {
+	        	List<String> phoneNumbers = ((Realtor)loggedInUser).getPhoneNumbers();
+	        	List<String> phoneNumbersWithoutEmpty = new ArrayList<>();
+	        	for (int i = 0; i < phoneNumbers.size(); i++) {
+	        		String currentPhoneNumber = phoneNumbers.get(i);
+	        		if ( !"".equals(currentPhoneNumber) ) {
+	        			phoneNumbersWithoutEmpty.add(currentPhoneNumber);
+					}
+				}
+	        	((Realtor)loggedInUser).setPhoneNumbers(phoneNumbersWithoutEmpty);
+			}
+			/*-------------------------------*/
 			
 			loggedInUser = userFacade.updateUserInDB(loggedInUser);
 			
@@ -178,33 +212,6 @@ public class LoginBean implements Serializable{
 		return null;
 	}
 	
-/**
- * Returns appropriate Properties object for current local on the front-end
- * */
-	private Properties getSystemProperties() {
-		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
-		Properties currentProperties = propSystemMap.get(currentLocal);
-		return currentProperties;
-	}
-	
-	/*public String creatSuperAdmin() {
-		List<User> superAdminUsers = userFacade.getUsersFindByType(User.UserType.SUPER_ADMIN);
-		if (superAdminUsers.size() == 0) {
-			User superAdmin = new Admin(User.UserType.SUPER_ADMIN, User.UserStatusType.ACTIVE, 
-					"superadmin", "12345", "Oleg", "Stoliarov", new Date());
-			userFacade.persistEntity(superAdmin);
-		}
-		
-		return "userListing";
-	}*/
-
-/*	public MenuModel getAdminPanelMenu() {
-		DefaultMenuModel model = new DefaultMenuModel();
-		
-		return model;
-	}*/
-	
-
 /**
  * Checks whether the second password value on the myProfile.xhtml page 
  * matches the first password value. 
@@ -274,6 +281,32 @@ public class LoginBean implements Serializable{
 		
 	}
 	
+/**
+ * Action listener for addNewPhoneNumber button on the myProfile.xhtml.
+ * */
+	public void addNewPhoneNumber(ActionEvent event) {
+		((Realtor) loggedInUser).getPhoneNumbers().add("");
+		arePhoneNumbersDeleted.add(false);
+	}
+/**
+ * Action listener for deletePhoneNumber button on the myProfile.xhtml.
+ * */
+	public void deletePhoneNumber(ActionEvent event) {
+		List<String> phoneNumbers = ((Realtor) getLoggedInUser()).getPhoneNumbers();
+		List<String> newPhoneNumbers = new ArrayList<>();
+		for (int i = 0; i < phoneNumbers.size(); i++) {
+			if ( !arePhoneNumbersDeleted.get(i) ) {
+				newPhoneNumbers.add(phoneNumbers.get(i));
+			}
+		}
+		((Realtor) getLoggedInUser()).setPhoneNumbers(newPhoneNumbers);
+		arePhoneNumbersDeleted.clear();
+		for (int i = 0; i < newPhoneNumbers.size(); i++) {
+			arePhoneNumbersDeleted.add(false);
+		}
+
+	}
+	
 /*------------ getters without fields --------*/
 /**
  * Returns the path of the photo that is stored in the DB 
@@ -292,7 +325,36 @@ public class LoginBean implements Serializable{
 		return userPhotoPath;
 	}
 	
-/*------------ END of getters without fiels --------*/
+/*------------ END of getters without fields --------*/
+/*------------ private methods --------*/
+	
+/**
+ * Returns appropriate Properties object for current local on the front-end
+ * */
+	private Properties getSystemProperties() {
+		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
+		Properties currentProperties = propSystemMap.get(currentLocal);
+		return currentProperties;
+	}
+	
+	/*public String creatSuperAdmin() {
+		List<User> superAdminUsers = userFacade.getUsersFindByType(User.UserType.SUPER_ADMIN);
+		if (superAdminUsers.size() == 0) {
+			User superAdmin = new Admin(User.UserType.SUPER_ADMIN, User.UserStatusType.ACTIVE, 
+					"superadmin", "12345", "Oleg", "Stoliarov", new Date());
+			userFacade.persistEntity(superAdmin);
+		}
+		
+		return "userListing";
+	}*/
+
+/*	public MenuModel getAdminPanelMenu() {
+		DefaultMenuModel model = new DefaultMenuModel();
+		
+		return model;
+	}*/
+	
+/*------------ END of private methods --------*/
 /*------------ getter and setters -----------*/
 	public String getEnteredLogin() {
 		return enteredLogin;
@@ -332,6 +394,14 @@ public class LoginBean implements Serializable{
 
 	public void setLoggedInUser(User loggedInUser) {
 		this.loggedInUser = loggedInUser;
+	}
+
+	public List<Boolean> getArePhoneNumbersDeleted() {
+		return arePhoneNumbersDeleted;
+	}
+
+	public void setArePhoneNumbersDeleted(List<Boolean> arePhoneNumbersDeleted) {
+		this.arePhoneNumbersDeleted = arePhoneNumbersDeleted;
 	}
 
 }
