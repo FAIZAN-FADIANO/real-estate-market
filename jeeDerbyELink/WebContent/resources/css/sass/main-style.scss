@@ -42,7 +42,14 @@ $colorTextTableBody: rgb(64, 124, 234);
 		.ui-panelgrid-cell + .ui-panelgrid-cell {
 			@include cool-cells(center, 7px);
 		}
+	}
 }
+.userListingPopupPanel {
+	.ui-widget-content {
+		.ui-panelgrid-cell + .ui-panelgrid-cell {
+			@include cool-cells(center, 4px);
+		}
+	}
 }
 
 /* ----- END of General css ---------- */
@@ -125,6 +132,12 @@ $colorTextTableBody: rgb(64, 124, 234);
 	}
 	.columnWidth-40 {
 		width: 40%;
+	}
+	
+	.userDetailsPhoto {
+		height: 200px;
+		display: block;
+  		margin: auto;
 	}
 	
 	.panelGridWrapper {

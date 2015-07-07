@@ -308,22 +308,7 @@ public class LoginBean implements Serializable{
 	}
 	
 /*------------ getters without fields --------*/
-/**
- * Returns the path of the photo that is stored in the DB 
- * (if it has been uploaded already), or the path to the default photo.
- * */
-	public String getUserPhotoPath() {
-		String userPhotoPath = "";
-		String loggedInUserPhoto = getLoggedInUser().getPhoto();
-		
-		if ((loggedInUserPhoto == null) || ("".equals(loggedInUserPhoto))) {
-			userPhotoPath = "/images/unknownUser.jpg";
-		} else {
-			userPhotoPath = loggedInUserPhoto;
-		}
-		
-		return userPhotoPath;
-	}
+
 	
 /*------------ END of getters without fields --------*/
 /*------------ private methods --------*/

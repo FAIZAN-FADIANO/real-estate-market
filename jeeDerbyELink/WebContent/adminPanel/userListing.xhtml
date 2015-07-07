@@ -25,11 +25,13 @@
         </b:column>
       </b:row>
       <b:row>
-        <p:dataTable id="usersTable" var="user" rows="10" paginator="true"
-          paginatorAlwaysVisible="false" resizableColumns="true"
-          value="#{userController.usersList}" draggableColumns="true"
-          draggableRows="true"
-          reflow="priority" emptyMessage="#{userRB.emptyMessage}">
+        <p:dataTable id="usersTable" var="user" rows="10"
+          paginator="true" paginatorAlwaysVisible="false"
+          resizableColumns="false" lazy="true"
+          value="#{userController.usersList}" draggableRows="true"
+          draggableColumns="true" rowsPerPageTemplate="5,10,20,50"
+          rowsPerPageLabel="Choose:" reflow="priority"
+          emptyMessage="#{userRB.emptyMessage}">
           <f:facet name="header">
             <h:outputFormat value="#{userRB.listOfUsersTableTitle}">
               <f:param value="#{fn:length(userController.usersList)}"></f:param>
@@ -38,49 +40,155 @@
               id="userColumnsToggler" type="button"
               value="#{userRB.showColumnsLabel}" icon="fa fa-wrench"></p:commandButton>
             <p:columnToggler trigger="userColumnsToggler"
-              datasource="usersTable"></p:columnToggler>
+              datasource="usersTable" />
           </f:facet>
-<ui:remove>          
-          <p:column headerText="#{userRB.userPhotoLable}"
-            priority="1" toggleable="false">
-            <p:button id="userPhoto" icon="fa fa-search-plus"></p:button>
-            <p:tooltip for="userPhoto">
-              <p:graphicImage value=""></p:graphicImage>
+
+          <p:column priority="1" toggleable="false" width="7%">
+            <p:commandButton id="userInfoDetailsButton"
+              icon="fa fa-search-plus" update="userInfoDetails"
+              oncomplete="PF('userInfoOP').show('#{component.clientId}')">
+              <f:setPropertyActionListener value="#{user}"
+                target="#{userController.selectedUser}" />
+            </p:commandButton>
+            <p:tooltip for="userInfoDetailsButton" trackMouse="true">
+              <p:graphicImage value="#{user.photo}" width="100px"></p:graphicImage>
             </p:tooltip>
           </p:column>
-</ui:remove>
+
           <p:column headerText="#{userRB.userLastNameLabel}"
-            priority="1" toggleable="false">
+            priority="1" toggleable="false" width="18%">
             <p:outputLabel value="#{user.lastName}"></p:outputLabel>
           </p:column>
           <p:column headerText="#{userRB.userFirstNameLabel}"
-            priority="1" toggleable="false">
+            priority="1" toggleable="false" width="15%">
             <p:outputLabel value="#{user.firstName}"></p:outputLabel>
           </p:column>
-          <p:column headerText="#{userRB.userTypeLabel}" sortBy="#{user.type}" priority="4"
-            sortable="true" styleClass="userTypeCell">
+          <p:column headerText="#{userRB.userTypeLabel}" priority="4"
+            styleClass="userTypeCell" width="15%">
             <p:outputLabel value="#{user.type}"></p:outputLabel>
           </p:column>
-          <p:column headerText="#{userRB.userLoginLabel}" priority="4">
+          <p:column headerText="#{userRB.userLoginLabel}" priority="4"
+            width="15%">
             <p:outputLabel value="#{user.login}"></p:outputLabel>
           </p:column>
           <p:column headerText="#{userRB.userBirthdayLabel}"
-            priority="5">
+            priority="5" width="15%">
             <p:outputLabel value="#{user.birthday}">
               <f:convertDateTime pattern="dd.MM.yyyy" />
             </p:outputLabel>
           </p:column>
-          <p:column headerText="#{userRB.userEmailLabel}" priority="5"
-            width="25%">
-            <p:outputLabel value="#{user.email}"></p:outputLabel>
-          </p:column>
           <p:column headerText="#{userRB.userStatusLabel}" priority="2"
-            width="10%" styleClass="userStatusCell">
+            width="15%" styleClass="userStatusCell">
             <p:outputLabel value="#{user.status}"></p:outputLabel>
           </p:column>
         </p:dataTable>
       </b:row>
 
+<!-- PopUped window with a user info details --> 
+      <p:overlayPanel widgetVar="userInfoOP" showEffect="fade"
+        hideEffect="fade" showCloseIcon="true"
+        at="right bottom" my="left middle">
+        <p:outputPanel id="userInfoDetails" styleClass="userListingPopupPanel">
+          <p:panelGrid rendered="#{not empty userController.selectedUser}">
+            <f:facet name="header">
+              <p:graphicImage id="userPhoto" styleClass="userDetailsPhoto"
+                value="#{userController.selectedUser.photo}" />
+            </f:facet>
+
+            <p:row>
+              <p:column>
+                <p:outputLabel value="#{userRB.userFirstNameLabel}: " />
+              </p:column>
+              <p:column>
+                <h:outputText
+                  value="#{userController.selectedUser.firstName}" />
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <p:outputLabel value="#{userRB.userLastNameLabel}: " />
+              </p:column>
+              <p:column>
+                <h:outputText
+                  value="#{userController.selectedUser.lastName}" />
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <p:outputLabel value="#{userRB.userBirthdayLabel}: " />
+              </p:column>
+              <p:column>
+                <h:outputText
+                  value="#{userController.selectedUser.birthday}">
+                  <f:convertDateTime pattern="dd.MM.yyyy"/>
+                </h:outputText>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <p:outputLabel value="#{userRB.userEmailLabel}: " />
+              </p:column>
+              <p:column>
+                <h:outputText
+                  value="#{userController.selectedUser.email}" />
+              </p:column>
+            </p:row>
+            <p:row
+              rendered="${userController.selectedUser.type == 'REALTOR'}">
+              <p:column>
+                <p:outputLabel value="#{userRB.realtorSkypeLable}: " />
+              </p:column>
+              <p:column>
+                <h:outputText
+                  value="#{userController.selectedUser.skype}" />
+              </p:column>
+            </p:row>
+            <p:row
+              rendered="${userController.selectedUser.type == 'REALTOR'}">
+              <p:column>
+                <p:outputLabel value="#{userRB.realtorPhoneNumbersLable}: " />
+              </p:column>
+              <p:column>
+                <ul>
+                  <ui:repeat var="phoneNumber" varStatus="status"
+                    value="#{userController.selectedUser.phoneNumbers}">
+                    <li>#{phoneNumber}</li>
+                  </ui:repeat>
+                </ul>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <p:outputLabel value="#{userRB.userTypeLabel}: " />
+              </p:column>
+              <p:column>
+                <h:outputText
+                  value="#{userController.selectedUser.type}" />
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <p:outputLabel value="#{userRB.userLoginLabel}: " />
+              </p:column>
+              <p:column>
+                <h:outputText
+                  value="#{userController.selectedUser.login}" />
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <p:outputLabel value="#{userRB.userDateOfCreationLable}: " />
+              </p:column>
+              <p:column>
+                <h:outputText
+                  value="#{userController.selectedUser.dateOfCreation}">
+                  <f:convertDateTime pattern="dd.MM.yyyy"/>
+                </h:outputText>
+              </p:column>
+            </p:row>
+          </p:panelGrid>
+        </p:outputPanel>
+      </p:overlayPanel>
     </ui:define>
 
   </ui:composition>

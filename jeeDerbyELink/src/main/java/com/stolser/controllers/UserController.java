@@ -1,5 +1,6 @@
 package com.stolser.controllers;
 
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,7 +40,9 @@ public class UserController {
 	private PropertiesLoader propLoader;
 	private Map<String, Properties> propSystemMap;
 /** For displaying users on the userListing.xhtml page*/
-	private List<User> usersList = new ArrayList<>();
+	private List<User> usersList;
+/** Current selected user from the list on the userListing.xhtml page*/
+	private User selectedUser;
 	
 //-------END of properties-------
 	public UserController() {}
@@ -71,6 +74,7 @@ public class UserController {
 		User newUser = getNewUser();
 		newUser.setStatus(User.UserStatusType.ACTIVE);
 		newUser.setDateOfCreation(Calendar.getInstance().getTime());
+		newUser.setPhoto(getUserDefaultPhotoPath());
 		
 		try{
 			userEJB.addNewUser(newUser);
@@ -100,14 +104,6 @@ public class UserController {
 	}
 	
 //-------END of action controller methods------
-/*-------placeholders for results data------------------------------------------------------- */   
-
-	public List<User> getUsersList() {
-		usersList = userEJB.getUsersFindAll();
-		return usersList;
-	}
-	
-/*-------END of placeholders for results data------------------------------------------------------- */    
 	
 	public int sortByUserType(Object user1, Object user2) {
 		
@@ -184,6 +180,18 @@ public class UserController {
 		this.userEJB = userEJB;
 	}
 
+	public List<User> getUsersList() {
+	if (usersList == null) {
+        try {
+        	usersList = userEJB.getUsersFindAll();
+
+        } catch (Exception e) {
+            logger.debug("Excepton during getting users list.", e);
+        }
+	}
+		return usersList;
+	}
+
 	public void setUsersList(List<User> usersList) {
 		this.usersList = usersList;
 	}
@@ -198,5 +206,20 @@ public class UserController {
 		Properties currentProperties = propSystemMap.get(currentLocal);
 		return currentProperties;
 	}
+/**
+ * Returns the path of the photo that is stored in the DB 
+ * (if it has been uploaded already), or the path to the default photo.
+ * */
+	public String getUserDefaultPhotoPath() {
+		String userPhotoPath = "/images/unknownUser.jpg";
+		return userPhotoPath;
+	}
 
+public User getSelectedUser() {
+	return selectedUser;
+}
+
+public void setSelectedUser(User selectedUser) {
+	this.selectedUser = selectedUser;
+}
 }
