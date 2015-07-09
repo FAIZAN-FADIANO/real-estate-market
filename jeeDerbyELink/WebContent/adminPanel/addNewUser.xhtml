@@ -13,7 +13,7 @@
 <ui:composition template="/WEB-INF/templates/adminPanel/basic/adminPanelTemplateBasic.xhtml">
 	<ui:define name="title">
       <h:outputFormat value="#{adminPanelRB.addNewUserTabTitle}">
-        <f:param value="#{userController.newUserTypeLabel}"></f:param>
+        <f:param value="#{newUserCreating.newUserTypeLabel}"></f:param>
       </h:outputFormat>
     </ui:define>
  
@@ -23,7 +23,7 @@
                 <h1>
                   <h:outputFormat value="#{adminPanelRB.addNewUserPageTopTitle}">
                     <f:param value="#{adminPanelRB.createNewUserButtonLable}"></f:param>
-                    <f:param value="#{userController.newUserTypeLabel}"></f:param>
+                    <f:param value="#{newUserCreating.newUserTypeLabel}"></f:param>
                   </h:outputFormat>
                </h1>
         </b:column>
@@ -38,7 +38,7 @@
                       </p:column>
                       <p:column>
                         <h:outputText id="newUserType" styleClass="readOnlyField"
-                          value="#{userController.newUser.type}"></h:outputText>
+                          value="#{newUserCreating.newUser.type}"></h:outputText>
                       </p:column>
                     </p:row>
                     <p:row>
@@ -47,7 +47,7 @@
                           for="newUserLogin" value="#{userRB.userLoginLabel}: "/>
                       </p:column>
                       <p:column>
-                        <p:inputText id="newUserLogin" value="#{userController.newUser.login}"
+                        <p:inputText id="newUserLogin" value="#{newUserCreating.newUser.login}"
                           required="true" requiredMessage="#{loggingRB.loginRequiredMessage}"
                           validator="#{userValidators.loginValidator}" styleClass="update"
                           title="#{systemRB.loginValidatorMessage}" 
@@ -68,7 +68,7 @@
                       <p:column>
                         <p:password id="passwordFirst" styleClass="update"
                           placeholder="#{adminPanelRB.passwordPlaceholderMessage}"
-                          value="#{userController.newUser.password}" required="true"
+                          value="#{newUserCreating.newUser.password}" required="true"
                           requiredMessage="#{loggingRB.passwordRequiredMessage}"
                           validator="#{userValidators.passwordValidator}"
                           validatorMessage="#{systemRB.passwordValidatorMessage}"
@@ -93,10 +93,10 @@
                       </p:column>
                       <p:column>
                         <p:password id="passwordSecond" styleClass="update" 
-                          value="#{userController.passwordRepeat}"
+                          value="#{newUserCreating.passwordRepeat}"
                           placeholder="#{adminPanelRB.repeatPasswordPlaceholderMessage}"
                           required="true" requiredMessage="#{loggingRB.passwordRepeatRequiredMessage}"
-                          validator="#{userController.passwordRepeatValidator}"
+                          validator="#{newUserCreating.passwordRepeatValidator}"
                           feedback="false" title="#{systemRB.loginValidatorMessage}"
                           redisplay="true">
                           <p:ajax process="@this passwordFirst"
@@ -113,7 +113,7 @@
                           value="#{userRB.userFirstNameLabel}: " />
                       </p:column>
                       <p:column>
-                        <p:inputText id="firstName" value="#{userController.newUser.firstName}"
+                        <p:inputText id="firstName" value="#{newUserCreating.newUser.firstName}"
                           placeholder="#{adminPanelRB.firstNamePlaceholderMessage}"
                           required="true" requiredMessage="#{userRB.thisFieldIsRequiredMes}"
                           validator="#{userValidators.firstLastNameValidator}" styleClass="update"
@@ -132,7 +132,7 @@
                           value="#{userRB.userLastNameLabel}: " />
                       </p:column>
                       <p:column>
-                        <p:inputText id="lastName" value="#{userController.newUser.lastName}"
+                        <p:inputText id="lastName" value="#{newUserCreating.newUser.lastName}"
                           placeholder="#{adminPanelRB.lastNamePlaceholderMessage}"
                           required="true" requiredMessage="#{userRB.thisFieldIsRequiredMes}"
                           validator="#{userValidators.firstLastNameValidator}" styleClass="update"
@@ -148,7 +148,7 @@
                 </p:panelGrid>
                 <b:row>
                   <b:column col-xs="12">
-                    <p:commandButton action="#{userController.addNewUser}" 
+                    <p:commandButton action="#{newUserCreating.addNewUser}" 
                       value="#{adminPanelRB.createNewUserButtonLable}"
                       update="@(.update)" styleClass="blockAlignCenter"/>
                   </b:column>

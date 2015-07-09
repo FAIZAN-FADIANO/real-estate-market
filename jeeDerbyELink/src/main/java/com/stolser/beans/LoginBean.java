@@ -53,7 +53,6 @@ import com.stolser.jpa.User;
  * <li>passwordRepeatValidator();</li>
  * <li>uploadedPhotoHandler();</li>
  * <li>getUserPhotoPath();</li>
- * <li></li>
  * </ul>
  * */
 @ManagedBean(name="loginBean")

@@ -27,10 +27,10 @@
       <b:row>
         <p:dataTable id="usersTable" var="user" rows="10"
           paginator="true" paginatorAlwaysVisible="false"
-          resizableColumns="false" lazy="true"
+          resizableColumns="false" lazy="false" sortBy="#{user.type}"
           value="#{userController.usersList}" draggableRows="true"
-          draggableColumns="true" rowsPerPageTemplate="5,10,20,50"
-          rowsPerPageLabel="Choose:" reflow="priority"
+          draggableColumns="false" rowsPerPageTemplate="5,10,20,50"
+          rowsPerPageLabel="#{userRB.rowsPerPageLabel}" reflow="priority"
           emptyMessage="#{userRB.emptyMessage}">
           <f:facet name="header">
             <h:outputFormat value="#{userRB.listOfUsersTableTitle}">
@@ -39,8 +39,9 @@
             <p:commandButton styleClass="columnsToggler"
               id="userColumnsToggler" type="button"
               value="#{userRB.showColumnsLabel}" icon="fa fa-wrench"></p:commandButton>
-            <p:columnToggler trigger="userColumnsToggler"
-              datasource="usersTable" />
+            <p:columnToggler trigger="userColumnsToggler" datasource="usersTable">
+              <p:ajax event="toggle" listener="#{userController.onUserTableToggle}"></p:ajax>
+            </p:columnToggler>
           </f:facet>
 
           <p:column priority="1" toggleable="false" width="7%">
@@ -56,30 +57,34 @@
           </p:column>
 
           <p:column headerText="#{userRB.userLastNameLabel}"
-            priority="1" toggleable="false" width="18%">
-            <p:outputLabel value="#{user.lastName}"></p:outputLabel>
+            priority="1" toggleable="false" width="18%" 
+            sortBy="#{user.lastName}" >
+            <h:outputText value="#{user.lastName}"></h:outputText>
           </p:column>
           <p:column headerText="#{userRB.userFirstNameLabel}"
-            priority="1" toggleable="false" width="15%">
-            <p:outputLabel value="#{user.firstName}"></p:outputLabel>
+            priority="1" width="15%" sortBy="#{user.firstName}"
+            rendered="#{userController.usersTableColumnVisibility[2]}">
+            <h:outputText value="#{user.firstName}"></h:outputText>
           </p:column>
           <p:column headerText="#{userRB.userTypeLabel}" priority="4"
-            styleClass="userTypeCell" width="15%">
-            <p:outputLabel value="#{user.type}"></p:outputLabel>
+            styleClass="userTypeCell" width="15%" 
+            sortBy="#{user.type}"
+            rendered="#{userController.usersTableColumnVisibility[3]}">
+            <h:outputText value="#{user.type}"></h:outputText>
           </p:column>
           <p:column headerText="#{userRB.userLoginLabel}" priority="4"
-            width="15%">
-            <p:outputLabel value="#{user.login}"></p:outputLabel>
+            width="15%" rendered="#{userController.usersTableColumnVisibility[4]}">
+            <h:outputText value="#{user.login}"></h:outputText>
           </p:column>
           <p:column headerText="#{userRB.userBirthdayLabel}"
-            priority="5" width="15%">
-            <p:outputLabel value="#{user.birthday}">
+            priority="5" width="15%" rendered="#{userController.usersTableColumnVisibility[5]}">
+            <h:outputText value="#{user.birthday}">
               <f:convertDateTime pattern="dd.MM.yyyy" />
-            </p:outputLabel>
+            </h:outputText>
           </p:column>
           <p:column headerText="#{userRB.userStatusLabel}" priority="2"
-            width="15%" styleClass="userStatusCell">
-            <p:outputLabel value="#{user.status}"></p:outputLabel>
+            width="15%" styleClass="userStatusCell" toggleable="false">
+            <h:outputText value="#{user.status}"></h:outputText>
           </p:column>
         </p:dataTable>
       </b:row>
@@ -97,7 +102,7 @@
 
             <p:row>
               <p:column>
-                <p:outputLabel value="#{userRB.userFirstNameLabel}: " />
+                <h:outputText value="#{userRB.userFirstNameLabel}: " />
               </p:column>
               <p:column>
                 <h:outputText
@@ -106,7 +111,7 @@
             </p:row>
             <p:row>
               <p:column>
-                <p:outputLabel value="#{userRB.userLastNameLabel}: " />
+                <h:outputText value="#{userRB.userLastNameLabel}: " />
               </p:column>
               <p:column>
                 <h:outputText
@@ -115,7 +120,7 @@
             </p:row>
             <p:row>
               <p:column>
-                <p:outputLabel value="#{userRB.userBirthdayLabel}: " />
+                <h:outputText value="#{userRB.userBirthdayLabel}: " />
               </p:column>
               <p:column>
                 <h:outputText
@@ -126,7 +131,7 @@
             </p:row>
             <p:row>
               <p:column>
-                <p:outputLabel value="#{userRB.userEmailLabel}: " />
+                <h:outputText value="#{userRB.userEmailLabel}: " />
               </p:column>
               <p:column>
                 <h:outputText
@@ -136,7 +141,7 @@
             <p:row
               rendered="${userController.selectedUser.type == 'REALTOR'}">
               <p:column>
-                <p:outputLabel value="#{userRB.realtorSkypeLable}: " />
+                <h:outputText value="#{userRB.realtorSkypeLable}: " />
               </p:column>
               <p:column>
                 <h:outputText
@@ -146,7 +151,7 @@
             <p:row
               rendered="${userController.selectedUser.type == 'REALTOR'}">
               <p:column>
-                <p:outputLabel value="#{userRB.realtorPhoneNumbersLable}: " />
+                <h:outputText value="#{userRB.realtorPhoneNumbersLable}: " />
               </p:column>
               <p:column>
                 <ul>
@@ -159,7 +164,7 @@
             </p:row>
             <p:row>
               <p:column>
-                <p:outputLabel value="#{userRB.userTypeLabel}: " />
+                <h:outputText value="#{userRB.userTypeLabel}: " />
               </p:column>
               <p:column>
                 <h:outputText
@@ -168,7 +173,7 @@
             </p:row>
             <p:row>
               <p:column>
-                <p:outputLabel value="#{userRB.userLoginLabel}: " />
+                <h:outputText value="#{userRB.userLoginLabel}: " />
               </p:column>
               <p:column>
                 <h:outputText
@@ -177,7 +182,7 @@
             </p:row>
             <p:row>
               <p:column>
-                <p:outputLabel value="#{userRB.userDateOfCreationLable}: " />
+                <h:outputText value="#{userRB.userDateOfCreationLable}: " />
               </p:column>
               <p:column>
                 <h:outputText

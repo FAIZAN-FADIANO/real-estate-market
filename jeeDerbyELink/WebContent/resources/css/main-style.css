@@ -149,42 +149,42 @@
 .adminPanel .panelGridWrapper .ui-message {
   margin: 0px;
 }
-/* line 162, sass/main-style.scss */
+/* line 163, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .ui-message {
   margin-left: 0px;
 }
-/* line 166, sass/main-style.scss */
+/* line 167, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .addNewPhoneNumber {
   float: left;
   color: #158915;
   background-color: rgba(11, 158, 11, 0.5);
 }
-/* line 172, sass/main-style.scss */
+/* line 173, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .deletePhoneNumbers {
   float: right;
   color: #db0909;
   background-color: rgba(192, 23, 23, 0.51);
 }
-/* line 178, sass/main-style.scss */
+/* line 179, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .phoneNumbersWrapper {
   float: left;
   margin-top: 10px;
   width: 100%;
 }
-/* line 183, sass/main-style.scss */
+/* line 184, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .phoneNumbersWrapper > div {
   width: 100%;
 }
-/* line 188, sass/main-style.scss */
+/* line 189, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .phoneNumbersWrapper .phoneNumberRow {
   margin-bottom: 10px;
 }
-/* line 192, sass/main-style.scss */
+/* line 193, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .phoneNumbersWrapper input {
   width: 85%;
   margin-left: 4%;
 }
-/* line 199, sass/main-style.scss */
+/* line 200, sass/main-style.scss */
 .adminPanel.myProfile .userPhotoWrapper {
   background-size: cover;
   height: 150px;
@@ -192,13 +192,13 @@
 
 /*------- END of .adminPanel -------*/
 /*Logging Form*/
-/* line 212, sass/main-style.scss */
+/* line 213, sass/main-style.scss */
 #loggingTitle {
   margin-top: 20px;
   text-align: center;
 }
 
-/* line 217, sass/main-style.scss */
+/* line 218, sass/main-style.scss */
 #loggingFormWrapper {
   border-radius: 10px;
   border: 1px solid;
@@ -208,84 +208,84 @@
   padding-bottom: 10px;
   margin-top: 50px;
 }
-/* line 226, sass/main-style.scss */
+/* line 227, sass/main-style.scss */
 #loggingFormWrapper input, #loggingFormWrapper button {
   width: 100%;
   margin: 5px 0 20px;
   padding: 5px;
 }
-/* line 232, sass/main-style.scss */
+/* line 233, sass/main-style.scss */
 #loggingFormWrapper .logInButton {
   width: 50%;
   margin: 5px auto 20px;
   display: block;
 }
 
-/* line 239, sass/main-style.scss */
+/* line 240, sass/main-style.scss */
 .langSelectTop {
   width: 100%;
   max-width: 120px;
 }
 
-/* line 244, sass/main-style.scss */
+/* line 245, sass/main-style.scss */
 #langSelectIcon {
   float: left;
   margin-right: 7px;
   margin-top: 5px;
 }
 
-/* line 251, sass/main-style.scss */
+/* line 252, sass/main-style.scss */
 #langSelect label {
   /* 		font-size: 125%; */
 }
-/* line 255, sass/main-style.scss */
+/* line 256, sass/main-style.scss */
 #langSelect div .ui-selectonemenu-trigger {
   width: auto;
 }
 
 /*END --- Logging Form --*/
-/* line 262, sass/main-style.scss */
+/* line 263, sass/main-style.scss */
 .ui-icon.fa {
   width: 25px;
 }
 
-/* line 268, sass/main-style.scss */
+/* line 269, sass/main-style.scss */
 .mainMenu form div {
   width: 100%;
 }
 
 @media (max-width: 658px) {
-  /* line 277, sass/main-style.scss */
+  /* line 278, sass/main-style.scss */
   .adminPanel .mainMenuTrigger {
     display: block;
   }
-  /* line 281, sass/main-style.scss */
+  /* line 282, sass/main-style.scss */
   .adminPanel .mainMenu {
     display: none;
   }
-  /* line 284, sass/main-style.scss */
+  /* line 285, sass/main-style.scss */
   .adminPanel .mainContent {
     width: 100%;
   }
 }
 /*------- Front End -------------*/
-/* line 296, sass/main-style.scss */
+/* line 297, sass/main-style.scss */
 .frontEnd h1, .frontEnd .h1 {
   font-size: 2em;
 }
-/* line 299, sass/main-style.scss */
+/* line 300, sass/main-style.scss */
 .frontEnd h2, .frontEnd .h2 {
   font-size: 1.8em;
 }
-/* line 302, sass/main-style.scss */
+/* line 303, sass/main-style.scss */
 .frontEnd h3, .frontEnd .h3 {
   font-size: 1.7em;
 }
-/* line 305, sass/main-style.scss */
+/* line 306, sass/main-style.scss */
 .frontEnd h4, .frontEnd .h4 {
   font-size: 1.4em;
 }
-/* line 309, sass/main-style.scss */
+/* line 310, sass/main-style.scss */
 .frontEnd #header {
   margin-top: 10px;
 }
