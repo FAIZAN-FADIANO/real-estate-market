@@ -28,6 +28,8 @@ import com.stolser.jpa.Post;
 import com.stolser.jpa.Realtor;
 import com.stolser.jpa.RegisteredUser;
 import com.stolser.jpa.User;
+import com.stolser.jpa.User.UserStatusType;
+import com.stolser.jpa.User.UserType;
 
 import org.slf4j.*;
 /**
@@ -99,6 +101,27 @@ public class UserFacadeEJB {
     	TypedQuery<User> query = entityManager.
     			createNamedQuery("User.findByStatus", User.class).setParameter("status", status);
     	return query.getResultList();
+    }
+    
+    public List<User> getUsersFindByStatusNot(User.UserStatusType status) {
+    	TypedQuery<User> query = entityManager.
+    			createNamedQuery("User.findByStatusNot", User.class).setParameter("status", status);
+    	return query.getResultList();
+    }
+    
+    public List<User> getUsersFindByTypeAndStatus(UserType type, UserStatusType status) {
+    	TypedQuery<User> query = entityManager
+    			.createNamedQuery("User.findByTypeAndStatus", User.class)
+    			.setParameter("type", type).setParameter("status", status);
+    	List<User> foundUsers = query.getResultList();
+    	if (type == User.UserType.SUPER_ADMIN) {
+    		int foundUsersSize = foundUsers.size();
+    		if ( foundUsersSize > 1) {
+    			throw new NonUniqueResultException(MessageFormat.format(
+    					getSystemProperties().getProperty("nonUniqueSuperAdminErr"), foundUsersSize));
+    		}
+    	}
+    	return foundUsers;
     }
 /**
  * The <code>login</code> property MUST be unique.<br/>
@@ -176,19 +199,31 @@ public class UserFacadeEJB {
     	//adminToDiscard = (Admin) getUsersFindById(adminToDiscard.getId()).get(0);
     	
     	if (adminAssignee == null) {
-			throw new NullPointerException(getSystemProperties().getProperty("discardAdminNullErr"));
+    		String errorMsg = getSystemProperties().getProperty("discardAdminNullErr");
+    		logger.error(errorMsg);
+			throw new NullPointerException(errorMsg);
 		}
     	
     	User.UserType adminToDiscardType = adminToDiscard.getType();
     	if (adminToDiscardType == User.UserType.SUPER_ADMIN) {
-			throw new RuntimeException(getSystemProperties().getProperty("discardSuperAdminViolationErr"));
+    		String errorMsg = getSystemProperties().getProperty("discardSuperAdminViolationErr");
+    		logger.error(errorMsg);
+			throw new RuntimeException(errorMsg);
 		}
     	
-    	List<Post> adminToDiscardPosts = postFacade.getPostsFindByAuthor(adminToDiscard);
-    	adminToDiscardPosts.forEach(post -> post.setAuthor(adminAssignee));
+/*    	List<Post> adminToDiscardPosts = postFacade.getPostsFindByAuthor(adminToDiscard);
+    	adminToDiscardPosts.forEach(post -> post.setAuthor(adminAssignee));*/
     	adminToDiscard.setStatus(User.UserStatusType.DISCARDED);
     	
-    	return adminToDiscard;
+    	try {
+    		updateUserInDB(adminToDiscard);
+    		logger.trace("User " + adminToDiscard + " has been discarded.");
+    		return adminToDiscard;
+		} catch (Exception e) {
+			logger.error("An exception occurred during discarding a user (" 
+					+ adminToDiscard + ").", e);
+			return adminToDiscard;
+		}
     }
 /**
  * After successful completion of this method the user has status = 
@@ -199,14 +234,22 @@ public class UserFacadeEJB {
     	//realtorToDiscard = (Realtor) getUsersFindById(realtorToDiscard.getId()).get(0);
     	//realtorAssignee = (Realtor) getUsersFindById(realtorAssignee.getId()).get(0);
     	    	
-    	List<EstateItem> managedEstateItems = realtorToDiscard.getManagedEstateItems();
-    	for (EstateItem estateItem : managedEstateItems) {
+/*    	List<EstateItem> managedEstateItems = realtorToDiscard.getManagedEstateItems();
+    	for (EstateItem estateItem: managedEstateItems) {
 			realtorAssignee.addManagedEstateItem(estateItem);
-		}
+		}*/
     	realtorToDiscard.setManagedEstateItems(null);
     	realtorToDiscard.setStatus(User.UserStatusType.DISCARDED);
-    	
-    	return realtorToDiscard;
+    	    	
+    	try {
+    		updateUserInDB(realtorToDiscard);
+    		logger.trace("User " + realtorToDiscard + " has been discarded.");
+    		return realtorToDiscard;
+		} catch (Exception e) {
+			logger.error("An exception occurred during discarding a user (" 
+					+ realtorToDiscard + ").", e);
+			return realtorToDiscard;
+		}
     }
 /**
  * After successful completion of this method the user has status = 
@@ -218,7 +261,15 @@ public class UserFacadeEJB {
     	regUserToDiscard.setFavoriteEstateItems(null);
     	regUserToDiscard.setStatus(User.UserStatusType.DISCARDED);
     	
-    	return regUserToDiscard;
+    	try {
+    		updateUserInDB(regUserToDiscard);
+    		logger.trace("User " + regUserToDiscard + " has been discarded.");
+    		return regUserToDiscard;
+		} catch (Exception e) {
+			logger.error("An exception occurred during discarding a user (" 
+					+ regUserToDiscard + ").", e);
+			return regUserToDiscard;
+		}
     }
 /**
  * Only users with status = User.UserStatusType.DISCARDED can be removed from the DB.
@@ -226,8 +277,10 @@ public class UserFacadeEJB {
     public void removeUser(User userToRemove) {
     	User.UserStatusType userToRemoveStatus = userToRemove.getStatus(); 
     	if (userToRemoveStatus != User.UserStatusType.DISCARDED) {
-			throw new RuntimeException(MessageFormat.format(
-					getSystemProperties().getProperty("removeNotDiscardedUserErr"), userToRemoveStatus));
+			String errorMsg = MessageFormat.format(getSystemProperties()
+					.getProperty("removeNotDiscardedUserErr"), userToRemoveStatus);
+			logger.error(errorMsg);
+    		throw new RuntimeException(errorMsg);
 		}
     	
     	userToRemove = getUsersFindById(userToRemove.getId()).get(0);
@@ -336,8 +389,10 @@ public class UserFacadeEJB {
 			return entityManager.merge(entity);
 			
 		} catch (Exception eee) {
-			throw new RuntimeException(getSystemProperties()
-					.getProperty("failureDuringMergingMessage"), eee);
+			String errorMsg = getSystemProperties()
+					.getProperty("failureDuringMergingMessage");
+			logger.error(errorMsg, eee);
+			throw new RuntimeException(errorMsg, eee);
 		}
 	}
 

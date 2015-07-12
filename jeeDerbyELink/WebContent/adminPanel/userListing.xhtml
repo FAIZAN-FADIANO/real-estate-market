@@ -5,7 +5,8 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui"
+  xmlns:b="http://bootsfaces.net/ui" 
+  xmlns:p="http://primefaces.org/ui"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 <h:head></h:head>
@@ -25,79 +26,163 @@
         </b:column>
       </b:row>
       <b:row>
-        <p:dataTable id="usersTable" var="user" rows="10"
-          paginator="true" paginatorAlwaysVisible="false"
-          resizableColumns="false" lazy="false" sortBy="#{user.type}"
-          value="#{userController.usersList}" draggableRows="true"
-          draggableColumns="false" rowsPerPageTemplate="5,10,20,50"
-          rowsPerPageLabel="#{userRB.rowsPerPageLabel}" reflow="priority"
-          emptyMessage="#{userRB.emptyMessage}">
-          <f:facet name="header">
-            <h:outputFormat value="#{userRB.listOfUsersTableTitle}">
-              <f:param value="#{fn:length(userController.usersList)}"></f:param>
-            </h:outputFormat>
-            <p:commandButton styleClass="columnsToggler"
-              id="userColumnsToggler" type="button"
-              value="#{userRB.showColumnsLabel}" icon="fa fa-wrench"></p:commandButton>
-            <p:columnToggler trigger="userColumnsToggler" datasource="usersTable">
-              <p:ajax event="toggle" listener="#{userController.onUserTableToggle}"></p:ajax>
-            </p:columnToggler>
-          </f:facet>
-
-          <p:column priority="1" toggleable="false" width="7%">
-            <p:commandButton id="userInfoDetailsButton"
-              icon="fa fa-search-plus" update="userInfoDetails"
-              oncomplete="PF('userInfoOP').show('#{component.clientId}')">
-              <f:setPropertyActionListener value="#{user}"
-                target="#{userController.selectedUser}" />
-            </p:commandButton>
-            <p:tooltip for="userInfoDetailsButton" trackMouse="true">
-              <p:graphicImage value="#{user.photo}" width="100px"></p:graphicImage>
-            </p:tooltip>
-          </p:column>
-
-          <p:column headerText="#{userRB.userLastNameLabel}"
-            priority="1" toggleable="false" width="18%" 
-            sortBy="#{user.lastName}" >
-            <h:outputText value="#{user.lastName}"></h:outputText>
-          </p:column>
-          <p:column headerText="#{userRB.userFirstNameLabel}"
-            priority="1" width="15%" sortBy="#{user.firstName}"
-            rendered="#{userController.usersTableColumnVisibility[2]}">
-            <h:outputText value="#{user.firstName}"></h:outputText>
-          </p:column>
-          <p:column headerText="#{userRB.userTypeLabel}" priority="4"
-            styleClass="userTypeCell" width="15%" 
-            sortBy="#{user.type}"
-            rendered="#{userController.usersTableColumnVisibility[3]}">
-            <h:outputText value="#{user.type}"></h:outputText>
-          </p:column>
-          <p:column headerText="#{userRB.userLoginLabel}" priority="4"
-            width="15%" rendered="#{userController.usersTableColumnVisibility[4]}">
-            <h:outputText value="#{user.login}"></h:outputText>
-          </p:column>
-          <p:column headerText="#{userRB.userBirthdayLabel}"
-            priority="5" width="15%" rendered="#{userController.usersTableColumnVisibility[5]}">
-            <h:outputText value="#{user.birthday}">
-              <f:convertDateTime pattern="dd.MM.yyyy" />
-            </h:outputText>
-          </p:column>
-          <p:column headerText="#{userRB.userStatusLabel}" priority="2"
-            width="15%" styleClass="userStatusCell" toggleable="false">
-            <h:outputText value="#{user.status}"></h:outputText>
-          </p:column>
-        </p:dataTable>
+        <h:form>
+          <p:growl id="messages" autoUpdate="true"></p:growl>
+          <p:dataTable id="usersTable" styleClass="usersTable" var="user" rows="10"
+            paginator="true" paginatorAlwaysVisible="false"
+            resizableColumns="false" lazy="false" sortBy="#{user.type}"
+            value="#{usersListing.usersList}" draggableRows="false"
+            draggableColumns="false" rowsPerPageTemplate="5,10,20,50"
+            rowsPerPageLabel="#{userRB.rowsPerPageLabel}" reflow="priority"
+            emptyMessage="#{userRB.emptyMessage}" 
+            rowStyleClass="#{(user.status eq 'ACTIVE')?'activeUserRow':'notActiveUserRow'}">
+            <f:facet name="header">
+              <h:outputFormat value="#{userRB.listOfUsersTableTitle}">
+                <f:param value="#{fn:length(usersListing.usersList)}"></f:param>
+              </h:outputFormat>
+              <p:commandButton styleClass="columnsToggler" 
+                id="userColumnsToggler" type="button"
+                value="#{userRB.showColumnsLabel}" icon="fa fa-wrench"></p:commandButton>
+              <p:columnToggler trigger="userColumnsToggler" datasource="usersTable">
+                <p:ajax event="toggle" listener="#{usersListing.onUserTableToggle}"></p:ajax>
+              </p:columnToggler>
+            </f:facet>
+  
+            <p:column priority="1" toggleable="false" width="7%">
+              <p:commandButton id="userInfoDetailsButton"
+                icon="fa fa-search-plus" update="userInfoDetails"
+                process="@this"
+                oncomplete="PF('userInfoOP').show('#{component.clientId}')">
+                <f:setPropertyActionListener value="#{user}"
+                  target="#{usersListing.selectedUser}" />
+              </p:commandButton>
+              <p:tooltip for="userInfoDetailsButton" trackMouse="true">
+                <p:graphicImage value="#{user.photo}" width="100px"></p:graphicImage>
+              </p:tooltip>
+            </p:column>
+  
+            <p:column headerText="#{userRB.userLastNameLabel}"
+              priority="1" toggleable="false" width="16%" 
+              sortBy="#{user.lastName}" >
+              <h:outputText value="#{user.lastName}"></h:outputText>
+            </p:column>
+            <p:column headerText="#{userRB.userFirstNameLabel}"
+              priority="2" width="15%" sortBy="#{user.firstName}"
+              rendered="#{usersListing.usersTableColumnVisibility[2]}">
+              <h:outputText value="#{user.firstName}"></h:outputText>
+            </p:column>
+            <p:column headerText="#{userRB.userTypeLabel}" priority="4"
+              styleClass="userTypeCell" width="12%" 
+              sortBy="#{user.type}"
+              rendered="#{usersListing.usersTableColumnVisibility[3]}">
+              <h:outputText value="#{user.type}"></h:outputText>
+            </p:column>
+            <p:column headerText="#{userRB.userLoginLabel}" priority="4"
+              width="15%" rendered="#{usersListing.usersTableColumnVisibility[4]}">
+              <h:outputText value="#{user.login}"></h:outputText>
+            </p:column>
+            <p:column headerText="#{userRB.userBirthdayLabel}"
+              priority="5" width="12%" rendered="#{usersListing.usersTableColumnVisibility[5]}">
+              <h:outputText value="#{user.birthday}">
+                <f:convertDateTime pattern="dd.MM.yyyy" />
+              </h:outputText>
+            </p:column>
+            <p:column headerText="#{userRB.userStatusLabel}" priority="1"
+              width="23%" toggleable="false">
+              <h:outputText value="#{user.status}"
+                rendered="#{(not loginBean.isUserSuperAdmin) or (user.type eq 'SUPER_ADMIN')}"></h:outputText>
+              <p:selectOneMenu id="userStatusSelect" 
+                rendered="#{(loginBean.isUserSuperAdmin) and (user.type ne 'SUPER_ADMIN')}"
+                effect="fold" value="#{user.status}" styleClass="userStatusSelect"
+                valueChangeListener="#{usersListing.userStatusChanged}">
+                <f:selectItems value="#{usersListing.userStatusLabels}" />
+                <p:ajax oncomplete="PF('userChangeStatusConfirmation').show()"
+                  update="userChangeStatusConfirmation"/>
+                
+              </p:selectOneMenu>
+            </p:column>
+          </p:dataTable>
+         </h:form>
       </b:row>
 
+<!-- Confirm Dialog for confirmation of user status changing  -->  
+      <p:dialog rendered="#{loginBean.isUserSuperAdmin}"
+        widgetVar="userChangeStatusConfirmation" showEffect="fade" hideEffect="fade"
+        header="#{systemRB.confirmDialogTitle}" modal="true" width="400"> 
+        <p:outputPanel id="userChangeStatusConfirmation">
+          <h:form rendered="#{not empty usersListing.userForUpdate}">
+            <h:panelGroup rendered="#{usersListing.userForUpdate.status ne 'DISCARDED'}">
+              <p><h:outputFormat rendered="#{usersListing.userForUpdate.status eq 'ACTIVE'}"
+                value="#{systemRB.confirmDialogActivateMessage}" escape="false"> 
+                <f:param value="#{usersListing.userForUpdate.login}"></f:param>
+              </h:outputFormat></p>
+              <p><h:outputFormat rendered="#{usersListing.userForUpdate.status eq 'NOT_ACTIVE'}"
+                value="#{systemRB.confirmDialogDisableMessage}" escape="false"> 
+                <f:param value="#{usersListing.userForUpdate.login}"></f:param>
+              </h:outputFormat></p>
+              <p:commandButton value="#{systemRB.yesButtonLabel}" icon="fa fa-check" 
+                actionListener="#{usersListing.activateDisableUserOK}" update="@(.userStatusSelect)"
+                oncomplete="PF('userChangeStatusConfirmation').hide()" styleClass="leftGreenButton"/>
+              <p:commandButton value="#{systemRB.noButtonLabel}" icon="fa fa-close" 
+                oncomplete="PF('userChangeStatusConfirmation').hide()" update="@(.userStatusSelect)"
+                styleClass="rightRedButton" 
+                actionListener="#{usersListing.changeUserStatusCancel}"/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{usersListing.userForUpdate.status eq 'DISCARDED'}">
+              <p><h:outputFormat value="#{systemRB.confirmDialogDiscardMessage}" escape="false">
+                <f:param value="#{usersListing.userForUpdate.login}"></f:param>
+              </h:outputFormat></p>
+              <p:commandButton value="#{systemRB.yesButtonLabel}" icon="fa fa-check" 
+                actionListener="#{usersListing.possibleAssigneesSearch}" update="userDiscardConfirmation"
+                oncomplete="PF('userChangeStatusConfirmation').hide(); PF('userDiscardConfirmation').show();" 
+                styleClass="leftGreenButton"/>
+              <p:commandButton value="#{systemRB.noButtonLabel}" icon="fa fa-close" 
+                oncomplete="PF('userChangeStatusConfirmation').hide()" 
+                styleClass="rightRedButton" update="@(.userStatusSelect)"
+                actionListener="#{usersListing.changeUserStatusCancel}"/>
+            </h:panelGroup>
+          </h:form>
+        </p:outputPanel>
+      </p:dialog>
+      
+<!--  Confirm dialog for discarding a user -->
+      <p:confirmDialog id="userDiscardConfirmation" severity="alert"
+        rendered="#{loginBean.isUserSuperAdmin}" 
+        widgetVar="userDiscardConfirmation" showEffect="fade" hideEffect="fade"
+        header="#{systemRB.confirmDialogTitle}" modal="true" width="400" >
+        <h:form>  
+          <p>
+            <h:outputText rendered="#{usersListing.userForUpdate.type eq 'ADMIN'}"
+              value="#{userRB.adminAssigneeSelectionText}"></h:outputText>
+            <h:outputText rendered="#{usersListing.userForUpdate.type eq 'REALTOR'}"
+              value="#{userRB.realtorAssigneeSelectionText}"></h:outputText>
+          </p>
+          <p><p:selectOneMenu id="userAssigneeSelect" value="#{usersListing.userAssignee}"
+            required="true" requiredMessage="#{userRB.userAssigneeRequiredMsg}">
+            <f:selectItem itemLabel="#{userRB.userAssigneePlaceholder}" itemValue="" />
+            <f:selectItems value="#{usersListing.possibleAssignees}" />
+          </p:selectOneMenu></p>
+          <p:commandButton value="#{userRB.userDiscardConfirmOKLable}" 
+            actionListener="#{usersListing.discardUserOK}" update="@(.userStatusSelect)"
+            oncomplete="PF('userDiscardConfirmation').hide()" styleClass="leftGreenButton"/>
+          <p:button value="#{systemRB.cancelButtonLable}" update="@(.userStatusSelect)"
+            oncomplete="PF('userDiscardConfirmation').hide();" styleClass="rightRedButton">
+            <p:ajax event="click" listener="#{usersListing.changeUserStatusCancel}"
+              immediate="true"></p:ajax>
+          </p:button>
+        </h:form>
+      </p:confirmDialog>
+    
+      
 <!-- PopUped window with a user info details --> 
       <p:overlayPanel widgetVar="userInfoOP" showEffect="fade"
         hideEffect="fade" showCloseIcon="true"
         at="right bottom" my="left middle">
         <p:outputPanel id="userInfoDetails" styleClass="userListingPopupPanel">
-          <p:panelGrid rendered="#{not empty userController.selectedUser}">
+          <p:panelGrid rendered="#{not empty usersListing.selectedUser}">
             <f:facet name="header">
               <p:graphicImage id="userPhoto" styleClass="userDetailsPhoto"
-                value="#{userController.selectedUser.photo}" />
+                value="#{usersListing.selectedUser.photo}" />
             </f:facet>
 
             <p:row>
@@ -106,7 +191,7 @@
               </p:column>
               <p:column>
                 <h:outputText
-                  value="#{userController.selectedUser.firstName}" />
+                  value="#{usersListing.selectedUser.firstName}" />
               </p:column>
             </p:row>
             <p:row>
@@ -115,7 +200,7 @@
               </p:column>
               <p:column>
                 <h:outputText
-                  value="#{userController.selectedUser.lastName}" />
+                  value="#{usersListing.selectedUser.lastName}" />
               </p:column>
             </p:row>
             <p:row>
@@ -124,7 +209,7 @@
               </p:column>
               <p:column>
                 <h:outputText
-                  value="#{userController.selectedUser.birthday}">
+                  value="#{usersListing.selectedUser.birthday}">
                   <f:convertDateTime pattern="dd.MM.yyyy"/>
                 </h:outputText>
               </p:column>
@@ -135,28 +220,28 @@
               </p:column>
               <p:column>
                 <h:outputText
-                  value="#{userController.selectedUser.email}" />
+                  value="#{usersListing.selectedUser.email}" />
               </p:column>
             </p:row>
             <p:row
-              rendered="${userController.selectedUser.type == 'REALTOR'}">
+              rendered="${usersListing.selectedUser.type == 'REALTOR'}">
               <p:column>
                 <h:outputText value="#{userRB.realtorSkypeLable}: " />
               </p:column>
               <p:column>
                 <h:outputText
-                  value="#{userController.selectedUser.skype}" />
+                  value="#{usersListing.selectedUser.skype}" />
               </p:column>
             </p:row>
             <p:row
-              rendered="${userController.selectedUser.type == 'REALTOR'}">
+              rendered="${usersListing.selectedUser.type == 'REALTOR'}">
               <p:column>
                 <h:outputText value="#{userRB.realtorPhoneNumbersLable}: " />
               </p:column>
               <p:column>
                 <ul>
                   <ui:repeat var="phoneNumber" varStatus="status"
-                    value="#{userController.selectedUser.phoneNumbers}">
+                    value="#{usersListing.selectedUser.phoneNumbers}">
                     <li>#{phoneNumber}</li>
                   </ui:repeat>
                 </ul>
@@ -168,7 +253,7 @@
               </p:column>
               <p:column>
                 <h:outputText
-                  value="#{userController.selectedUser.type}" />
+                  value="#{usersListing.selectedUser.type}" />
               </p:column>
             </p:row>
             <p:row>
@@ -177,7 +262,7 @@
               </p:column>
               <p:column>
                 <h:outputText
-                  value="#{userController.selectedUser.login}" />
+                  value="#{usersListing.selectedUser.login}" />
               </p:column>
             </p:row>
             <p:row>
@@ -186,7 +271,7 @@
               </p:column>
               <p:column>
                 <h:outputText
-                  value="#{userController.selectedUser.dateOfCreation}">
+                  value="#{usersListing.selectedUser.dateOfCreation}">
                   <f:convertDateTime pattern="dd.MM.yyyy"/>
                 </h:outputText>
               </p:column>

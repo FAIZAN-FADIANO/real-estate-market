@@ -18,6 +18,10 @@ import javax.validation.constraints.*;
 		@NamedQuery(name = "User.findByType", query = "select u from User u where u.type = :type"),
 		@NamedQuery(name = "User.findByStatus",
 				query = "select u from User u where u.status = :status"),
+		@NamedQuery(name = "User.findByStatusNot",
+				query = "select u from User u where u.status <> :status"),
+		@NamedQuery(name = "User.findByTypeAndStatus",
+				query = "select u from User u where u.type = :type and u.status = :status"),
 		@NamedQuery(name = "User.findByLogin",
 				query = "select u from User u where u.login = :login") })
 @Table(name = "USERS")

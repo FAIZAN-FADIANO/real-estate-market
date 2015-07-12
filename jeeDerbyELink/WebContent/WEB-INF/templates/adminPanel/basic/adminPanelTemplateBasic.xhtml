@@ -38,8 +38,16 @@
                   icon="fa fa-video-camera"></p:menuitem>
               </p:submenu>
               <p:submenu label="Users" icon="fa fa-user" expanded="true">
-                <p:menuitem value="Show all Users" icon="fa fa-users"
-                  outcome="/adminPanel/userListing?faces-redirect=true"></p:menuitem>
+                <p:submenu label="Show users">
+                  <p:menuitem value="Show all Users" icon="fa fa-users"
+                    outcome="/adminPanel/userListing">
+                    <f:param name="userstatus" value="notdiscarded" />
+                  </p:menuitem>
+                  <p:menuitem value="Show discarded Users" icon="fa fa-user-times"
+                    outcome="/adminPanel/userListing">
+                    <f:param name="userstatus" value="discarded" />
+                  </p:menuitem>
+                </p:submenu>
                 <p:submenu label="Add new User">
                   <p:menuitem value="Add new Admin"
                     icon="fa fa-user-plus"

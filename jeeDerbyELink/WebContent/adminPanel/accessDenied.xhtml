@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<h:body>
+  <ui:composition
+    template="/WEB-INF/templates/adminPanel/basic/adminPanelTemplateBasic.xhtml">
+    <ui:define name="title">#{adminPanelRB.accessDeniedTabTitle}</ui:define>
+
+    <ui:define name="content">
+      <h1 style="color: red;">
+        <h:outputText value="#{adminPanelRB.accessDeniedPageTopTitle}"></h:outputText>
+      </h1>
+      <p>
+        <p:link value="#{adminPanelRB.goToAdminPanelHomePage}" 
+        outcome="/adminPanel/home?faces-redirect=true"></p:link>
+      </p>
+    </ui:define>
+
+  </ui:composition>
+</h:body>
+</html>

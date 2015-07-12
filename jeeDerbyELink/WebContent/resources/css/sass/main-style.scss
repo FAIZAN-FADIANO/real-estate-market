@@ -23,6 +23,18 @@ $colorTextTableBody: rgb(64, 124, 234);
 	clear: both;
 }
 
+.leftGreenButton {
+	float: left;
+	color: rgb(21, 137, 21);
+  	background-color: rgba(11, 158, 11, 0.5);
+}
+
+.rightRedButton {
+	float: right;
+	color: rgb(219, 9, 9);
+	background-color: rgba(192, 23, 23, 0.51);
+}
+
 .blockAlignCenter {
 	display: block!important;
  	margin: 0 auto!important;
@@ -82,7 +94,14 @@ $colorTextTableBody: rgb(64, 124, 234);
 	}
 	
   
-	#usersTable {
+	.usersTable {
+		.activeUserRow {
+			background-color: rgba(4, 129, 1, 0.19);
+		}
+		.notActiveUserRow {
+			background-color: rgba(255, 255, 0, 0.23);
+		}
+		
 		.columnsToggler {
 			float: right;
 			margin-top: 3px;
@@ -95,6 +114,9 @@ $colorTextTableBody: rgb(64, 124, 234);
 		
 		.ui-datatable-tablewrapper {
 			overflow: hidden;
+		}
+		.ui-selectonemenu-trigger {
+			width: auto;
 		}
 	}
 	
@@ -165,15 +187,11 @@ $colorTextTableBody: rgb(64, 124, 234);
 			}
 			
 			.addNewPhoneNumber {
-				float: left;
-				color: rgb(21, 137, 21);
-  				background-color: rgba(11, 158, 11, 0.5);
+				@extend .leftGreenButton
 			}
 			
 			.deletePhoneNumbers {
-				float: right;
-				color: rgb(219, 9, 9);
-  				background-color: rgba(192, 23, 23, 0.51);
+				@extend .rightRedButton
 			}
 			
 			.phoneNumbersWrapper {

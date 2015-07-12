@@ -62,6 +62,19 @@ public class AuthAdminPanelFilter implements Filter {
 			} else if (requestedURI.indexOf("/adminPanel/") >= 0) {
 				if (loggedInUser != null) {
 					User.UserType loggedInUserType = loggedInUser.getType();
+					
+					/*Processing a request to the userListing.xhtml page. This request can
+					 * contain different parameters that define what type of users with what 
+					 * status to show. */
+					if (requestedURI.indexOf("/userListing.jsf") >= 0) {
+						String userStatusParam = (String)httpRequest.getParameter("userstatus");
+						if (("discarded".equals(userStatusParam)) 
+								&& (loggedInUserType != User.UserType.SUPER_ADMIN)) {
+							httpResponse.sendRedirect(httpRequest.getContextPath() + 
+									"/adminPanel/accessDenied.jsf");
+						}
+					}
+					
 					/*This is a logged in user with permissions, so pass 
 					 * the request along the filter chain*/
 					chain.doFilter(request, response);

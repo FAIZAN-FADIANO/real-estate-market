@@ -387,6 +387,18 @@ public class LoginBean implements Serializable{
 	public void setArePhoneNumbersDeleted(List<Boolean> arePhoneNumbersDeleted) {
 		this.arePhoneNumbersDeleted = arePhoneNumbersDeleted;
 	}
+	
+	public Boolean getIsUserSuperAdmin() {
+		return  (loggedInUser.getType() == User.UserType.SUPER_ADMIN);
+	}
+	
+	public Boolean getIsUserAdmin() {
+		return  (loggedInUser.getType() == User.UserType.ADMIN);
+	}
+	
+	public Boolean getIsUserRealtor() {
+		return  (loggedInUser.getType() == User.UserType.REALTOR);
+	}
 
 }
 
