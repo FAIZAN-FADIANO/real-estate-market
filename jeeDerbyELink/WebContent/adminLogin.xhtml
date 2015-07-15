@@ -27,28 +27,28 @@
           <h:form id="loggingForm">
 
             <b:panelGrid colSpans="12">
-              <p:outputLabel for="loginInput"
+              <p:outputLabel id="loginInputLabel" for="loginInput"
                 value="#{loggingRB.loginLabel}" />
-              <p:inputText id="loginInput"
+              <p:inputText id="loginInput" value="#{loginBean.enteredLogin}"
+                required="true" requiredMessage="#{loggingRB.loginRequiredMessage}"
+                validator="#{userValidators.loginExistValidator}"
                 placeholder="#{loggingRB.loginPlaceholder}"
-                value="#{loginBean.enteredLogin}" tabindex="1"
-                required="true"
-                requiredMessage="#{loggingRB.loginRequiredMessage}"></p:inputText>
-              <p:message for="loginInput"></p:message>
-              <p:outputLabel value="#{loggingRB.passwordLabel}" for="passwordInput"></p:outputLabel>
+                tabindex="1">
+                <p:ajax process="@this" 
+                   update="@this loginInputLabel loginInputMsg"
+                   event="blur"></p:ajax>
+              </p:inputText>
+              <p:message id="loginInputMsg" for="loginInput"></p:message>
+              <p:outputLabel id="passwordInputLabel" value="#{loggingRB.passwordLabel}" 
+                for="passwordInput"></p:outputLabel>
               <p:password id="passwordInput" placeholder="#{loggingRB.passwordPlaceholder}"
                 value="#{loginBean.enteredPassword}" required="true" tabindex="2"
                 requiredMessage="#{loggingRB.passwordRequiredMessage}" />
-              <p:message for="passwordInput"></p:message>
+              <p:message id="passwordInputMsg" for="passwordInput"></p:message>
               <p:commandButton styleClass="logInButton" tabindex="3"
                 action="#{loginBean.adminPanelValidation}"
                 value="#{loggingRB.enterButtonLabel}" update="@form">
               </p:commandButton>
-              <p:link value="#{loggingRB.lostPasswordLabel}"
-                outcome="ImplicitObjects"></p:link>
-              <p:link value="#{loggingRB.createAccountLabel}"
-                outcome="ImplicitObjects"></p:link>
-
             </b:panelGrid>
           </h:form>
         </b:column>

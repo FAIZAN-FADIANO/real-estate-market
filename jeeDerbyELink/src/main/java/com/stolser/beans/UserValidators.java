@@ -69,6 +69,22 @@ public class UserValidators {
 		}
 	}
 	
+	public void loginExistValidator(FacesContext context, UIComponent component
+				, Object value)	throws ValidatorException {
+		
+		String enteredLogin = value.toString();
+		List<User> usersInDB = userFacade.getUsersFindByLogin(enteredLogin);
+		if (usersInDB.size() == 0) {	
+			/*there is no user in the DB with such login*/
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+					.getProperty("invalidLoginErrSum"),
+					getSystemProperties().getProperty("invalidLoginErrDetail"));
+			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+			
+			throw new ValidatorException(newMessage);
+		}
+	}
+	
 /**
  * Validates user password on matching the pattern.
  * */

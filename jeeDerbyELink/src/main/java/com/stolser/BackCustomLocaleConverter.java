@@ -1,6 +1,7 @@
 package com.stolser;
 
 import java.util.List;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -9,11 +10,16 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.stolser.beans.BackLocaleBean;
 
 @ManagedBean(name = "backLocaleConverter")
 @RequestScoped
 public class BackCustomLocaleConverter implements Converter {
+	private static final Logger logger = LoggerFactory.getLogger(BackCustomLocaleConverter.class);
 	
 	@ManagedProperty(value = "#{backLocale}")
 	private BackLocaleBean backLocale;
@@ -53,9 +59,8 @@ public class BackCustomLocaleConverter implements Converter {
 		
 		if(object != null) {
             return ((CustomLocale) object).getLangCode();
-        }
-        else {
-            return null;
+        } else {
+            return null; 
         }
 	}
 

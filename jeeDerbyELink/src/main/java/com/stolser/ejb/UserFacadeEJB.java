@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -52,12 +53,6 @@ public class UserFacadeEJB {
 	@PostConstruct
 	private void init() {
 		propSystemMap = propLoader.getPropSystemMap();
-		/*List<User> superAdminUsers = getUsersFindByType(User.UserType.SUPER_ADMIN);
-		if (superAdminUsers.size() == 0) {
-			User superAdmin = new Admin(User.UserType.SUPER_ADMIN, User.UserStatusType.ACTIVE, 
-					"superadmin", "12345", "Oleg", "Stoliarov", new Date());
-			persistEntity(superAdmin);
-		}*/
 	}
 	
     public List<User> getUsersFindAll() {
@@ -69,6 +64,7 @@ public class UserFacadeEJB {
  * Returns either an empty list or a list that contains only one found User instance.
  * */
     public List<User> getUsersFindById(Integer id) {
+    	
     	User foundUser = entityManager.find(User.class, id);
     	if (foundUser == null) {
 			return Collections.emptyList();
@@ -83,44 +79,55 @@ public class UserFacadeEJB {
  * Otherwise, will be thrown an <code>javax.persistence.NonUniqueResultException</code>.
  * */
     public List<User> getUsersFindByType(User.UserType type) {
+    	
     	TypedQuery<User> query = entityManager
     			.createNamedQuery("User.findByType", User.class)
     			.setParameter("type", type);
     	List<User> foundUsers = query.getResultList();
-    	if (type == User.UserType.SUPER_ADMIN) {
-    		int foundUsersSize = foundUsers.size();
-        	if ( foundUsersSize > 1) {
-    			throw new NonUniqueResultException(MessageFormat.format(
-    					getSystemProperties().getProperty("nonUniqueSuperAdminErr"), foundUsersSize));
-    		}
-		}
+
+    	checkSuperAdminUniqueness(foundUsers, type);
+    	
     	return foundUsers;
     }
     
     public List<User> getUsersFindByStatus(User.UserStatusType status) {
+    	
     	TypedQuery<User> query = entityManager.
     			createNamedQuery("User.findByStatus", User.class).setParameter("status", status);
     	return query.getResultList();
     }
     
     public List<User> getUsersFindByStatusNot(User.UserStatusType status) {
+    	
     	TypedQuery<User> query = entityManager.
     			createNamedQuery("User.findByStatusNot", User.class).setParameter("status", status);
     	return query.getResultList();
     }
     
     public List<User> getUsersFindByTypeAndStatus(UserType type, UserStatusType status) {
+    	
     	TypedQuery<User> query = entityManager
     			.createNamedQuery("User.findByTypeAndStatus", User.class)
     			.setParameter("type", type).setParameter("status", status);
     	List<User> foundUsers = query.getResultList();
-    	if (type == User.UserType.SUPER_ADMIN) {
-    		int foundUsersSize = foundUsers.size();
-    		if ( foundUsersSize > 1) {
-    			throw new NonUniqueResultException(MessageFormat.format(
-    					getSystemProperties().getProperty("nonUniqueSuperAdminErr"), foundUsersSize));
-    		}
-    	}
+    	
+    	checkSuperAdminUniqueness(foundUsers, type);
+    	
+    	return foundUsers;
+    }
+    
+    public List<User> getUsersFindByTypeAndStatusExclude(UserType type, 
+    						UserStatusType status,
+    						List<Integer> excludedUsers) {
+
+    	TypedQuery<User> query = entityManager
+    			.createNamedQuery("User.findByTypeAndStatusExclude", User.class)
+    			.setParameter("type", type).setParameter("status", status)
+    			.setParameter("excludedUsers", excludedUsers);
+    	List<User> foundUsers = query.getResultList();
+    	
+    	checkSuperAdminUniqueness(foundUsers, type);
+    	
     	return foundUsers;
     }
 /**
@@ -131,6 +138,7 @@ public class UserFacadeEJB {
  * - if more than 1 - throws an <code>javax.persistence.NonUniqueResultException</code>.
  * */
     public List<User> getUsersFindByLogin(String login) {
+    	
     	TypedQuery<User> query = entityManager.
     			createNamedQuery("User.findByLogin", User.class).setParameter("login", login);
     	List<User> foundUsers = query.getResultList();
@@ -196,6 +204,7 @@ public class UserFacadeEJB {
  * the back-end. Only such users can be removed from the DB.
  * */
     public Admin discardAdmin(Admin adminToDiscard, Admin adminAssignee) {
+    	
     	//adminToDiscard = (Admin) getUsersFindById(adminToDiscard.getId()).get(0);
     	
     	if (adminAssignee == null) {
@@ -216,7 +225,7 @@ public class UserFacadeEJB {
     	adminToDiscard.setStatus(User.UserStatusType.DISCARDED);
     	
     	try {
-    		updateUserInDB(adminToDiscard);
+    		adminToDiscard = (Admin)updateUserInDB(adminToDiscard);
     		logger.trace("User " + adminToDiscard + " has been discarded.");
     		return adminToDiscard;
 		} catch (Exception e) {
@@ -231,6 +240,7 @@ public class UserFacadeEJB {
  * the back-end. Only such users can be removed from the DB.
  * */  
     public Realtor discardRealtor(Realtor realtorToDiscard, Realtor realtorAssignee) {
+    	
     	//realtorToDiscard = (Realtor) getUsersFindById(realtorToDiscard.getId()).get(0);
     	//realtorAssignee = (Realtor) getUsersFindById(realtorAssignee.getId()).get(0);
     	    	
@@ -242,7 +252,7 @@ public class UserFacadeEJB {
     	realtorToDiscard.setStatus(User.UserStatusType.DISCARDED);
     	    	
     	try {
-    		updateUserInDB(realtorToDiscard);
+    		realtorToDiscard = (Realtor)updateUserInDB(realtorToDiscard);
     		logger.trace("User " + realtorToDiscard + " has been discarded.");
     		return realtorToDiscard;
 		} catch (Exception e) {
@@ -271,10 +281,20 @@ public class UserFacadeEJB {
 			return regUserToDiscard;
 		}
     }
+    
+    public void removeUsersFromDB(List<User> usersToRemove) {
+    	
+    	for (Iterator iterator = usersToRemove.iterator(); iterator.hasNext();) {
+			User currentUser = (User) iterator.next();
+			removeUser(currentUser);
+		}
+    	
+    }
 /**
  * Only users with status = User.UserStatusType.DISCARDED can be removed from the DB.
  * */
-    public void removeUser(User userToRemove) {
+    private void removeUser(User userToRemove) {
+    	
     	User.UserStatusType userToRemoveStatus = userToRemove.getStatus(); 
     	if (userToRemoveStatus != User.UserStatusType.DISCARDED) {
 			String errorMsg = MessageFormat.format(getSystemProperties()
@@ -284,7 +304,13 @@ public class UserFacadeEJB {
 		}
     	
     	userToRemove = getUsersFindById(userToRemove.getId()).get(0);
-    	entityManager.remove(userToRemove);
+    	try {
+    		entityManager.remove(userToRemove);
+    		
+		} catch (RuntimeException e) {
+			logger.error("An exception occured during removing a user ({}).", userToRemove, e);
+			throw new RuntimeException("An exception occured during removing a user.", e);
+		}
     }
     
 /**
@@ -293,6 +319,7 @@ public class UserFacadeEJB {
  * returns the same object.
  * */
     private User systemRestrictionCheck(User userToCheck) {
+    	
     	if ((userToCheck.getType() == null) || (userToCheck.getStatus() == null) ||
         		(userToCheck.getLogin() == null) || (userToCheck.getPassword() == null) ||
         		(userToCheck.getFirstName() == null) || (userToCheck.getLastName() == null) ||
@@ -367,6 +394,7 @@ public class UserFacadeEJB {
  * Returns appropriate Properties object for current local on the front-end
  * */
     private Properties getSystemProperties() {
+    	
 		String currentLocal = FacesContext.getCurrentInstance().getViewRoot()
 				.getLocale().toString();
 		Properties currentProperties = propSystemMap.get(currentLocal);
@@ -374,6 +402,7 @@ public class UserFacadeEJB {
 	}
     
 	private <T> T persistEntity(T entity) {
+		
 		try {
 			entityManager.persist(entity);
 			return entity;
@@ -385,7 +414,9 @@ public class UserFacadeEJB {
 	}
 	
 	private <T> T mergeEntity(T entity) {
+		
 		try {
+			logger.trace("Before merging...(entity.hashcode = " + entity.hashCode() + ")");
 			return entityManager.merge(entity);
 			
 		} catch (Exception eee) {
@@ -397,6 +428,7 @@ public class UserFacadeEJB {
 	}
 
 	private <T> T refreshEntity(T entity) {
+		
 		try {
 			entityManager.refresh(entity);
 			return entity;
@@ -406,6 +438,18 @@ public class UserFacadeEJB {
 					.getProperty("failureDuringRefreshingMessage"), eee);
 		}
 	}
+	
+	private boolean checkSuperAdminUniqueness(List<User> foundUsers, UserType type) {
+    	
+    	if (type == User.UserType.SUPER_ADMIN) {
+    		int foundUsersSize = foundUsers.size();
+    		if ( foundUsersSize > 1) {
+    			throw new NonUniqueResultException(MessageFormat.format(
+    					getSystemProperties().getProperty("nonUniqueSuperAdminErr"), foundUsersSize));
+    		}
+    	}
+    	return true;
+    }
 
 }
 

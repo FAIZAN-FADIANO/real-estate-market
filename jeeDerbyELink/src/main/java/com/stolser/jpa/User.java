@@ -22,6 +22,9 @@ import javax.validation.constraints.*;
 				query = "select u from User u where u.status <> :status"),
 		@NamedQuery(name = "User.findByTypeAndStatus",
 				query = "select u from User u where u.type = :type and u.status = :status"),
+		@NamedQuery(name = "User.findByTypeAndStatusExclude",
+				query = "select u from User u where u.type = :type and u.status = :status " + 
+							"and u not in :excludedUsers"),
 		@NamedQuery(name = "User.findByLogin",
 				query = "select u from User u where u.login = :login") })
 @Table(name = "USERS")
@@ -208,6 +211,28 @@ abstract public class User implements Serializable {
 	@Override
 	public String toString() {
 		return lastName + " " + firstName + " (" + login + ")";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (id != other.id)
+			return false;
+		return true;
 	}
 
 }

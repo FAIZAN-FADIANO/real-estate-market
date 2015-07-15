@@ -88,11 +88,26 @@ $colorTextTableBody: rgb(64, 124, 234);
 	  font-size: 1.4em;
 	}
 	
+	.recycleBinButton {
+		float: left;
+	}
+	
 	#header {
 	  	margin-top: 10px;
 	    /* min-height: 100px; */
 	}
 	
+	.deleteUsersFromDBButton {
+		float: left;
+	}
+	
+	.deleteUsersFromDBPanel {
+		min-height: 40px;
+	}
+	
+	.usersToDeleteFromDBList {
+		margin: 10px 0 15px;
+	}
   
 	.usersTable {
 		.activeUserRow {
@@ -100,6 +115,9 @@ $colorTextTableBody: rgb(64, 124, 234);
 		}
 		.notActiveUserRow {
 			background-color: rgba(255, 255, 0, 0.23);
+		}
+		.discardedUserRow {
+			background-color: rgba(255, 0, 19, 0.23);
 		}
 		
 		.columnsToggler {

@@ -94,16 +94,7 @@ public class LoginBean implements Serializable{
 	public String adminPanelValidation() {
 		Marker logInMarker = MarkerFactory.getMarker("adminPanelLoggingIn");
 		
-		List<User> usersInDB = userFacade.getUsersFindByLogin(getEnteredLogin());
-		if (usersInDB.size() == 0) {	
-			// there are no users in the DB with such login
-			FacesContext.getCurrentInstance().addMessage("loggingForm:loginInput", 
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-							getSystemProperties().getProperty("invalidLoginErrSum"),
-							getSystemProperties().getProperty("invalidLoginErrDetail")));
-			return null;
-		}
-		
+		List<User> usersInDB = userFacade.getUsersFindByLogin(enteredLogin);
 		User user = usersInDB.get(0);
 		String userLogin = user.getLogin();
 		String userPassword = user.getPassword();
@@ -187,6 +178,16 @@ public class LoginBean implements Serializable{
 			/*-------------------------------*/
 			
 			loggedInUser = userFacade.updateUserInDB(loggedInUser);
+			logger.trace("after updateUserInDB()...(loggedInUser.hashcode = " + loggedInUser.hashCode() + ")");
+			
+			String successMessage = MessageFormat.format(getSystemProperties()
+					.getProperty("updateUserSuccessMessage"), loggedInUser);
+			FacesMessage newMessage = new FacesMessage(successMessage);
+			newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
+			FacesContext.getCurrentInstance().addMessage(null, newMessage);
+			logger.debug(successMessage);
+			
+			return null;
 			
 		} catch(Exception e) {
 			String errorMessage = MessageFormat.format(getSystemProperties()
@@ -200,15 +201,6 @@ public class LoginBean implements Serializable{
 			
 			return null;
 		}
-		
-		String successMessage = MessageFormat.format(getSystemProperties()
-				.getProperty("updateUserSuccessMessage"), loggedInUser);
-		FacesMessage newMessage = new FacesMessage(successMessage);
-		newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
-		FacesContext.getCurrentInstance().addMessage(null, newMessage);
-		logger.debug(successMessage);
-		
-		return null;
 	}
 	
 /**
