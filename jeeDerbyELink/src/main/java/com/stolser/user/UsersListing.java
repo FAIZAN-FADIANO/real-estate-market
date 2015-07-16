@@ -1,4 +1,4 @@
-package com.stolser.beans;
+package com.stolser.user;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -19,7 +19,6 @@ import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ValueChangeEvent;
 
 import com.stolser.PropertiesLoader;
-import com.stolser.ejb.UserFacadeEJB;
 import com.stolser.jpa.Admin;
 import com.stolser.jpa.Realtor;
 import com.stolser.jpa.User;
@@ -30,7 +29,7 @@ import org.primefaces.model.Visibility;
 import org.slf4j.*;
 /**
  * Contains properties and methods for 
- * the userListing.jsf?userstatus=notdiscarded page.
+ * the userListing.jsf page.
  * */
 @ManagedBean(name = "usersListing")
 @ViewScoped
@@ -39,7 +38,7 @@ public class UsersListing {
 	
 /** Contains all users with the status 'active' or 'not_active'.*/
 	private List<User> usersList;
-/** Current selected user from the list on the userListing.xhtml page*/
+/** Current user for whom extra info will be displayed in the popup window.*/
 	private User selectedUser;
 /** Used for a stateful columns toggler on the userListing.xhtml page*/
 	private List<Boolean> usersTableColumnVisibility;
@@ -96,14 +95,13 @@ public class UsersListing {
 					break;
 				}
 			} catch (Exception e) {
-				logger.error("Exception occured during getting users list " + 
-					"the status = " + userStatusFilter, e);
+				logger.error("Exception occured during getting users list the status = {}.", userStatusFilter, e);
 			}			
 		} else {
 			userStatusFilter = "";
 			/*usersList = userEJB.getUsersFindAll();*/
 		}
-		logger.trace("A new usersList's been created with params: userstatus = " + userStatusFilter);
+		logger.trace("A new usersList's been created with params: userstatus = {}.", userStatusFilter);
 		
 		userStatusLabels = Arrays.asList(User.UserStatusType.values());
 
@@ -146,7 +144,6 @@ public class UsersListing {
 
 		usersTableColumnVisibility.set((Integer) e.getData(), 
 				e.getVisibility() == Visibility.VISIBLE);
-		logger.trace("usersTableColumnVisibility = " + usersTableColumnVisibility);
     }
 	
 	public void userStatusChanged(ValueChangeEvent event){
@@ -168,10 +165,6 @@ public class UsersListing {
 		if ((userForUpdate == null) || (userForUpdate.getId() != userForUpdateCurrentId)) {
 			userForUpdate = userForUpdateCurrent;
 		} 
-		
-		logger.trace("userForUpdateId = " + userForUpdateCurrentId 
-				+ "\noldStatus = " + userForUpdateStatusOld
-				+ "\nnewStatus = " + userForUpdateStatusNew);
 	}
 	
 	public void activateDisableUserOK() {
@@ -213,9 +206,7 @@ public class UsersListing {
 		List<Integer> selectedUser = Arrays.asList(userForUpdate.getId());
 		possibleAssignees = userEJB
 				.getUsersFindByTypeAndStatusExclude(userForUpdateType
-						, UserStatusType.ACTIVE
-						, selectedUser);
-		
+						, UserStatusType.ACTIVE, selectedUser);
 	}
 	
 	public void discardUserOK() {
@@ -224,10 +215,12 @@ public class UsersListing {
 		try {
 			switch (userForUpdateType) {
 			case ADMIN:
-				userForUpdate = userEJB.discardAdmin((Admin)userForUpdate, (Admin)userAssignee);
+				userForUpdate = userEJB.discardAdmin((Admin)userForUpdate
+													, (Admin)userAssignee);
 				break;
 			case REALTOR:
-				userForUpdate = userEJB.discardRealtor((Realtor)userForUpdate, (Realtor)userAssignee);
+				userForUpdate = userEJB.discardRealtor((Realtor)userForUpdate
+													, (Realtor)userAssignee);
 				break;
 			default:
 				break;
@@ -239,6 +232,7 @@ public class UsersListing {
 			newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
 			FacesContext.getCurrentInstance().addMessage(null, newMessage);
 			logger.debug(successMsg);
+			
 		} catch (Exception e) {
 			String errorMsg = MessageFormat.format(getSystemProperties()
 					.getProperty("discardErrMessage"), userForUpdate);
@@ -251,9 +245,11 @@ public class UsersListing {
 	}
 	
 	public void changeUserStatusCancel() {
+		
 		usersList.stream()
 			.filter(user -> user.getId() == userForUpdate.getId())
 			.findFirst().get().setStatus(userForUpdateStatusOld);
+		
 		userForUpdate.setStatus(userForUpdateStatusOld);
 		isDiscardUserButtonVisible = false;
 		possibleAssignees = null;
@@ -261,12 +257,13 @@ public class UsersListing {
 	}
 	
 	public Boolean userAssigneeSelectedCheck(ValueChangeEvent event) {
+		
 		Object newValue = event.getNewValue();
 		Object oldValue = event.getOldValue();
-		logger.trace("newValue = " + newValue + "; oldValue = " + oldValue);
+		logger.trace("newValue = {}; oldValue = {}", newValue, oldValue);
 		
 		isDiscardUserButtonVisible = ((newValue != null) && ( !"".equals(newValue))) 
-				? true : false;
+									? true : false;
 				
 		return isDiscardUserButtonVisible;
 	}
@@ -280,7 +277,7 @@ public class UsersListing {
 		
 		usersToDeleteFromDBFlags.set(currentRowIndex, isSelectedCurrentUser);
 		
-		logger.trace("usersToDeleteFromDBFlags" + usersToDeleteFromDBFlags);
+		logger.trace("usersToDeleteFromDBFlags = {}", usersToDeleteFromDBFlags);
 	}
 	
 	public void isAllUsersToDeleteToggler(ValueChangeEvent event){
@@ -290,7 +287,8 @@ public class UsersListing {
 		for (int i = 0; i < usersList.size(); i++) {
 			usersToDeleteFromDBFlags.set(i, isSelectedAllUsers);
 		}
-		logger.trace("usersToDeleteFromDBFlags = " + usersToDeleteFromDBFlags);
+		
+		logger.trace("usersToDeleteFromDBFlags = {}", usersToDeleteFromDBFlags);
 	}
 	
 	public void extractUsersToDeleteFromDB() {
@@ -301,6 +299,7 @@ public class UsersListing {
 				usersToDeleteFromDB.add(usersList.get(i));
 			}
 		}
+		
 		logger.trace("usersToDeleteFromDB = {}", usersToDeleteFromDB);
 	}
 	
@@ -317,16 +316,12 @@ public class UsersListing {
 			logger.debug(successMsg);
 			
 			usersList.removeAll(usersToDeleteFromDB);
-/*			logger.trace("usersList = " + usersList);*/
-			
 			usersToDeleteFromDB.clear();
-/*			logger.trace("usersToDeleteFromDB = " + usersToDeleteFromDB);*/
 			
 			usersToDeleteFromDBFlags.clear();
 			for (int i = 0; i < usersList.size(); i++) {
 				usersToDeleteFromDBFlags.add(i, false);
 			}
-/*			logger.trace("usersToDeleteFromDBFlags = " + usersToDeleteFromDBFlags);*/
 			
 		} catch (Exception e) {
 			String errorMsg = getSystemProperties()
@@ -334,6 +329,7 @@ public class UsersListing {
 			FacesMessage newMessage = new FacesMessage(errorMsg);
 			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
 			FacesContext.getCurrentInstance().addMessage(null, newMessage);
+			logger.error(errorMsg);
 		}
 	}
 	
@@ -371,8 +367,6 @@ public class UsersListing {
 
 	public boolean getIsDeleteUsersButtonVisible() {
 		
-		logger.trace("usersToDeleteFromDBFlags = " + usersToDeleteFromDBFlags);
-		
 		isDeleteUsersButtonVisible = false;
 		for (Boolean flag : usersToDeleteFromDBFlags) {
 			if (flag) {
@@ -380,7 +374,7 @@ public class UsersListing {
 				break;
 			}
 		}
-		logger.trace("isDeleteUsersButtonVisible = " + isDeleteUsersButtonVisible);
+
 		return isDeleteUsersButtonVisible;
 	}
 
@@ -391,8 +385,6 @@ public class UsersListing {
 	public List<Boolean> getUsersToDeleteFromDBFlags() {
 		return usersToDeleteFromDBFlags;
 	}
-
-
 /**
  * Returns appropriate Properties object for current local on the front-end
  * */

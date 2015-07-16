@@ -8,8 +8,7 @@ public class CustomLocale {
 	private String label;
 	private String icon;
 	private String description;
-	
-//constructors
+
 	public CustomLocale() {	}
 	
 	public CustomLocale(Locale locale, String label, String icon,
@@ -29,8 +28,6 @@ public class CustomLocale {
 		return locale.getCountry();
 	}
 	
-	
-// getters for fields
 	public Locale getLocale() {
 		return locale;
 	}
@@ -51,6 +48,29 @@ public class CustomLocale {
 	@Override
 	public String toString(){
 		return locale.getLanguage();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CustomLocale other = (CustomLocale) obj;
+		if (locale == null) {
+			if (other.locale != null)
+				return false;
+		} else if (!locale.equals(other.locale))
+			return false;
+		return true;
 	}
 
 }

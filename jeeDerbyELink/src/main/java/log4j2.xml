@@ -32,8 +32,8 @@
             <AppenderRef ref="Console" />
             <AppenderRef ref="RollingLogFile" />
         </Root>
-<!--         <Logger name="com.stolser.beans.LoginBean" level="trace" additivity="true"></Logger>
-        <Logger name="com.stolser.beans.LoginBean" level="info" additivity="false">
+<!--         <Logger name="com.stolser.user.LoginBean" level="trace" additivity="true"></Logger>
+        <Logger name="com.stolser.user.LoginBean" level="info" additivity="false">
             <AppenderRef ref="LoggingInAdminPanelLogFile"/>
         </Logger> -->
         

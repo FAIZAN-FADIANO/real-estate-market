@@ -1,4 +1,4 @@
-package com.stolser.ejb;
+package com.stolser.post;
 
 import java.util.ArrayList;
 import java.util.Collections;

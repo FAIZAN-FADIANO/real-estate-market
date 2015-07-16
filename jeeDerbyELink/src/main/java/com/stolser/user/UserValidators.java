@@ -1,4 +1,4 @@
-package com.stolser.beans;
+package com.stolser.user;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.stolser.PropertiesLoader;
-import com.stolser.ejb.UserFacadeEJB;
 import com.stolser.jpa.User;
 
 @ManagedBean(name = "userValidators")
@@ -111,7 +110,6 @@ public class UserValidators {
 	public void firstLastNameValidator(FacesContext context, UIComponent component, Object value)
 			throws ValidatorException {
 		
-		logger.trace("the beginning of the validator...");
 		final String NAME_PATTERN = "^[a-zA-Z-]{1,20}$";
 	    Pattern pattern;
 	    Matcher matcher;
@@ -127,7 +125,6 @@ public class UserValidators {
 				
 			throw new ValidatorException(newMessage);
 		}
-		logger.trace("the end of the validator...");
 	}
 	
 	public void emailValidator(FacesContext context, UIComponent component, Object value)

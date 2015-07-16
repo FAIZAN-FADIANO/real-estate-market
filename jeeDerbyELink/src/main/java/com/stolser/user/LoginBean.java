@@ -1,4 +1,4 @@
-package com.stolser.beans;
+package com.stolser.user;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +39,6 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import com.stolser.PropertiesLoader;
-import com.stolser.ejb.UserFacadeEJB;
 import com.stolser.jpa.Admin;
 import com.stolser.jpa.Realtor;
 import com.stolser.jpa.User;
@@ -58,6 +57,7 @@ import com.stolser.jpa.User;
 @ManagedBean(name="loginBean")
 @SessionScoped
 public class LoginBean implements Serializable{
+	
 	private static final long serialVersionUID = 1L;
 	private final Logger logger = LoggerFactory.getLogger(LoginBean.class);
 	
@@ -66,6 +66,7 @@ public class LoginBean implements Serializable{
 	
 	private String passwordRepeat;
 	private UploadedFile uploadedUserPhoto;
+	/*Used for deleting phone numbers on the myProfile.xhtml*/
 	private List<Boolean> arePhoneNumbersDeleted;
 	
 	@EJB
@@ -84,6 +85,7 @@ public class LoginBean implements Serializable{
 	
 	@PostConstruct
 	private void init() {
+		
 		propSystemMap = propLoader.getPropSystemMap();
 		arePhoneNumbersDeleted = new ArrayList<Boolean>();
 	}
@@ -92,6 +94,7 @@ public class LoginBean implements Serializable{
  * redirects to the adminLogin.xhtml page.
  * */
 	public String adminPanelValidation() {
+		
 		Marker logInMarker = MarkerFactory.getMarker("adminPanelLoggingIn");
 		
 		List<User> usersInDB = userFacade.getUsersFindByLogin(enteredLogin);
@@ -102,7 +105,7 @@ public class LoginBean implements Serializable{
 		User.UserStatusType userStatusType = user.getStatus();
 		
 		if (!(userPassword.equals(getEnteredPassword()))) {  
-			// the entered password doesn't match the password in the DB
+			/*the entered password doesn't match the password in the DB*/
 			FacesContext.getCurrentInstance().addMessage("loggingForm:passwordInput", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
 							getSystemProperties().getProperty("invalidPassErrSum"),
@@ -116,7 +119,7 @@ public class LoginBean implements Serializable{
 		} 
 		
 		if (userType == User.UserType.REGISTERED_USER) {
-			// registered users don't have access to the Admin Panel
+			/*registered users don't have access to the Admin Panel*/
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, 
 							getSystemProperties().getProperty("invalidTypeErrSum"), 
@@ -125,7 +128,7 @@ public class LoginBean implements Serializable{
 		}
 		
 		if (userStatusType != User.UserStatusType.ACTIVE) {
-			// the user is NOT active --> they don't have NO permissions
+			/*the user is NOT active --> they don't have NO permissions*/
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_WARN, 
 							getSystemProperties().getProperty("invalidStatusErrSum"), 
@@ -137,7 +140,7 @@ public class LoginBean implements Serializable{
         
         loggedInUser = user;
         /* For the use on the myProfile.xhtml page.*/
-        setPasswordRepeat(loggedInUser.getPassword());
+        passwordRepeat = loggedInUser.getPassword();
         
         if (loggedInUser instanceof Realtor) {
         	List<String> phoneNumbers = ((Realtor)loggedInUser).getPhoneNumbers();
@@ -151,6 +154,7 @@ public class LoginBean implements Serializable{
 	}
 	
 	public String adminPanelLogout() {
+		
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
 	            .getExternalContext().getSession(false);
         LoginBean loginBean = (LoginBean)session.getAttribute("loginBean");
@@ -178,7 +182,7 @@ public class LoginBean implements Serializable{
 			/*-------------------------------*/
 			
 			loggedInUser = userFacade.updateUserInDB(loggedInUser);
-			logger.trace("after updateUserInDB()...(loggedInUser.hashcode = " + loggedInUser.hashCode() + ")");
+			logger.trace("after updateUserInDB()...(loggedInUser.hashcode = {})", loggedInUser.hashCode());
 			
 			String successMessage = MessageFormat.format(getSystemProperties()
 					.getProperty("updateUserSuccessMessage"), loggedInUser);
@@ -237,6 +241,7 @@ public class LoginBean implements Serializable{
  * in the /applications/uploads/images/folder or throws an Exception. 
  */
 	public void uploadedPhotoHandler(FileUploadEvent e) {
+		
 		UploadedFile uploadedFile = e.getFile();
 		/* get the absolute path of the destination folder for uploaded images*/
 		String separator = File.separator;
@@ -255,6 +260,7 @@ public class LoginBean implements Serializable{
 					.getProperty("photoUploadedSuccessMes"));
 			newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
 			FacesContext.getCurrentInstance().addMessage(null, newMessage);
+			
 			logger.debug("A new file with the full path = {} has been uploaded.",
 					uploadedPhoto);
 			
@@ -276,6 +282,7 @@ public class LoginBean implements Serializable{
  * Action listener for addNewPhoneNumber button on the myProfile.xhtml.
  * */
 	public void addNewPhoneNumber(ActionEvent event) {
+		
 		((Realtor) loggedInUser).getPhoneNumbers().add("");
 		arePhoneNumbersDeleted.add(false);
 	}
@@ -283,6 +290,7 @@ public class LoginBean implements Serializable{
  * Action listener for deletePhoneNumber button on the myProfile.xhtml.
  * */
 	public void deletePhoneNumber(ActionEvent event) {
+		
 		List<String> phoneNumbers = ((Realtor) getLoggedInUser()).getPhoneNumbers();
 		List<String> newPhoneNumbers = new ArrayList<>();
 		for (int i = 0; i < phoneNumbers.size(); i++) {
@@ -290,6 +298,7 @@ public class LoginBean implements Serializable{
 				newPhoneNumbers.add(phoneNumbers.get(i));
 			}
 		}
+		
 		((Realtor) getLoggedInUser()).setPhoneNumbers(newPhoneNumbers);
 		arePhoneNumbersDeleted.clear();
 		for (int i = 0; i < newPhoneNumbers.size(); i++) {
@@ -297,13 +306,8 @@ public class LoginBean implements Serializable{
 		}
 
 	}
-	
-/*------------ getters without fields --------*/
 
-	
-/*------------ END of getters without fields --------*/
-/*------------ private methods --------*/
-	
+/*------------------------ private methods --------*/
 /**
  * Returns appropriate Properties object for current local on the front-end
  * */
@@ -331,6 +335,7 @@ public class LoginBean implements Serializable{
 	}*/
 	
 /*------------ END of private methods --------*/
+	
 /*------------ getter and setters -----------*/
 	public String getEnteredLogin() {
 		return enteredLogin;
@@ -391,14 +396,4 @@ public class LoginBean implements Serializable{
 	public Boolean getIsUserRealtor() {
 		return  (loggedInUser.getType() == User.UserType.REALTOR);
 	}
-
 }
-
-
-
-
-
-
-
-
-

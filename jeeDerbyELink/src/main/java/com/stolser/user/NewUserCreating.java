@@ -1,4 +1,4 @@
-package com.stolser.beans;
+package com.stolser.user;
 
 import java.text.MessageFormat;
 import java.util.Calendar;
@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.stolser.PropertiesLoader;
-import com.stolser.ejb.UserFacadeEJB;
 import com.stolser.jpa.Admin;
 import com.stolser.jpa.Realtor;
 import com.stolser.jpa.User;
@@ -42,8 +41,11 @@ public class NewUserCreating {
 	
 	@PostConstruct
 	private void init() {
+		
 		String userTypeParam = FacesContext.getCurrentInstance().getExternalContext()
 				.getRequestParameterMap().get("usertype");
+/*For creating a new user of both types (ADMIN and REALTOR) the same addNewUser.xhtml
+ * page used but with different GET parameter usertype.*/
 		if ( !(userTypeParam == null) ) {
 			switch (userTypeParam) {
 			case "admin":

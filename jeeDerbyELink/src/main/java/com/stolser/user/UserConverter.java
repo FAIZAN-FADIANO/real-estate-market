@@ -1,4 +1,4 @@
-package com.stolser.users;
+package com.stolser.user;
 
 import java.util.List;
 import java.util.Map;
@@ -16,8 +16,6 @@ import javax.faces.convert.ConverterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.stolser.beans.UsersListing;
-import com.stolser.ejb.UserFacadeEJB;
 import com.stolser.jpa.User;
 
 @ManagedBean(name = "userConverter")
@@ -37,19 +35,21 @@ public class UserConverter implements Converter {
 
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {
-		logger.trace("object = " + value + " (of class = " + value.getClass() + ").");
 
 		if((value != null) && ( !"".equals(value))) {
             try {	
             	User selectedAssignee = usersList.stream()
             			.filter(user -> value.equals(((User)user).getLogin()))
             			.findFirst().get();
-            	logger.trace("selectedAssingee = " + selectedAssignee);
+            	
+            	logger.trace("selectedAssingee = {}.", selectedAssignee);
+            	
             	return selectedAssignee;
             	
             } catch(Exception e) {
             	String errorMsg = "Conversion Error. Not a valid login.";
             	logger.error(errorMsg, e);
+            	
                 throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 		errorMsg, errorMsg));
             }
@@ -62,7 +62,8 @@ public class UserConverter implements Converter {
 	public String getAsString(FacesContext context, UIComponent component, Object object) {
 		
 		if((object != null) && ( !"".equals(object))) {
-			logger.trace("object = " + object + " (of class = " + object.getClass() + ").");
+			logger.trace("object = {} (of class = {}).", object, object.getClass());
+			
 			return ((User) object).getLogin();
         } else { 
             return null;

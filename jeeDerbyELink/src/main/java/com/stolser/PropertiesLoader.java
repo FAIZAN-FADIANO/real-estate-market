@@ -1,16 +1,16 @@
 package com.stolser;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ejb.Stateless;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Session Bean implementation class PropertiesLoader.<br/>
@@ -22,6 +22,7 @@ import javax.ejb.Stateless;
 @Singleton
 @Startup
 public class PropertiesLoader {
+	private static final Logger logger = LoggerFactory.getLogger(PropertiesLoader.class);
 
 	private Map<String, Properties> propSystemMap;
 	 
@@ -30,7 +31,7 @@ public class PropertiesLoader {
         ClassLoader classLoader = this.getClass().getClassLoader();
         propSystemMap = new HashMap<>();
                 
-     // Loading all files for resource bundle system.properties
+     /*Loading all files for resource bundle system.properties*/
         String basicPathSystem = "stolser/i18n/general/system/system";
         Properties propSystemEn = new Properties();
         Properties propSystemRu = new Properties();
@@ -42,9 +43,10 @@ public class PropertiesLoader {
         	propSystemDe.load(classLoader.getResourceAsStream(basicPathSystem + "_de.properties"));
         	propSystemMap.put("en", propSystemEn);
         	propSystemMap.put("ru", propSystemRu);
-        	propSystemMap.put("de", propSystemDe);	
+        	propSystemMap.put("de", propSystemDe);
+        	
         } catch (IOException e) {
-        	System.out.println("Exception arose during loading system/system.properties.");
+        	logger.error("Exception arose during loading system/system.properties.", e);
         }
     }
  

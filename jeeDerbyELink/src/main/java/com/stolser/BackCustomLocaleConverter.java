@@ -14,7 +14,7 @@ import javax.faces.convert.ConverterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.stolser.beans.BackLocaleBean;
+import com.stolser.locale.BackLocaleBean;
 
 @ManagedBean(name = "backLocaleConverter")
 @RequestScoped
@@ -45,8 +45,9 @@ public class BackCustomLocaleConverter implements Converter {
             	return currentLocale;
             	
             } catch(NumberFormatException e) {
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error.", 
-                												"Not a valid customLocale."));
+            	logger.error("Conversion Error. Not a valid customLocale.", e);
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR
+                		, "Conversion Error.", "Not a valid customLocale."));
             }
         }
         else {

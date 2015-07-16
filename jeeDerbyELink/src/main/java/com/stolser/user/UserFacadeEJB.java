@@ -1,4 +1,4 @@
-package com.stolser.ejb;
+package com.stolser.user;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -31,6 +31,7 @@ import com.stolser.jpa.RegisteredUser;
 import com.stolser.jpa.User;
 import com.stolser.jpa.User.UserStatusType;
 import com.stolser.jpa.User.UserType;
+import com.stolser.post.PostFacadeEJB;
 
 import org.slf4j.*;
 /**
@@ -56,6 +57,7 @@ public class UserFacadeEJB {
 	}
 	
     public List<User> getUsersFindAll() {
+    	
     	TypedQuery<User> query = entityManager
     			.createNamedQuery("User.findAll", User.class);
     	return query.getResultList();
@@ -194,18 +196,14 @@ public class UserFacadeEJB {
 		}
     	
     	User userFromDB = usersInDB.get(0);
-    	    	
     	return userFromDB;
     }
-    
 /**
  * After successful completion of this method the user has status = 
  * User.UserStatusType.DISCARDED and is put into the Recycle Bin on
  * the back-end. Only such users can be removed from the DB.
  * */
     public Admin discardAdmin(Admin adminToDiscard, Admin adminAssignee) {
-    	
-    	//adminToDiscard = (Admin) getUsersFindById(adminToDiscard.getId()).get(0);
     	
     	if (adminAssignee == null) {
     		String errorMsg = getSystemProperties().getProperty("discardAdminNullErr");
@@ -226,13 +224,14 @@ public class UserFacadeEJB {
     	
     	try {
     		adminToDiscard = (Admin)updateUserInDB(adminToDiscard);
-    		logger.trace("User " + adminToDiscard + " has been discarded.");
-    		return adminToDiscard;
+    		logger.trace("User {} has been discarded.", adminToDiscard);
+    		
 		} catch (Exception e) {
-			logger.error("An exception occurred during discarding a user (" 
-					+ adminToDiscard + ").", e);
-			return adminToDiscard;
+			logger.error("An exception occurred during discarding a user ({})."
+					, adminToDiscard, e);
 		}
+    	
+    	return adminToDiscard;
     }
 /**
  * After successful completion of this method the user has status = 
@@ -240,26 +239,25 @@ public class UserFacadeEJB {
  * the back-end. Only such users can be removed from the DB.
  * */  
     public Realtor discardRealtor(Realtor realtorToDiscard, Realtor realtorAssignee) {
-    	
     	//realtorToDiscard = (Realtor) getUsersFindById(realtorToDiscard.getId()).get(0);
     	//realtorAssignee = (Realtor) getUsersFindById(realtorAssignee.getId()).get(0);
-    	    	
 /*    	List<EstateItem> managedEstateItems = realtorToDiscard.getManagedEstateItems();
     	for (EstateItem estateItem: managedEstateItems) {
 			realtorAssignee.addManagedEstateItem(estateItem);
 		}*/
+    	
     	realtorToDiscard.setManagedEstateItems(null);
     	realtorToDiscard.setStatus(User.UserStatusType.DISCARDED);
     	    	
     	try {
     		realtorToDiscard = (Realtor)updateUserInDB(realtorToDiscard);
-    		logger.trace("User " + realtorToDiscard + " has been discarded.");
-    		return realtorToDiscard;
+    		logger.trace("User {} has been discarded.", realtorToDiscard);
+    		
 		} catch (Exception e) {
-			logger.error("An exception occurred during discarding a user (" 
-					+ realtorToDiscard + ").", e);
-			return realtorToDiscard;
+			logger.error("An exception occurred during discarding a user ({}).", realtorToDiscard, e);
 		}
+    	
+    	return realtorToDiscard;
     }
 /**
  * After successful completion of this method the user has status = 
@@ -273,13 +271,12 @@ public class UserFacadeEJB {
     	
     	try {
     		updateUserInDB(regUserToDiscard);
-    		logger.trace("User " + regUserToDiscard + " has been discarded.");
-    		return regUserToDiscard;
+    		logger.trace("User {} has been discarded.", regUserToDiscard);
 		} catch (Exception e) {
-			logger.error("An exception occurred during discarding a user (" 
-					+ regUserToDiscard + ").", e);
-			return regUserToDiscard;
+			logger.error("An exception occurred during discarding a user ({}).", regUserToDiscard, e);
 		}
+    	
+    	return regUserToDiscard;
     }
     
     public void removeUsersFromDB(List<User> usersToRemove) {
@@ -300,15 +297,18 @@ public class UserFacadeEJB {
 			String errorMsg = MessageFormat.format(getSystemProperties()
 					.getProperty("removeNotDiscardedUserErr"), userToRemoveStatus);
 			logger.error(errorMsg);
+			
     		throw new RuntimeException(errorMsg);
 		}
     	
     	userToRemove = getUsersFindById(userToRemove.getId()).get(0);
+    	
     	try {
     		entityManager.remove(userToRemove);
     		
 		} catch (RuntimeException e) {
 			logger.error("An exception occured during removing a user ({}).", userToRemove, e);
+			
 			throw new RuntimeException("An exception occured during removing a user.", e);
 		}
     }
@@ -389,18 +389,7 @@ public class UserFacadeEJB {
         	
         	return userToCheck;
     }
-    
-/**
- * Returns appropriate Properties object for current local on the front-end
- * */
-    private Properties getSystemProperties() {
-    	
-		String currentLocal = FacesContext.getCurrentInstance().getViewRoot()
-				.getLocale().toString();
-		Properties currentProperties = propSystemMap.get(currentLocal);
-		return currentProperties;
-	}
-    
+   
 	private <T> T persistEntity(T entity) {
 		
 		try {
@@ -416,13 +405,14 @@ public class UserFacadeEJB {
 	private <T> T mergeEntity(T entity) {
 		
 		try {
-			logger.trace("Before merging...(entity.hashcode = " + entity.hashCode() + ")");
+			logger.trace("Before merging...(entity.hashcode = {})", entity.hashCode());
 			return entityManager.merge(entity);
 			
 		} catch (Exception eee) {
 			String errorMsg = getSystemProperties()
 					.getProperty("failureDuringMergingMessage");
 			logger.error(errorMsg, eee);
+			
 			throw new RuntimeException(errorMsg, eee);
 		}
 	}
@@ -448,8 +438,20 @@ public class UserFacadeEJB {
     					getSystemProperties().getProperty("nonUniqueSuperAdminErr"), foundUsersSize));
     		}
     	}
+    	
     	return true;
     }
+	
+/**
+ * Returns appropriate Properties object for current local on the front-end
+ * */
+    private Properties getSystemProperties() {
+    	
+		String currentLocal = FacesContext.getCurrentInstance().getViewRoot()
+				.getLocale().toString();
+		Properties currentProperties = propSystemMap.get(currentLocal);
+		return currentProperties;
+	}
 
 }
 

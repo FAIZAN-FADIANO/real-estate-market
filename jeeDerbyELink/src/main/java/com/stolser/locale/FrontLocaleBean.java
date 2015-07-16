@@ -1,4 +1,4 @@
-package com.stolser.beans;
+package com.stolser.locale;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.*;
 
 import com.stolser.CustomLocale;
-
 
 @ManagedBean (name = "frontLocale")
 @SessionScoped
