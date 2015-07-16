@@ -26,34 +26,11 @@
         </b:column>
       </b:row>
       <b:row>
-<!--       Confirmation dialog for permanent deleting discarded users from the DB. -->
-        <p:dialog widgetVar="deleteUsersFromDBConfirm" showEffect="fade" hideEffect="fade"
-          header="#{systemRB.confirmDialogTitle}" modal="true" width="400"
-          draggable="false" resizable="false" closable="false">
-          <p:outputPanel id="deleteUsersFromDBConfirm" deferred="true" deferredMode="visible">
-            <h:form>
-              <h:outputText value="#{userRB.deleteUsersFromDBConfirmMsg}"></h:outputText>
-              <p:dataList styleClass="usersToDeleteFromDBList"
-                value="#{usersListing.usersToDeleteFromDB}" var="user" 
-                itemType="disc">
-                <h:outputText value="#{user.lastName} #{user.firstName} (#{user.login})"/>
-              </p:dataList>
-              <p:commandButton value="#{systemRB.yesButtonLabel}" icon="fa fa-check" 
-                actionListener="#{usersListing.deleteUsersPermanentlyOK}" 
-                update="@(.usersTableForm)"
-                oncomplete="PF('deleteUsersFromDBConfirm').hide()" styleClass="leftGreenButton"/>
-              <p:commandButton value="#{systemRB.noButtonLabel}" icon="fa fa-close" 
-                oncomplete="PF('deleteUsersFromDBConfirm').hide()"
-                styleClass="rightRedButton"/>
-            </h:form>
-          </p:outputPanel>
-        </p:dialog>
-   
         <h:form id="usersTableForm" styleClass="usersTableForm">
           <p:growl id="messages" autoUpdate="true" globalOnly="true"></p:growl>
-          <p:dataTable id="usersTable" styleClass="usersTable" var="user" rows="10"
+          <p:dataTable id="usersTable" styleClass="usersTable" var="user" rows="5"
             paginator="true" paginatorAlwaysVisible="false"
-            resizableColumns="false" lazy="false" sortBy="#{user.type}"
+            resizableColumns="false" sortBy="#{user.type}"
             value="#{usersListing.usersList}" draggableRows="false"
             draggableColumns="false" rowsPerPageTemplate="5,10,20,50"
             rowsPerPageLabel="#{userRB.rowsPerPageLabel}" reflow="priority"
@@ -84,7 +61,7 @@
                        and (usersListing.isDeleteUsersButtonVisible eq true)}" 
                   value="#{userRB.deleteUsersButtonLabel}" icon="fa fa-remove" 
                   actionListener="#{usersListing.extractUsersToDeleteFromDB}" 
-                  update="deleteUsersFromDBConfirm"
+                  update="@(.deleteUsersConfirmPanel)"
                   oncomplete="PF('deleteUsersFromDBConfirm').show();"/>
                 <p:tooltip for="deleteUsersFromDBButton" 
                   value="#{userRB.deleteUsersButtonTooltip}"></p:tooltip>
@@ -92,12 +69,13 @@
               <div class="clearBoth"></div>
             </f:facet>
             
-            <p:column rendered="#{usersListing.userStatusFilter eq 'discarded'}"
-              priority="1" toggleable="false" width="5%" id="isUserToDeleteToggler">
+            <p:column id="isUserToDeleteToggler"
+              rendered="#{usersListing.userStatusFilter eq 'discarded'}"
+              priority="1" toggleable="false" width="5%" >
               <f:facet name="header">
                 <p:selectBooleanCheckbox
                   valueChangeListener="#{usersListing.isAllUsersToDeleteToggler}">
-                  <p:ajax update="@(.isUserToDeleteToggler) deleteUsersFromDBPanel" />
+                  <p:ajax update="@(.isUserToDeleteToggler) @(.deleteUsersFromDBPanel)" />
                 </p:selectBooleanCheckbox>
               </f:facet>
               <p:selectBooleanCheckbox value="#{usersListing.usersToDeleteFromDBFlags[currentRow]}"
@@ -255,6 +233,31 @@
         </h:form>
       </p:confirmDialog>
     
+<!--  Confirmation dialog for permanent deleting discarded users from the DB. -->
+      <p:dialog widgetVar="deleteUsersFromDBConfirm" showEffect="fade" hideEffect="fade"
+        rendered="#{(usersListing.userStatusFilter eq 'discarded')}"
+        header="#{systemRB.confirmDialogTitle}" modal="true" width="400"
+        draggable="false" resizable="false" closable="false">
+        <p:outputPanel id="deleteUsersConfirmPanel" styleClass="deleteUsersConfirmPanel"
+          deferred="true" deferredMode="visible">
+          <h:form>
+            <h:outputText value="#{userRB.deleteUsersFromDBConfirmMsg}"></h:outputText>
+            <p:dataList styleClass="usersToDeleteFromDBList"
+              value="#{usersListing.usersToDeleteFromDB}" var="userToDelete" 
+              itemType="disc">
+              <h:outputText value="#{userToDelete.lastName} #{userToDelete.firstName} 
+                                  (#{userToDelete.login})"/>
+            </p:dataList>
+            <p:commandButton value="#{systemRB.yesButtonLabel}" icon="fa fa-check" 
+              actionListener="#{usersListing.deleteUsersPermanentlyOK}" 
+              update="@(.usersTableForm)"
+              oncomplete="PF('deleteUsersFromDBConfirm').hide()" styleClass="leftGreenButton"/>
+            <p:commandButton value="#{systemRB.noButtonLabel}" icon="fa fa-close" 
+              oncomplete="PF('deleteUsersFromDBConfirm').hide()"
+              styleClass="rightRedButton"/>
+          </h:form>
+        </p:outputPanel>
+      </p:dialog>
       
 <!-- PopUped window with a user info details --> 
       <p:overlayPanel widgetVar="userInfoOP" showEffect="fade"

@@ -29,14 +29,15 @@ import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 import org.slf4j.*;
 /**
- * Contains properties and methods for the userListing.xhtml page.
+ * Contains properties and methods for 
+ * the userListing.jsf?userstatus=notdiscarded page.
  * */
 @ManagedBean(name = "usersListing")
 @ViewScoped
 public class UsersListing {
 	private static final Logger logger = LoggerFactory.getLogger(UsersListing.class);
 	
-/** For displaying users on the userListing.xhtml page*/
+/** Contains all users with the status 'active' or 'not_active'.*/
 	private List<User> usersList;
 /** Current selected user from the list on the userListing.xhtml page*/
 	private User selectedUser;
