@@ -42,7 +42,8 @@
               <h:outputFormat value="#{userRB.listOfUsersTableTitle}">
                 <f:param value="#{fn:length(usersListing.usersList)}"></f:param>
               </h:outputFormat>
-              <p:button rendered="#{usersListing.userStatusFilter ne 'discarded'}"
+              <p:button rendered="#{(usersListing.userStatusFilter ne 'discarded') 
+                                  and (loginBean.loggedInUser.type eq 'SUPER_ADMIN')}"
                 value="#{userRB.recycleBinLabel}" icon="fa fa-trash"
                 styleClass="recycleBinButton">
                 <f:param name="userstatus" value="discarded" />

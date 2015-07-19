@@ -64,6 +64,10 @@ $colorTextTableBody: rgb(64, 124, 234);
 	}
 }
 
+.labelBold {
+	font-weight: bold;
+}
+
 /* ----- END of General css ---------- */
 
 /* .panelGridWithoutBorder {
@@ -107,6 +111,24 @@ $colorTextTableBody: rgb(64, 124, 234);
 	
 	.usersToDeleteFromDBList {
 		margin: 10px 0 15px;
+	}
+	
+	.adminMainMenu {
+	  margin-bottom: 20px; 
+	}
+	
+	.userHeaderPhoto {
+		display: block;
+		margin-right: 25px;
+	}
+	
+	.userTopMenu {
+		text-align: center;
+		
+		&.ui-panelgrid>*>tr,
+		&.ui-panelgrid .ui-panelgrid-cell {
+		    border: none;
+		}
 	}
   
 	.usersTable {
@@ -154,13 +176,18 @@ $colorTextTableBody: rgb(64, 124, 234);
 		display: none;
 	}
 	
-	.userTopMenuTrigger,
-	.langSelectIcon {
+	.userTopMenuTrigger {
 		float: right;
+		padding: 0;
+		
+		.ui-menubar .ui-menuitem-link {
+			padding: 0.15em 0.3em;
+		}
 	}
 	.langSelectIcon {
 		width: 195px;
 		line-height: 1.2;
+		float: right;
 	}
 	
 	table.ui-panelgrid {
@@ -314,6 +341,10 @@ $colorTextTableBody: rgb(64, 124, 234);
 		.mainMenuTrigger {
 			display: block;
 		}
+		
+		.userTopMenuTrigger {
+			display: none;
+		}
 	
 		.mainMenu {
 			display: none;
@@ -321,6 +352,7 @@ $colorTextTableBody: rgb(64, 124, 234);
 		.mainContent {
 			width: 100%;
 		}
+		
 	}
 }
 

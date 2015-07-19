@@ -32,12 +32,9 @@ public class BackLocaleBean implements Serializable {
 	
 	@PostConstruct
     private void init() {
-		logger.trace("FacesContext.getCurrentInstance() = " + FacesContext.getCurrentInstance());
-		
 		propSystemMap = propLoader.getPropSystemMap();
 		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
-		logger.trace("currentLocal = " + currentLocal);
-		
+	
 		Properties currentProperties = propSystemMap.get(currentLocal);
 		
 		currentLocale = new CustomLocale(new Locale("en", "US")

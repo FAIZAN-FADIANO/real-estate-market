@@ -1,59 +1,95 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-			   xmlns:ui="http://java.sun.com/jsf/facelets"
-			   xmlns:h="http://java.sun.com/jsf/html"
-			   xmlns:f="http://java.sun.com/jsf/core"
-			   xmlns:b="http://bootsfaces.net/ui"
-			   xmlns:p="http://primefaces.org/ui">
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
 
-   	<b:row>
-   		<b:column col-xs="3">
-   			<h:form>
-   				<p:commandButton id="mainMenuTrigger" styleClass="mainMenuTrigger" type="button" value="Menu" 
-   					icon="fa fa-bars"></p:commandButton>
-	 				<p:menu overlay="true" trigger="mainMenuTrigger" my="left top" at="left bottom">
-	    				<p:submenu label="#{systemRB.dashboardMenuLabel}" icon="fa fa-dashboard">
-	    					<p:menuitem value="#{systemRB.homeMenuLabel}" icon="fa fa-home" 
-	    								outcome="/adminPanel/home?faces-redirect=true"></p:menuitem>
-	    					<p:menuitem value="#{systemRB.monitorMenuLabel}" icon="fa fa-video-camera"></p:menuitem>
-	    				</p:submenu>
-	    				<p:submenu label="Users" icon="fa fa-user">
-	    					<p:menuitem value="All Users" icon="fa fa-users" 
-	    								outcome="/adminPanel/userListing?faces-redirect=true"></p:menuitem>
-	    					<p:menuitem value="Add New" icon="fa fa-user-plus"></p:menuitem>
-	    					<p:menuitem value="My Profile" icon="fa fa-male"></p:menuitem>
-		  				</p:submenu>
-	   				</p:menu>
-   			</h:form>
-   		</b:column>
-   		<b:column col-xs="9">
-   			<h:form>
-   				<p:commandButton id="userTopMenuTrigger" styleClass="userTopMenuTrigger" type="button" value="User" 
-   									icon="fa fa-user"></p:commandButton>
-	   			<p:menu overlay="true" trigger="userTopMenuTrigger" my="right top" at="right bottom">
-	   				<p:menuitem value="#{systemRB.myProfileMenuLabel}"></p:menuitem>
-	   				<p:separator></p:separator>
-	   				<p:menuitem value="#{systemRB.logOutMenuLabel}" action="#{loginBean.adminPanelLogout}"
-	   						icon="fa fa-sign-out"></p:menuitem>
-	   			</p:menu>
-   			</h:form>
-   			<div class="langSelectIcon">
-   				<p:graphicImage id="langSelectIcon" name="langSelectIcon.png" library="images"></p:graphicImage>
-	   			<h:form id="langSelect">
-	   				<p:selectOneMenu value="#{backLocale.currentLocale}" converter="#{backLocaleConverter}" 
-	   				onchange="submit()" effect="fade" var="lang" style="width:160px" immediate="true">
-	   				 	<f:selectItems value="#{backLocale.locales}" var="locale"
-	   				 	itemLabel="#{locale.label}" itemValue="#{locale}"></f:selectItems>
-	   				 	<p:column style="width:10%">
-			                <p:graphicImage name="#{lang.icon}" library="images"></p:graphicImage>
-			            </p:column>
-			            <p:column>
-			                <h:outputText value="#{lang.label} (#{lang.country})" 
-			                				title="#{systemRB['langDescription'.concat(lang.country)]}"/>
-			            </p:column>
-	   				</p:selectOneMenu>
-	   			</h:form>
-   			</div>
-   		</b:column>
-   	</b:row>
+  <b:row>
+    <b:column col-xs="3">
+      <h:form>
+        <p:commandButton id="mainMenuTrigger"
+          styleClass="mainMenuTrigger" type="button" value="Menu"
+          icon="fa fa-bars"></p:commandButton>
+        <p:menu trigger="mainMenuTrigger"
+          model="#{adminMainMenuBean.adminMainMenuMobile}" my="left top"
+          at="left bottom" overlay="true" toggleable="true">
+        </p:menu>
+      </h:form>
+    </b:column>
+    <b:column col-xs="9">
+      <h:form>
+        <p:commandButton id="userTopMenuTrigger" styleClass="userTopMenuTrigger"
+          type="button" value="#{systemRB.userLabel}" icon="fa fa-user"/>
+        <p:overlayPanel widgetVar="userTopMenu" showEffect="fade"
+          hideEffect="fade" showCloseIcon="true" for="userTopMenuTrigger"
+          at="right bottom" my="right top">
+          <p:panelGrid styleClass="userTopMenu">
+            <p:row>
+              <p:column rowspan="4">
+                <p:graphicImage value="#{loginBean.loggedInUser.photo}"
+                  width="150px" styleClass="userHeaderPhoto" />
+              </p:column>
+              <p:column colspan="2">
+                <h:outputText value="#{loginBean.loggedInUser.lastName}" />
+                <p:spacer width="5"></p:spacer>
+                <h:outputText value="#{loginBean.loggedInUser.firstName}" />
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column colspan="2">
+                <h:outputText value="#{loginBean.loggedInUser.email}" />
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <h:outputText value="#{userRB.userLoginLabel}:" styleClass="labelBold"/>
+              </p:column>
+              <p:column>
+                <h:outputText value="#{loginBean.loggedInUser.login}" />
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <h:outputText value="#{userRB.userTypeLabel}:" styleClass="labelBold" />
+              </p:column>
+              <p:column>
+                <h:outputText value="#{loginBean.loggedInUser.type}" />
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column>
+                <p:button outcome="/adminPanel/myProfile?faces-redirect=true"
+                  value="#{systemRB.myProfileMenuLabel}" icon="fa fa-male"/>
+              </p:column>
+              <p:column colspan="2">
+                <p:commandButton action="#{loginBean.adminPanelLogout}" icon="fa fa-sign-out"
+                  value="#{systemRB.logOutMenuLabel}" iconPos="right"/>
+              </p:column>
+            </p:row>
+          </p:panelGrid>
+        </p:overlayPanel>
+      </h:form>
+      <div class="langSelectIcon">
+        <p:graphicImage id="langSelectIcon" name="langSelectIcon.png"
+          library="images"></p:graphicImage>
+        <h:form id="langSelect">
+          <p:selectOneMenu value="#{backLocale.currentLocale}"
+            converter="#{backLocaleConverter}" onchange="submit()"
+            effect="fade" var="lang" style="width:160px"
+            immediate="true">
+            <f:selectItems value="#{backLocale.locales}" var="locale"
+              itemLabel="#{locale.label}" itemValue="#{locale}"></f:selectItems>
+            <p:column style="width:10%">
+              <p:graphicImage name="#{lang.icon}" library="images"></p:graphicImage>
+            </p:column>
+            <p:column>
+              <h:outputText value="#{lang.label} (#{lang.country})"
+                title="#{systemRB['langDescription'.concat(lang.country)]}" />
+            </p:column>
+          </p:selectOneMenu>
+        </h:form>
+      </div>
+    </b:column>
+  </b:row>
 
 </ui:composition>

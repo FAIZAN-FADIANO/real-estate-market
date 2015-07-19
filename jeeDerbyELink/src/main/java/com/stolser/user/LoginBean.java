@@ -56,7 +56,7 @@ import com.stolser.jpa.User;
  * */
 @ManagedBean(name="loginBean")
 @SessionScoped
-public class LoginBean implements Serializable{
+public class LoginBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private final Logger logger = LoggerFactory.getLogger(LoginBean.class);
@@ -157,9 +157,10 @@ public class LoginBean implements Serializable{
 		
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
 	            .getExternalContext().getSession(false);
-        LoginBean loginBean = (LoginBean)session.getAttribute("loginBean");
+        session.setAttribute("loginBean", null);
+        session.setAttribute("adminMainMenuBean", null);
         
-        loginBean.setLoggedInUser(null);
+        setLoggedInUser(null);
    
         return "/adminLogin?faces-redirect=true";
     }
@@ -327,13 +328,6 @@ public class LoginBean implements Serializable{
 		
 		return "userListing";
 	}*/
-
-/*	public MenuModel getAdminPanelMenu() {
-		DefaultMenuModel model = new DefaultMenuModel();
-		
-		return model;
-	}*/
-	
 /*------------ END of private methods --------*/
 	
 /*------------ getter and setters -----------*/

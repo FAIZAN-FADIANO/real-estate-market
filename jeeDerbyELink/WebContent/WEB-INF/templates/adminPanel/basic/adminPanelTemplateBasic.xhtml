@@ -28,37 +28,9 @@
       <b:row>
         <b:column styleClass="mainMenu" col-xs="4" col-sm="3" span="2">
           <h:form>
-            <p:panelMenu>
-              <p:submenu label="#{systemRB.dashboardMenuLabel}"
-                icon="fa fa-dashboard" expanded="true">
-                <p:menuitem value="#{systemRB.homeMenuLabel}"
-                  icon="fa fa-home"
-                  outcome="/adminPanel/home?faces-redirect=true"></p:menuitem>
-                <p:menuitem value="#{systemRB.monitorMenuLabel}"
-                  icon="fa fa-video-camera"></p:menuitem>
-              </p:submenu>
-              <p:submenu label="Users" icon="fa fa-user" expanded="true">
-                <p:submenu label="Show users">
-                  <p:menuitem value="Show all Users" icon="fa fa-users"
-                    outcome="/adminPanel/userListing">
-                    <f:param name="userstatus" value="notdiscarded" />
-                  </p:menuitem>
-                  <p:menuitem value="Show discarded Users" icon="fa fa-user-times"
-                    outcome="/adminPanel/userListing">
-                    <f:param name="userstatus" value="discarded" />
-                  </p:menuitem>
-                </p:submenu>
-                <p:submenu label="Add new User">
-                  <p:menuitem value="Add new Admin"
-                    icon="fa fa-user-plus"
-                    outcome="/adminPanel/addNewUser?usertype=admin"></p:menuitem>
-                  <p:menuitem value="Add new Realtor"
-                    icon="fa fa-user-plus"
-                    outcome="/adminPanel/addNewUser?usertype=realtor"></p:menuitem>
-                </p:submenu>
-                <p:menuitem value="My Profile" icon="fa fa-male"
-                  outcome="/adminPanel/myProfile?faces-redirect=true"></p:menuitem>
-              </p:submenu>
+            <p:panelMenu model="#{adminMainMenuBean.adminMainMenu}"
+              styleClass="adminMainMenu">
+              
             </p:panelMenu>
           </h:form>
         </b:column>
@@ -82,13 +54,19 @@
     </ui:insert>
 
     <script>
-					$('body').flowtype({
-						minFont : 12,
-						maxFont : 22,
-						maximum : 1200,
-						fontRatio : 80
-					});
-				</script>
+    $( document ).ready(function() {
+    	$('body').flowtype({
+			minFont : 12,
+			maxFont : 22,
+			maximum : 1200,
+			fontRatio : 80
+		});
+    });
+    
+		
+		
+		
+	</script>
 
   </h:body>
 </f:view>

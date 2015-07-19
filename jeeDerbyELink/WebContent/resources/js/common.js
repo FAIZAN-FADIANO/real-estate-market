@@ -28,3 +28,21 @@ function resizeUserPhoto() {
   	  "border-radius": "50%"
     });
 }
+
+function onlyOneOpenMenuItem() {
+	$('.adminMainMenu .ui-panelmenu-header.ui-corner-all').click(function(){
+		$( ".adminMainMenu .ui-panelmenu-header.ui-corner-top" ).not(this).trigger( "click" );
+	});
+	
+}
+
+
+
+
+
+
+
+
+
+
+
