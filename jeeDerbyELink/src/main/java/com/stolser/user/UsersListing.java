@@ -62,7 +62,7 @@ public class UsersListing {
 	private Boolean isDeleteUsersButtonVisible;
 	
 	@EJB 
-	private UserFacadeEJB userEJB;
+	private UserFacade userEJB;
 	@EJB
 	private PropertiesLoader propLoader;
 	private Map<String, Properties> propSystemMap;
@@ -99,7 +99,6 @@ public class UsersListing {
 			}			
 		} else {
 			userStatusFilter = "";
-			/*usersList = userEJB.getUsersFindAll();*/
 		}
 		logger.trace("A new usersList's been created with params: userstatus = {}.", userStatusFilter);
 		
@@ -112,11 +111,11 @@ public class UsersListing {
 	}
 
 
-	public UserFacadeEJB getUserEJB() {
+	public UserFacade getUserEJB() {
 		return userEJB;
 	}
 
-	public void setUserEJB(UserFacadeEJB userEJB) {
+	public void setUserEJB(UserFacade userEJB) {
 		this.userEJB = userEJB;
 	}
 
@@ -159,7 +158,7 @@ public class UsersListing {
 		/*We need to assign a chosen user to the userForUpdate var only if 
 		 * the status of this particular user hasn't already been changed during this
 		 * view. Otherwise userForUpdate contain an object managed by EntityManager
-		 * that was returned by the UserFacadeEJB#mergeEntity() method and if we true 
+		 * that was returned by the UserFacade#mergeEntity() method and if we true 
 		 * to change the status of the same object again (on the same view) we 
 		 * will get javax.persistence.OptimisticLockException.*/
 		if ((userForUpdate == null) || (userForUpdate.getId() != userForUpdateCurrentId)) {

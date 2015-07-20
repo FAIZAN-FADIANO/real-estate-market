@@ -1,4 +1,4 @@
-package com.stolser;
+package com.stolser.locale;
 
 import java.util.List;
 
@@ -14,15 +14,13 @@ import javax.faces.convert.ConverterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.stolser.locale.FrontLocaleBean;
-
 @ManagedBean(name = "customLocaleConverter")
 @RequestScoped
 public class CustomLocaleConverter implements Converter {
 	private static final Logger logger = LoggerFactory.getLogger(CustomLocaleConverter.class);
 	
 	@ManagedProperty(value = "#{frontLocale}")
-	private FrontLocaleBean frontLocale;
+	private FrontLocale frontLocale;
 	
 	private List<CustomLocale> locales;
 
@@ -69,11 +67,11 @@ public class CustomLocaleConverter implements Converter {
 		FacesContext.getCurrentInstance().addMessage(null, newMessage);
 	}*/
 
-	public FrontLocaleBean getFrontLocale() {
+	public FrontLocale getFrontLocale() {
 		return frontLocale;
 	}
 
-	public void setFrontLocale(FrontLocaleBean frontLocale) {
+	public void setFrontLocale(FrontLocale frontLocale) {
 		this.frontLocale = frontLocale;
 	}
 

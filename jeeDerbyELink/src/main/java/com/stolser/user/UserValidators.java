@@ -26,7 +26,7 @@ import com.stolser.jpa.User;
 public class UserValidators {
 	private final Logger logger = LoggerFactory.getLogger(UserValidators.class);
 	@EJB
-	private UserFacadeEJB userFacade;
+	private UserFacade userFacade;
 	@EJB
 	private PropertiesLoader propLoader;
 	private Map<String, Properties> propSystemMap;

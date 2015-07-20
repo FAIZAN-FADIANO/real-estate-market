@@ -1,4 +1,4 @@
-package com.stolser;
+package com.stolser.locale;
 
 import java.util.Locale;
 

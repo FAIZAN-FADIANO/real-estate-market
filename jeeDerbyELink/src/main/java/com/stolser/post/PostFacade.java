@@ -16,15 +16,15 @@ import com.stolser.jpa.PostCategory;
 import com.stolser.jpa.User;
 
 /**
- * Session Bean implementation class PostFacadeEJB
+ * Session Bean implementation class PostFacade
  */
 @Stateless
-public class PostFacadeEJB {
+public class PostFacade {
 
 	@PersistenceContext(unitName = "derby")
 	private EntityManager entityManager;
 	
-    public PostFacadeEJB() {}
+    public PostFacade() {}
     
     public List<Post> getPostsFindAll() {
     	TypedQuery<Post> query = entityManager

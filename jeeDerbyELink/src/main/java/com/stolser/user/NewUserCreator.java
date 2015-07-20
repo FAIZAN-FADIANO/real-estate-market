@@ -22,22 +22,23 @@ import com.stolser.jpa.Admin;
 import com.stolser.jpa.Realtor;
 import com.stolser.jpa.User;
 
-@ManagedBean(name = "newUserCreating")
+@ManagedBean(name = "newUserCreator")
 @ViewScoped
-public class NewUserCreating {
-	private static final Logger logger = LoggerFactory.getLogger(NewUserCreating.class);
+public class NewUserCreator {
 	
 	private User newUser;
 	private String userTypeLabel;
 	private String passwordRepeat;
 	
 	@EJB 
-	private UserFacadeEJB userEJB;
+	private UserFacade userEJB;
 	@EJB
 	private PropertiesLoader propLoader;
 	private Map<String, Properties> propSystemMap;
 	
-	public NewUserCreating() {}
+	private static final Logger logger = LoggerFactory.getLogger(NewUserCreator.class);
+
+	public NewUserCreator() {}
 	
 	@PostConstruct
 	private void init() {
@@ -164,11 +165,11 @@ public class NewUserCreating {
 		this.passwordRepeat = passwordRepeat;
 	}
 	
-	public UserFacadeEJB getUserEJB() {
+	public UserFacade getUserEJB() {
 		return userEJB;
 	}
 
-	public void setUserEJB(UserFacadeEJB userEJB) {
+	public void setUserEJB(UserFacade userEJB) {
 		this.userEJB = userEJB;
 	}
 	

@@ -70,7 +70,7 @@ public class LoginBean implements Serializable {
 	private List<Boolean> arePhoneNumbersDeleted;
 	
 	@EJB
-	private UserFacadeEJB userFacade;
+	private UserFacade userFacade;
 	@EJB
 	private PropertiesLoader propLoader;
 	private Map<String, Properties> propSystemMap;

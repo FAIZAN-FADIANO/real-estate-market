@@ -15,13 +15,12 @@ import javax.faces.context.FacesContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.stolser.CustomLocale;
 import com.stolser.PropertiesLoader;
 
 @ManagedBean (name = "backLocale")
 @SessionScoped
-public class BackLocaleBean implements Serializable {
-	private static final Logger logger = LoggerFactory.getLogger(BackLocaleBean.class);
+public class BackLocale implements Serializable {
+	private static final Logger logger = LoggerFactory.getLogger(BackLocale.class);
 	private static final long serialVersionUID = 1L;
 	@EJB
 	private PropertiesLoader propLoader;
@@ -53,7 +52,7 @@ public class BackLocaleBean implements Serializable {
 				"The language of Goethe and Sigmund Freud."));*/
 	}
 
-	public BackLocaleBean() {}
+	public BackLocale() {}
 	
 	public CustomLocale getCurrentLocale() {
 		return currentLocale;

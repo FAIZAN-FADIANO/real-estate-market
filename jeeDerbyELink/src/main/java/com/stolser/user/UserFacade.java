@@ -31,22 +31,22 @@ import com.stolser.jpa.RegisteredUser;
 import com.stolser.jpa.User;
 import com.stolser.jpa.User.UserStatusType;
 import com.stolser.jpa.User.UserType;
-import com.stolser.post.PostFacadeEJB;
+import com.stolser.post.PostFacade;
 
 import org.slf4j.*;
 /**
  * Session Bean implementation class UserEJB
  */
 @Stateless
-public class UserFacadeEJB {
+public class UserFacade {
 	
-	private static final Logger logger = LoggerFactory.getLogger(UserFacadeEJB.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserFacade.class);
 	
 	@PersistenceContext(unitName = "derby")
 	private EntityManager entityManager;
 	
 	@EJB
-	private PostFacadeEJB postFacade;
+	private PostFacade postFacade;
 	@EJB
 	private PropertiesLoader propLoader;
 	private Map<String, Properties> propSystemMap;

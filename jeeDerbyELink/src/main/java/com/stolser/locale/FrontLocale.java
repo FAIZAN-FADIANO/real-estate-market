@@ -8,11 +8,9 @@ import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.*;
 
-import com.stolser.CustomLocale;
-
 @ManagedBean (name = "frontLocale")
 @SessionScoped
-public class FrontLocaleBean implements Serializable {
+public class FrontLocale implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private List<CustomLocale> locales = new ArrayList<>();
@@ -31,7 +29,7 @@ public class FrontLocaleBean implements Serializable {
 	}
 	
 //constructors	
-	public FrontLocaleBean() {}
+	public FrontLocale() {}
 	
 	
 //---------------------
