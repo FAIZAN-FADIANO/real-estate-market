@@ -58,8 +58,8 @@ import com.stolser.jpa.User;
 @SessionScoped
 public class LoginBean implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
-	private final Logger logger = LoggerFactory.getLogger(LoginBean.class);
+	static private final long serialVersionUID = 1L;
+	static private final Logger logger = LoggerFactory.getLogger(LoginBean.class);
 	
 	private String enteredLogin;
 	private String enteredPassword;
@@ -80,6 +80,8 @@ public class LoginBean implements Serializable {
  * access the User Private Panel.
  * */
 	private User loggedInUser;
+	@EJB
+	private AdminPanelRegister adminPanelRegister; 
 	
 	public LoginBean() {}
 	
@@ -104,7 +106,7 @@ public class LoginBean implements Serializable {
 		User.UserType userType = user.getType();
 		User.UserStatusType userStatusType = user.getStatus();
 		
-		if (!(userPassword.equals(getEnteredPassword()))) {  
+		if (!(userPassword.equals(enteredPassword))) {  
 			/*the entered password doesn't match the password in the DB*/
 			FacesContext.getCurrentInstance().addMessage("loggingForm:passwordInput", 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
@@ -150,6 +152,8 @@ public class LoginBean implements Serializable {
 			} 
 		}
         
+        addUserToAdminPanelRegister(loggedInUser);
+        
         return "/adminPanel/home?faces-redirect=true";
 	}
 	
@@ -160,7 +164,10 @@ public class LoginBean implements Serializable {
         session.setAttribute("loginBean", null);
         session.setAttribute("adminMainMenuBean", null);
         
-        setLoggedInUser(null);
+        adminPanelRegister.getLoggedInUsers().remove(loggedInUser);
+        loggedInUser = null;
+        
+        logger.trace("loggedInUser = {}", loggedInUser);
    
         return "/adminLogin?faces-redirect=true";
     }
@@ -168,20 +175,8 @@ public class LoginBean implements Serializable {
 	public String updateLoggedInUser() {
 	
 		try{
-			/*Removing empty phone numbers*/
-			if (loggedInUser instanceof Realtor) {
-	        	List<String> phoneNumbers = ((Realtor)loggedInUser).getPhoneNumbers();
-	        	List<String> phoneNumbersWithoutEmpty = new ArrayList<>();
-	        	for (int i = 0; i < phoneNumbers.size(); i++) {
-	        		String currentPhoneNumber = phoneNumbers.get(i);
-	        		if ( !"".equals(currentPhoneNumber) ) {
-	        			phoneNumbersWithoutEmpty.add(currentPhoneNumber);
-					}
-				}
-	        	((Realtor)loggedInUser).setPhoneNumbers(phoneNumbersWithoutEmpty);
-			}
-			/*-------------------------------*/
-			
+			removeEmptyPhoneNumbers();
+
 			loggedInUser = userFacade.updateUserInDB(loggedInUser);
 			logger.trace("after updateUserInDB()...(loggedInUser.hashcode = {})", loggedInUser.hashCode());
 			
@@ -228,7 +223,7 @@ public class LoginBean implements Serializable {
 				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
 				
 			throw new ValidatorException(newMessage);
-		} else if ( !firstPassword.equals(repeatPassword) ) {
+		} else if ( ! firstPassword.equals(repeatPassword) ) {
 			FacesMessage newMessage = new FacesMessage(getSystemProperties()
 				.getProperty("passwordRepeatRequiredMessage"));
 			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
@@ -244,17 +239,9 @@ public class LoginBean implements Serializable {
 	public void uploadedPhotoHandler(FileUploadEvent e) {
 		
 		UploadedFile uploadedFile = e.getFile();
-		/* get the absolute path of the destination folder for uploaded images*/
-		String separator = File.separator;
-		String imageUploadedFolderPath = System.getProperty("com.sun.aas.instanceRoot") 
-				+ separator + "applications" + separator + "uploads" 
-				+ separator + "images";
-		File imageUploadedFolder = new File(imageUploadedFolderPath);
-		/* get the name of the newly created image. All user's photos are unique.*/
-		String newImageName = "photoOfUser-" + getLoggedInUser().getLogin() + ".jpg";
-		File uploadedPhoto = new File(imageUploadedFolder, newImageName);
-		
-		try(InputStream input = uploadedFile.getInputstream()) {
+		File uploadedPhoto = getUploadedPhotoAsFile();
+				
+		try (InputStream input = uploadedFile.getInputstream()) {
 			Files.copy(input, uploadedPhoto.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			
 			FacesMessage newMessage = new FacesMessage(getSystemProperties()
@@ -265,13 +252,13 @@ public class LoginBean implements Serializable {
 			logger.debug("A new file with the full path = {} has been uploaded.",
 					uploadedPhoto);
 			
-			getLoggedInUser().setPhoto("/images/" + newImageName);
+			loggedInUser.setPhoto("/images/" + getNewImageName());
 			
 		} catch (IOException ioe) {
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+			FacesMessage errorMessage = new FacesMessage(getSystemProperties()
 					.getProperty("photoUploadedFailureMes"));
-			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-			FacesContext.getCurrentInstance().addMessage(null, newMessage);
+			errorMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+			FacesContext.getCurrentInstance().addMessage(null, errorMessage);
 			
 			logger.error("A new file with the full path = {} has NOT been uploaded.",
 					uploadedPhoto, ioe);
@@ -308,28 +295,6 @@ public class LoginBean implements Serializable {
 
 	}
 
-/*------------------------ private methods --------*/
-/**
- * Returns appropriate Properties object for current local on the front-end
- * */
-	private Properties getSystemProperties() {
-		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
-		Properties currentProperties = propSystemMap.get(currentLocal);
-		return currentProperties;
-	}
-	
-	/*public String creatSuperAdmin() {
-		List<User> superAdminUsers = userFacade.getUsersFindByType(User.UserType.SUPER_ADMIN);
-		if (superAdminUsers.size() == 0) {
-			User superAdmin = new Admin(User.UserType.SUPER_ADMIN, User.UserStatusType.ACTIVE, 
-					"superadmin", "12345", "Oleg", "Stoliarov", new Date());
-			userFacade.persistEntity(superAdmin);
-		}
-		
-		return "userListing";
-	}*/
-/*------------ END of private methods --------*/
-	
 /*------------ getter and setters -----------*/
 	public String getEnteredLogin() {
 		return enteredLogin;
@@ -390,4 +355,71 @@ public class LoginBean implements Serializable {
 	public Boolean getIsUserRealtor() {
 		return  (loggedInUser.getType() == User.UserType.REALTOR);
 	}
+/*------------------------ private methods --------*/
+/**
+ * Returns appropriate Properties object for current local on the front-end
+ * */
+	private Properties getSystemProperties() {
+		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
+		Properties currentProperties = propSystemMap.get(currentLocal);
+		return currentProperties;
+	}
+	
+	public AdminPanelRegister getAdminPanelRegister() {
+	return adminPanelRegister;
+}
+
+	private void addUserToAdminPanelRegister(User user) {
+			
+			List<User> loggedInUsers = adminPanelRegister.getLoggedInUsers();
+			
+			loggedInUsers.remove(user);
+			loggedInUsers.add(user);
+			
+		}
+	
+	private File getUploadedPhotoAsFile() {
+		/* get the absolute path of the destination folder for uploaded images*/
+		String separator = File.separator;
+		String imageUploadedFolderPath = System.getProperty("com.sun.aas.instanceRoot") 
+				+ separator + "applications" + separator + "uploads" 
+				+ separator + "images";
+		File imageUploadedFolder = new File(imageUploadedFolderPath);
+		/* get the name of the newly created image. All user's photos are unique.*/
+		
+		File uploadedPhoto = new File(imageUploadedFolder, getNewImageName());
+		
+		return uploadedPhoto;
+	}
+	
+	private String getNewImageName() {
+		String newImageName = "photoOfUser-" + loggedInUser.getLogin() + ".jpg";
+		return newImageName;
+	}
+	
+	private void removeEmptyPhoneNumbers() {
+		if (loggedInUser instanceof Realtor) {
+        	List<String> phoneNumbers = ((Realtor)loggedInUser).getPhoneNumbers();
+        	List<String> phoneNumbersWithoutEmpty = new ArrayList<>();
+        	for (int i = 0; i < phoneNumbers.size(); i++) {
+        		String currentPhoneNumber = phoneNumbers.get(i);
+        		if ( !"".equals(currentPhoneNumber) ) {
+        			phoneNumbersWithoutEmpty.add(currentPhoneNumber);
+				}
+			}
+        	((Realtor)loggedInUser).setPhoneNumbers(phoneNumbersWithoutEmpty);
+		}
+	}
+	
+	/*public String creatSuperAdmin() {
+		List<User> superAdminUsers = userFacade.getUsersFindByType(User.UserType.SUPER_ADMIN);
+		if (superAdminUsers.size() == 0) {
+			User superAdmin = new Admin(User.UserType.SUPER_ADMIN, User.UserStatusType.ACTIVE, 
+					"superadmin", "12345", "Oleg", "Stoliarov", new Date());
+			userFacade.persistEntity(superAdmin);
+		}
+		
+		return "userListing";
+	}*/
+/*------------ END of private methods --------*/
 }

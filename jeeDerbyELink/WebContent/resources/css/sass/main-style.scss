@@ -23,18 +23,6 @@ $colorTextTableBody: rgb(64, 124, 234);
 	clear: both;
 }
 
-.leftGreenButton {
-	float: left;
-	color: rgb(21, 137, 21);
-  	background-color: rgba(11, 158, 11, 0.5);
-}
-
-.rightRedButton {
-	float: right;
-	color: rgb(219, 9, 9);
-	background-color: rgba(192, 23, 23, 0.51);
-}
-
 .blockAlignCenter {
 	display: block!important;
  	margin: 0 auto!important;
@@ -91,6 +79,22 @@ $colorTextTableBody: rgb(64, 124, 234);
 	h4, .h4 {
 	  font-size: 1.4em;
 	}
+	
+	.ui-button {
+		&.leftGreenButton {
+			float: left;
+			color: rgb(21, 137, 21);
+		  	background-color: rgba(11, 158, 11, 0.5);
+		}
+		
+		&.rightRedButton {
+			float: right;
+			color: rgb(219, 9, 9);
+			background-color: rgba(192, 23, 23, 0.51);
+		}
+		
+	}
+	
 	
 	.recycleBinButton {
 		float: left;

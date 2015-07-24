@@ -43,7 +43,6 @@ public class CustomLocale {
 	public String getDescription() {
 		return description;
 	}
-//-----------------------
 	
 	@Override
 	public String toString(){

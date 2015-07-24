@@ -30,17 +30,28 @@ import com.stolser.user.LoginBean;
 @SessionScoped
 public class AdminPanelMainMenu implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
+	static private final long serialVersionUID = 1L;
 	private final Logger logger = LoggerFactory.getLogger(AdminPanelMainMenu.class);
 	
 	private MenuModel adminMainMenu;
 	private MenuModel adminMainMenuMobile;
+	
+	private DefaultSubMenu dashboardSubmenu;
+	private DefaultSubMenu usersSubmenu;
+	private DefaultSubMenu usersSubmenuMobile;
+	private DefaultSubMenu realEstateSubmenu;
+	private DefaultSubMenu postsSubmenu;
+	private DefaultSubMenu adminPanelSubmenu;
+	private DefaultSubMenu frontEndSubmenu;
+	
 	@ManagedProperty(value = "#{loginBean}")
 	private LoginBean loginBean;
 	
 	@EJB
 	private PropertiesLoader propLoader;
 	private Map<String, Properties> propSystemMap;
+	private DefaultSeparator separator;
+	private User.UserType loggedInUserType;
 
 	public AdminPanelMainMenu() {}
 	
@@ -49,15 +60,65 @@ public class AdminPanelMainMenu implements Serializable {
 		
 		propSystemMap = propLoader.getPropSystemMap();
 		
-		User.UserType loggedInUserType = loginBean.getLoggedInUser().getType();
+		loggedInUserType = loginBean.getLoggedInUser().getType();
 		logger.trace("loggedInUserType = {}", loggedInUserType);
+				
+		separator = new DefaultSeparator();
 		
-		adminMainMenu = new DefaultMenuModel();
-		adminMainMenuMobile = new DefaultMenuModel();
-		DefaultSeparator separator = new DefaultSeparator();
+		assembleDashboardSubmenu();
+		assembleUsersSubmenu();
+		assembleRealEstateSubmenu();
+		assemblePostsSubmenu();
+		assembleAdminPanelSubmenu();
+		assembleFrontEndSubmenu();
 		
-		//Dashboard submenu
-        DefaultSubMenu dashboardSubmenu = new DefaultSubMenu(getSystemProperties()
+		assembleAdminMainMenu();
+		assembleadminMainMenuMobile();
+	}
+	
+		public LoginBean getLoginBean() {
+		return loginBean;
+	}
+
+	public void setLoginBean(LoginBean loginBean) {
+		this.loginBean = loginBean;
+	}
+
+	public MenuModel getAdminMainMenu() {
+		return adminMainMenu;
+	}
+
+	public MenuModel getAdminMainMenuMobile() {
+		return adminMainMenuMobile;
+	}
+
+	public void setAdminMainMenuMobile(MenuModel mobileAdminMainMenu) {
+		this.adminMainMenuMobile = mobileAdminMainMenu;
+	}
+
+/**
+ * Returns appropriate Properties object for current local on the front-end
+ * */
+	private Properties getSystemProperties() {
+		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
+		Properties currentProperties = propSystemMap.get(currentLocal);
+		return currentProperties;
+	}
+	
+	private boolean isLoggedInUserSuperAdmin() {
+		return loggedInUserType == User.UserType.SUPER_ADMIN;
+	}
+	
+	private boolean isLoggedInUserAdmin() {
+		return loggedInUserType == User.UserType.ADMIN;
+	}
+	
+	private boolean isLoggedInUserRealtor() {
+		return loggedInUserType == User.UserType.REALTOR;
+	}
+	
+	private void assembleDashboardSubmenu() {
+		DefaultSubMenu dashboardSubmenu = new DefaultSubMenu(getSystemProperties()
         		.getProperty("dashboardMenuLabel"));
         dashboardSubmenu.setIcon("fa fa-dashboard");
         DefaultMenuItem homeItem = new DefaultMenuItem(getSystemProperties()
@@ -67,18 +128,21 @@ public class AdminPanelMainMenu implements Serializable {
         
         DefaultMenuItem monitorItem = new DefaultMenuItem(getSystemProperties()
         		.getProperty("monitorMenuLabel"));
-        /*homeItem.setOutcome("/adminPanel/home?faces-redirect=true");*/
+        monitorItem.setOutcome("/adminPanel/adminPanelMonitor?faces-redirect=true");
         monitorItem.setIcon("fa fa-video-camera");
         
         dashboardSubmenu.addElement(homeItem);
-        if ( !(loggedInUserType == UserType.REALTOR)) {
+        if ( ! isLoggedInUserRealtor()) {
         	dashboardSubmenu.addElement(monitorItem);
 		}
         
-        //Users submenu
-        DefaultSubMenu usersSubmenu = new DefaultSubMenu(getSystemProperties()
+        this.dashboardSubmenu = dashboardSubmenu;
+	}
+	
+	private void assembleUsersSubmenu() {
+		DefaultSubMenu usersSubmenu = new DefaultSubMenu(getSystemProperties()
         		.getProperty("usersMenuLabel"));
-        DefaultSubMenu usersSubmenuMobile = new DefaultSubMenu(getSystemProperties()
+		DefaultSubMenu usersSubmenuMobile = new DefaultSubMenu(getSystemProperties()
         		.getProperty("usersMenuLabel"));
         usersSubmenu.setIcon("fa fa-user-plus");
         DefaultSubMenu showUsersSubmenu = new DefaultSubMenu(getSystemProperties()
@@ -93,14 +157,14 @@ public class AdminPanelMainMenu implements Serializable {
         userRecycleBinItem.setIcon("fa fa-trash");
         
         showUsersSubmenu.addElement(showAllUsersItem);
-        if ( loggedInUserType == UserType.SUPER_ADMIN) {
+        if (isLoggedInUserSuperAdmin()) {
         	showUsersSubmenu.addElement(userRecycleBinItem);
 		}
         
         usersSubmenu.addElement(showUsersSubmenu);
         
         usersSubmenuMobile.addElement(showAllUsersItem);
-        if ( loggedInUserType == UserType.SUPER_ADMIN) {
+        if (isLoggedInUserSuperAdmin()) {
         	usersSubmenuMobile.addElement(userRecycleBinItem);
 		}
         usersSubmenuMobile.addElement(separator);
@@ -119,14 +183,13 @@ public class AdminPanelMainMenu implements Serializable {
         addNewUserSubmenu.addElement(addNewAdminItem);
         addNewUserSubmenu.addElement(addNewRealtorItem);
         
-        if ( loggedInUserType == UserType.SUPER_ADMIN) {
+        if (isLoggedInUserSuperAdmin()) {
         	usersSubmenu.addElement(addNewUserSubmenu);
         	usersSubmenuMobile.addElement(addNewAdminItem);
         	usersSubmenuMobile.addElement(addNewRealtorItem);
         	usersSubmenuMobile.addElement(separator);
   		}
-        
-        
+                
         DefaultMenuItem myProfileItem = new DefaultMenuItem(getSystemProperties()
         		.getProperty("myProfileMenuLabel"));
         myProfileItem.setOutcome("/adminPanel/myProfile?faces-redirect=true");
@@ -143,9 +206,12 @@ public class AdminPanelMainMenu implements Serializable {
         logOutItem.setIcon("fa fa-sign-out");
         usersSubmenuMobile.addElement(logOutItem);
         
-        
-        //Real Estate submenu
-        DefaultSubMenu realEstateSubmenu = new DefaultSubMenu(getSystemProperties()
+        this.usersSubmenu = usersSubmenu;
+        this.usersSubmenuMobile = usersSubmenuMobile;
+	}
+	
+	private void assembleRealEstateSubmenu() {
+		DefaultSubMenu realEstateSubmenu = new DefaultSubMenu(getSystemProperties()
         		.getProperty("realEstateMenuLabel"));
         DefaultMenuItem showAllEstateItem = new DefaultMenuItem(getSystemProperties()
         		.getProperty("showAllEstateItemsMenuLabel"));
@@ -167,8 +233,11 @@ public class AdminPanelMainMenu implements Serializable {
         	realEstateSubmenu.addElement(estateReportsItem);
 		}
         
-        //Posts submenu
-        DefaultSubMenu postsSubmenu = new DefaultSubMenu(getSystemProperties()
+        this.realEstateSubmenu = realEstateSubmenu;
+	}
+	
+	private void assemblePostsSubmenu() {
+		DefaultSubMenu postsSubmenu = new DefaultSubMenu(getSystemProperties()
         		.getProperty("postsMenuLabel"));
         DefaultMenuItem showAllPostsItem = new DefaultMenuItem(getSystemProperties()
         		.getProperty("showAllPostsMenuLabel"));
@@ -191,9 +260,12 @@ public class AdminPanelMainMenu implements Serializable {
         postsSubmenu.addElement(addNewPostItem);
         postsSubmenu.addElement(postCategoriesItem);
         postsSubmenu.addElement(postCommentsItem);
-        
-        //Admin Panel Settings
-        DefaultSubMenu adminPanelSubmenu = new DefaultSubMenu(getSystemProperties()
+		
+		this.postsSubmenu = postsSubmenu;
+	}
+	
+	private void assembleAdminPanelSubmenu() {
+		DefaultSubMenu adminPanelSubmenu = new DefaultSubMenu(getSystemProperties()
         		.getProperty("adminPanelMenuLabel"));
         DefaultMenuItem adminPanelSettingsItem = new DefaultMenuItem(getSystemProperties()
         		.getProperty("adminPanelSettingsMenuLabel"));
@@ -201,8 +273,11 @@ public class AdminPanelMainMenu implements Serializable {
         
         adminPanelSubmenu.addElement(adminPanelSettingsItem);
         
-        //Fron End submenu
-        DefaultSubMenu frontEndSubmenu = new DefaultSubMenu(getSystemProperties()
+        this.adminPanelSubmenu = adminPanelSubmenu;
+	}
+
+	private void assembleFrontEndSubmenu() {
+		DefaultSubMenu frontEndSubmenu = new DefaultSubMenu(getSystemProperties()
         		.getProperty("frontEndMenuLabel"));
         DefaultSubMenu mainPageSubmenu = new DefaultSubMenu(getSystemProperties()
         		.getProperty("mainPageMenuLabel"));
@@ -231,61 +306,39 @@ public class AdminPanelMainMenu implements Serializable {
         frontEndSubmenu.addElement(frontEndLanguagesItem);
         frontEndSubmenu.addElement(frontEndFontsItem);
         
-        
-        
-        adminMainMenu.addElement(dashboardSubmenu);
-        adminMainMenuMobile.addElement(dashboardSubmenu);
-        
+        this.frontEndSubmenu = frontEndSubmenu;
+	}
+	
+	private void assembleAdminMainMenu() {
+		MenuModel adminMainMenu = new DefaultMenuModel();
+		adminMainMenu.addElement(dashboardSubmenu);
         adminMainMenu.addElement(usersSubmenu);
-        adminMainMenuMobile.addElement(usersSubmenuMobile);
-        
         adminMainMenu.addElement(realEstateSubmenu);
+        
+        if ( ! isLoggedInUserRealtor()) {
+        	adminMainMenu.addElement(postsSubmenu);
+        	adminMainMenu.addElement(adminPanelSubmenu);
+        	adminMainMenu.addElement(frontEndSubmenu);
+        }
+        
+        this.adminMainMenu = adminMainMenu;
+	}
+	
+	private void assembleadminMainMenuMobile() {
+		MenuModel adminMainMenuMobile = new DefaultMenuModel();
+		adminMainMenuMobile.addElement(dashboardSubmenu);
+        adminMainMenuMobile.addElement(usersSubmenuMobile);
         adminMainMenuMobile.addElement(realEstateSubmenu);
         
-        if ( !(loggedInUserType == UserType.REALTOR)) {
-        	adminMainMenu.addElement(postsSubmenu);
+        if ( ! isLoggedInUserRealtor()) {
         	adminMainMenuMobile.addElement(postsSubmenu);
-        	
-        	adminMainMenu.addElement(adminPanelSubmenu);
         	adminMainMenuMobile.addElement(adminPanelSubmenu);
-        	
-        	adminMainMenu.addElement(frontEndSubmenu);
         	adminMainMenuMobile.addElement(frontEndSubmenu);
 		}
         
+        this.adminMainMenuMobile = adminMainMenuMobile;
         
-		
 	}
-	
-		public LoginBean getLoginBean() {
-		return loginBean;
-	}
-
-	public void setLoginBean(LoginBean loginBean) {
-		this.loginBean = loginBean;
-	}
-
-	public MenuModel getAdminMainMenu() {
-		return adminMainMenu;
-	}
-
-public MenuModel getAdminMainMenuMobile() {
-		return adminMainMenuMobile;
-	}
-
-	public void setAdminMainMenuMobile(MenuModel mobileAdminMainMenu) {
-		this.adminMainMenuMobile = mobileAdminMainMenu;
-	}
-
-/**
- * Returns appropriate Properties object for current local on the front-end
- * */
-	private Properties getSystemProperties() {
-		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
-		Properties currentProperties = propSystemMap.get(currentLocal);
-		return currentProperties;
-	}
-
 }
 
 

@@ -21,7 +21,8 @@ import com.stolser.jpa.User;
 @ManagedBean(name = "userConverter")
 @ViewScoped
 public class UserConverter implements Converter {
-	private static final Logger logger = LoggerFactory.getLogger(UserConverter.class);
+	static private final Logger logger = LoggerFactory.getLogger(UserConverter.class);
+	
 	@ManagedProperty(value = "#{usersListing}")
 	private UsersListing usersListing;
 	private List<User> usersList;
@@ -34,16 +35,17 @@ public class UserConverter implements Converter {
 	public UserConverter() {}
 
 	@Override
-	public Object getAsObject(FacesContext context, UIComponent component, String value) {
+	public Object getAsObject(FacesContext context, UIComponent component, 
+			String value) {
 
-		if((value != null) && ( !"".equals(value))) {
+		if(isValueValid(value)) {
             try {	
             	User selectedAssignee = usersList.stream()
             			.filter(user -> value.equals(((User)user).getLogin()))
             			.findFirst().get();
             	
             	logger.trace("selectedAssingee = {}.", selectedAssignee);
-            	
+         	
             	return selectedAssignee;
             	
             } catch(Exception e) {
@@ -61,9 +63,7 @@ public class UserConverter implements Converter {
 	@Override
 	public String getAsString(FacesContext context, UIComponent component, Object object) {
 		
-		if((object != null) && ( !"".equals(object))) {
-			logger.trace("object = {} (of class = {}).", object, object.getClass());
-			
+		if(isValueValid(object)) {
 			return ((User) object).getLogin();
         } else { 
             return null;
@@ -76,6 +76,11 @@ public class UserConverter implements Converter {
 
 	public void setUsersListing(UsersListing usersListing) {
 		this.usersListing = usersListing;
+	}
+	
+	private boolean isValueValid(Object object) {
+		return (object != null) 
+				&& ( ! "".equals(object));
 	}
 
 }

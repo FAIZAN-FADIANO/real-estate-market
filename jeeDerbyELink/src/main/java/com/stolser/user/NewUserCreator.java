@@ -1,5 +1,6 @@
 package com.stolser.user;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -11,6 +12,7 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.*;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 
@@ -25,6 +27,7 @@ import com.stolser.jpa.User;
 @ManagedBean(name = "newUserCreator")
 @ViewScoped
 public class NewUserCreator {
+	static private final Logger logger = LoggerFactory.getLogger(NewUserCreator.class);
 	
 	private User newUser;
 	private String userTypeLabel;
@@ -36,17 +39,16 @@ public class NewUserCreator {
 	private PropertiesLoader propLoader;
 	private Map<String, Properties> propSystemMap;
 	
-	private static final Logger logger = LoggerFactory.getLogger(NewUserCreator.class);
 
 	public NewUserCreator() {}
 	
 	@PostConstruct
 	private void init() {
-		
-		String userTypeParam = FacesContext.getCurrentInstance().getExternalContext()
-				.getRequestParameterMap().get("usertype");
-/*For creating a new user of both types (ADMIN and REALTOR) the same addNewUser.xhtml
- * page used but with different GET parameter usertype.*/
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+		String userTypeParam = externalContext.getRequestParameterMap().get("usertype");
+		logger.trace("newUserTypeLabel = " + userTypeParam);
+		/*For creating a new user of both types (ADMIN and REALTOR) the same addNewUser.xhtml
+		 * page used but with different GET parameter usertype.*/
 		if ( !(userTypeParam == null) ) {
 			switch (userTypeParam) {
 			case "admin":
@@ -58,7 +60,19 @@ public class NewUserCreator {
 				newUser.setType(User.UserType.REALTOR);
 				break;
 			default:
-				break;
+				logger.error("An attempt to create a user of "
+						+ "type {} from the Admin Panel", userTypeParam);
+				try {
+					externalContext.redirect(externalContext.getRequestContextPath() + "/adminPanel/accessDenied.jsf");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			try {
+				externalContext.redirect(externalContext.getRequestContextPath() + "/adminPanel/accessDenied.jsf");
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		
@@ -133,20 +147,20 @@ public class NewUserCreator {
 	}
 
 	public String getNewUserTypeLabel() {
-		
-		User.UserType userType = newUser.getType();
-		switch (userType) {
-		case ADMIN:
-			userTypeLabel = getSystemProperties().getProperty("userAdminLabel");
-			break;
-		case REALTOR:
-			userTypeLabel = getSystemProperties().getProperty("userRealtorLabel");
-			break;
-		default:
-			String errorMsg = "An attempt to create a user of type " + userType + 
-					" from the Admin Panel";
-			logger.error(errorMsg);
-			assert false : errorMsg;
+		if (newUser != null) {
+			User.UserType userType = newUser.getType();
+			switch (userType) {
+			case ADMIN:
+				userTypeLabel = getSystemProperties().getProperty("userAdminLabel");
+				break;
+			case REALTOR:
+				userTypeLabel = getSystemProperties().getProperty("userRealtorLabel");
+				break;
+			default:
+				break;
+			}
+		} else {
+			userTypeLabel = "";
 		}
 		
 		return userTypeLabel;

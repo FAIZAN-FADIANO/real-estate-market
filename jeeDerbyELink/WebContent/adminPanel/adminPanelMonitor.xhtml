@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<h:body>
+  <ui:composition
+    template="/WEB-INF/templates/adminPanel/basic/adminPanelTemplateBasic.xhtml">
+    <ui:define name="title">#{adminPanelRB.adminPanelMonitorMetaTitle}</ui:define>
+    <ui:define name="content">
+      <b:row>
+        <b:column col-xs="12">
+          <h1>#{adminPanelRB.adminPanelMonitorTopTitle}</h1>
+        </b:column>
+      </b:row>
+      <b:row>
+        <b:column col-xs="12">
+          <h:outputText value="#{adminPanelRB.adminPanelMonitorTopText}"/>
+          <p:dataList styleClass="loggedInAdminPanelUsers"
+              value="#{loginBean.adminPanelRegister.loggedInUsers}" var="loggedInUser" 
+              itemType="disc">
+              <h:outputText value="#{loggedInUser.lastName} #{loggedInUser.firstName} 
+                                  (#{loggedInUser.login}, #{loggedInUser.type})"/>
+            </p:dataList>
+        </b:column>
+      </b:row>
+      <b:row>
+
+      </b:row>
+    </ui:define>
+  </ui:composition>
+</h:body>
+</html>

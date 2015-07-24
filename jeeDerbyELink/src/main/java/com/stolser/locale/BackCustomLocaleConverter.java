@@ -17,7 +17,8 @@ import org.slf4j.LoggerFactory;
 @ManagedBean(name = "backLocaleConverter")
 @RequestScoped
 public class BackCustomLocaleConverter implements Converter {
-	private static final Logger logger = LoggerFactory.getLogger(BackCustomLocaleConverter.class);
+	static private final Logger logger = LoggerFactory
+			.getLogger(BackCustomLocaleConverter.class);
 	
 	@ManagedProperty(value = "#{backLocale}")
 	private BackLocale backLocale;
@@ -28,24 +29,15 @@ public class BackCustomLocaleConverter implements Converter {
 
 	@Override
 	public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
-		
 		locales = backLocale.getLocales();
-		if(value != null && value.trim().length() == 2) {
-            try {	
-            	CustomLocale currentLocale = new CustomLocale();
-            	for (CustomLocale customLocale : locales) {
-        			if (customLocale.getLangCode().equals(value)) {
-        				currentLocale = customLocale;
-        				break;
-        			}
-        		}
-     	
-            	return currentLocale;
+		
+		if(isValueValid(value)) {
+            try {
+            	return getCurrentLocaleByValue(value);
             	
-            } catch(NumberFormatException e) {
-            	logger.error("Conversion Error. Not a valid customLocale.", e);
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR
-                		, "Conversion Error.", "Not a valid customLocale."));
+            } catch(IllegalArgumentException e) {
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                		"Conversion Error.", "Not a valid customLocale."));
             }
         }
         else {
@@ -69,6 +61,28 @@ public class BackCustomLocaleConverter implements Converter {
 
 	public void setBackLocale(BackLocale backLocale) {
 		this.backLocale = backLocale;
+	}
+	
+	private boolean isValueValid(String value) {
+		return (value != null) 
+				&& (value.trim().length() == 2);
+	}
+	
+	private CustomLocale getCurrentLocaleByValue(String value) {
+		CustomLocale currentLocale = null;
+    	for (CustomLocale customLocale : locales) {
+			if (customLocale.getLangCode().equals(value)) {
+				currentLocale = customLocale;
+				break;
+			}
+		}
+    	
+    	if (currentLocale == null) {
+    		logger.error("Cannot map value = {} to CustomLocale.", value);
+			throw new IllegalArgumentException("Cannot map string value to CustomLocale.");
+		}
+	
+    	return currentLocale;
 	}
 
 }

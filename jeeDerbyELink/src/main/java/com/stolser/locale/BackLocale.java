@@ -20,8 +20,9 @@ import com.stolser.PropertiesLoader;
 @ManagedBean (name = "backLocale")
 @SessionScoped
 public class BackLocale implements Serializable {
-	private static final Logger logger = LoggerFactory.getLogger(BackLocale.class);
-	private static final long serialVersionUID = 1L;
+	static private final Logger logger = LoggerFactory.getLogger(BackLocale.class);
+	static private final long serialVersionUID = 1L;
+	
 	@EJB
 	private PropertiesLoader propLoader;
 	private Map<String, Properties> propSystemMap;
@@ -36,17 +37,17 @@ public class BackLocale implements Serializable {
 	
 		Properties currentProperties = propSystemMap.get(currentLocal);
 		
-		currentLocale = new CustomLocale(new Locale("en", "US")
-				, "English"
-				, "langIcons/en-icon.png"
-				, currentProperties.getProperty("langDescriptionUS"));
+		currentLocale = new CustomLocale(new Locale("en", "US"),
+				"English",
+				"langIcons/en-icon.png",
+				currentProperties.getProperty("langDescriptionUS"));
 		
 		locales.add(currentLocale);
 		
-		locales.add(new CustomLocale(new Locale("ru", "RU")
-				, "\u0420\u0443\u0441\u0441\u043A\u0438\u0439"
-				, "langIcons/ru-icon.png"
-				, currentProperties.getProperty("langDescriptionUS")));
+		locales.add(new CustomLocale(new Locale("ru", "RU"),
+				"\u0420\u0443\u0441\u0441\u043A\u0438\u0439",
+				"langIcons/ru-icon.png",
+				currentProperties.getProperty("langDescriptionUS")));
 		
 		/*locales.add(new CustomLocale(new Locale("de", "DE"), "German", "langIcons/de-icon.png", 
 				"The language of Goethe and Sigmund Freud."));*/

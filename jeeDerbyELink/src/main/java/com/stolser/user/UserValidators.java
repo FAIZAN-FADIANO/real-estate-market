@@ -24,7 +24,8 @@ import com.stolser.jpa.User;
 @ManagedBean(name = "userValidators")
 @SessionScoped
 public class UserValidators {
-	private final Logger logger = LoggerFactory.getLogger(UserValidators.class);
+	static private final Logger logger = LoggerFactory.getLogger(UserValidators.class);
+	
 	@EJB
 	private UserFacade userFacade;
 	@EJB
@@ -41,35 +42,14 @@ public class UserValidators {
 	public void loginValidator(FacesContext context, UIComponent component, Object value)
 			throws ValidatorException {
 		
-		final String LOGIN_PATTERN = "^[a-zA-Z0-9-]{5,15}$";
-	    Pattern pattern;
-	    Matcher matcher;
-	    pattern = Pattern.compile(LOGIN_PATTERN);
-	    
 		String enteredLogin = value.toString();
-		matcher = pattern.matcher(enteredLogin);
-		
-		if( !matcher.matches() ) {
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("loginValidatorMessage"));
-			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-				
-			throw new ValidatorException(newMessage);
-		}
-		
-		List<User> usersInDB = userFacade.getUsersFindByLogin(enteredLogin);
-		if (usersInDB.size() != 0) {	
-			/*there is already a user in the DB with such login*/
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("loginExistValidatorMessage"));
-			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-			
-			throw new ValidatorException(newMessage);
-		}
+
+		checkLoginForMatchingPattern(enteredLogin);
+		checkLoginForUniqueness(enteredLogin);
 	}
 	
-	public void loginExistValidator(FacesContext context, UIComponent component
-				, Object value)	throws ValidatorException {
+	public void loginExistValidator(FacesContext context, UIComponent component,
+				Object value) throws ValidatorException {
 		
 		String enteredLogin = value.toString();
 		List<User> usersInDB = userFacade.getUsersFindByLogin(enteredLogin);
@@ -176,6 +156,31 @@ public class UserValidators {
 		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
 		Properties currentProperties = propSystemMap.get(currentLocal);
 		return currentProperties;
+	}
+	
+	private void checkLoginForMatchingPattern(String enteredLogin) {
+		final String LOGIN_PATTERN = "^[a-zA-Z0-9-]{5,15}$";
+	    Pattern pattern = Pattern.compile(LOGIN_PATTERN);
+	    Matcher matcher = pattern.matcher(enteredLogin);
+	    
+		if( ! matcher.matches() ) {
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+					.getProperty("loginValidatorMessage"));
+			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+				
+			throw new ValidatorException(newMessage);
+		}
+	}
+	 
+	private void checkLoginForUniqueness(String enteredLogin) {
+		List<User> usersInDB = userFacade.getUsersFindByLogin(enteredLogin);
+		if (usersInDB.size() != 0) {	
+			/*there is already a user in the DB with such login*/
+			FacesMessage newMessage = new FacesMessage(getSystemProperties()
+					.getProperty("loginExistValidatorMessage"));
+			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+			throw new ValidatorException(newMessage);
+		}
 	}
 
 }

@@ -22,16 +22,16 @@ import org.slf4j.LoggerFactory;
 @Singleton
 @Startup
 public class PropertiesLoader {
-	private static final Logger logger = LoggerFactory.getLogger(PropertiesLoader.class);
+	static private final Logger logger = LoggerFactory.getLogger(PropertiesLoader.class);
 
 	private Map<String, Properties> propSystemMap;
 	 
     @PostConstruct
-    public void init() {
+    private void init() {
         ClassLoader classLoader = this.getClass().getClassLoader();
         propSystemMap = new HashMap<>();
                 
-     /*Loading all files for resource bundle system.properties*/
+        /* Loading all files for resource bundle system.properties*/
         String basicPathSystem = "stolser/i18n/general/system/system";
         Properties propSystemEn = new Properties();
         Properties propSystemRu = new Properties();
@@ -55,8 +55,4 @@ public class PropertiesLoader {
 	public Map<String, Properties> getPropSystemMap() {
 		return propSystemMap;
 	}
-
-
-
-
 }

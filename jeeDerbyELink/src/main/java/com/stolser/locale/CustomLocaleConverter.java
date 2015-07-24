@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 @ManagedBean(name = "customLocaleConverter")
 @RequestScoped
 public class CustomLocaleConverter implements Converter {
-	private static final Logger logger = LoggerFactory.getLogger(CustomLocaleConverter.class);
+	static private final Logger logger = LoggerFactory.getLogger(CustomLocaleConverter.class);
 	
 	@ManagedProperty(value = "#{frontLocale}")
 	private FrontLocale frontLocale;
@@ -26,24 +26,15 @@ public class CustomLocaleConverter implements Converter {
 
 	@Override
 	public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
-		
 		locales = frontLocale.getLocales();
 		
-        if(value != null && value.trim().length() == 2) {
-            try {	
-            	CustomLocale currentLocale = new CustomLocale();
-            	for (CustomLocale customLocale : locales) {
-        			if (customLocale.getLangCode().equals(value)) {
-        				currentLocale = customLocale;
-        				break;
-        			}
-        		}
-     	       	return currentLocale;
+		if(isValueValid(value)) {
+            try {
+            	return getCurrentLocaleByValue(value);
             	
-            } catch(NumberFormatException e) {
-            	logger.error("Conversion Error. Not a valid customLocale.", e);
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error.", 
-   												"Not a valid customLocale."));
+            } catch(IllegalArgumentException e) {
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                		"Conversion Error.", "Not a valid customLocale."));
             }
         }
         else {
@@ -74,5 +65,28 @@ public class CustomLocaleConverter implements Converter {
 	public void setFrontLocale(FrontLocale frontLocale) {
 		this.frontLocale = frontLocale;
 	}
+	
+	private boolean isValueValid(String value) {
+		return (value != null) 
+				&& (value.trim().length() == 2);
+	}
+	
+	private CustomLocale getCurrentLocaleByValue(String value) {
+		CustomLocale currentLocale = null;
+    	for (CustomLocale customLocale : locales) {
+			if (customLocale.getLangCode().equals(value)) {
+				currentLocale = customLocale;
+				break;
+			}
+		}
+    	
+    	if (currentLocale == null) {
+    		logger.error("Cannot map value = {} to CustomLocale.", value);
+			throw new IllegalArgumentException("Cannot map string value to CustomLocale.");
+		}
+	
+    	return currentLocale;
+	}
+
 
 }
