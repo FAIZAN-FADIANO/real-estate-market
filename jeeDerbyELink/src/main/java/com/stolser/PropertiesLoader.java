@@ -12,13 +12,6 @@ import javax.ejb.Startup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Session Bean implementation class PropertiesLoader.<br/>
- * Each bundle resource is loaded as a Map whose keys are 
- * language codes (en/ru/de) and values are objects of 
- * the Properties type with loaded info from appropriate
- * .properties files. 
- */
 @Singleton
 @Startup
 public class PropertiesLoader {

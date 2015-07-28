@@ -109,10 +109,6 @@ public class NewUserCreator {
 		return null;
 	}
 	
-/**
- * Checks whether the second password value on the addNewUser.xhtml page 
- * matches the first password value. 
- * */
 	public void passwordRepeatValidator(FacesContext context, UIComponent component, Object value)
 			throws ValidatorException {
 		
@@ -187,9 +183,6 @@ public class NewUserCreator {
 		this.userEJB = userEJB;
 	}
 	
-/**
- * Returns appropriate Properties object for current local on the front-end
- * */
     private Properties getSystemProperties() {
 		String currentLocal = FacesContext.getCurrentInstance().getViewRoot()
 				.getLocale().toString();

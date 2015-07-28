@@ -17,9 +17,6 @@ import org.slf4j.LoggerFactory;
 import com.stolser.jpa.User;
 import com.stolser.user.LoginBean;
 
-/**
- * Servlet Filter implementation class AuthFilter
- */
 @WebFilter(
 		description = "An authorization filter for the Admin Panel", 
 		urlPatterns = { 
@@ -42,10 +39,6 @@ public class AuthAdminPanelFilter implements Filter {
 
 	public AuthAdminPanelFilter() {}
 
-
-	/**
-	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
-	 */
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		
@@ -69,14 +62,8 @@ public class AuthAdminPanelFilter implements Filter {
 
 	}
 
-	/**
-	 * @see Filter#destroy()
-	 */
 	public void destroy() {}
 
-	/**
-	 * @see Filter#init(FilterConfig)
-	 */
 	public void init(FilterConfig fConfig) throws ServletException {}
 
 	private void redirectTo(String uri) throws IOException {
@@ -134,7 +121,6 @@ public class AuthAdminPanelFilter implements Filter {
 				verifyAccessToMonitorPage("/adminPanelMonitor.");
 				verifyAccessToCreateUserPage("/addNewUser.");
 				
-				/* This is a logged in user with sufficient permissions, so it's OK*/
 				chain.doFilter(request, response);
 			} else {
 				/* User hasn't logged in but asking for a page with restricted access, 

@@ -44,15 +44,6 @@ import com.stolser.jpa.Realtor;
 import com.stolser.jpa.User;
 /**
  * Used for managing sessions and updating logged in user's info. 
- * Contains public methods:<br>
- * <ul>
- * <li>adminPanelValidation();</li>
- * <li>adminPanelLogout();</li>
- * <li>updateLoggedInUser();</li>
- * <li>passwordRepeatValidator();</li>
- * <li>uploadedPhotoHandler();</li>
- * <li>getUserPhotoPath();</li>
- * </ul>
  * */
 @ManagedBean(name="loginBean")
 @SessionScoped
@@ -91,10 +82,7 @@ public class LoginBean implements Serializable {
 		propSystemMap = propLoader.getPropSystemMap();
 		arePhoneNumbersDeleted = new ArrayList<Boolean>();
 	}
-/**
- * Verifies user's login, password, type and status and if everything is OK
- * redirects to the adminLogin.xhtml page.
- * */
+
 	public String adminPanelValidation() {
 		
 		Marker logInMarker = MarkerFactory.getMarker("adminPanelLoggingIn");
@@ -203,11 +191,6 @@ public class LoginBean implements Serializable {
 		}
 	}
 	
-/**
- * Checks whether the second password value on the myProfile.xhtml page 
- * matches the first password value. 
- * The method is used for already logged in user.
- * */
 	public void passwordRepeatValidator(FacesContext context, UIComponent component, Object value)
 			throws ValidatorException {
 		
@@ -295,7 +278,6 @@ public class LoginBean implements Serializable {
 
 	}
 
-/*------------ getter and setters -----------*/
 	public String getEnteredLogin() {
 		return enteredLogin;
 	}
@@ -355,10 +337,7 @@ public class LoginBean implements Serializable {
 	public Boolean getIsUserRealtor() {
 		return  (loggedInUser.getType() == User.UserType.REALTOR);
 	}
-/*------------------------ private methods --------*/
-/**
- * Returns appropriate Properties object for current local on the front-end
- * */
+
 	private Properties getSystemProperties() {
 		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
 		Properties currentProperties = propSystemMap.get(currentLocal);
@@ -421,5 +400,4 @@ public class LoginBean implements Serializable {
 		
 		return "userListing";
 	}*/
-/*------------ END of private methods --------*/
 }

@@ -9,9 +9,6 @@ import javax.ejb.Singleton;
 
 import com.stolser.jpa.User;
 
-/**
- * Session Bean implementation class AdminPanelRegister
- */
 @Singleton
 @LocalBean
 public class AdminPanelRegister {

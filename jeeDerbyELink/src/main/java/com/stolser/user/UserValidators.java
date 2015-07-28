@@ -64,9 +64,6 @@ public class UserValidators {
 		}
 	}
 	
-/**
- * Validates user password on matching the pattern.
- * */
 	public void passwordValidator(FacesContext context, UIComponent component, Object value)
 			throws ValidatorException {
 		
@@ -149,9 +146,6 @@ public class UserValidators {
 		}
 	}
 	
-/**
- * Returns appropriate Properties object for current local on the front-end
- * */
 	private Properties getSystemProperties() {
 		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
 		Properties currentProperties = propSystemMap.get(currentLocal);

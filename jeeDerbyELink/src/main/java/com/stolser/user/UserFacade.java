@@ -34,9 +34,7 @@ import com.stolser.jpa.User.UserType;
 import com.stolser.post.PostFacade;
 
 import org.slf4j.*;
-/**
- * Session Bean implementation class UserFacade
- */
+
 @Stateless
 public class UserFacade {
 	static private final Logger logger = LoggerFactory.getLogger(UserFacade.class);
@@ -60,9 +58,7 @@ public class UserFacade {
     			.createNamedQuery("User.findAll", User.class);
     	return query.getResultList();
     }
-/**
- * Returns either an empty list or a list that contains only one found User instance.
- * */
+
     public List<User> getUsersFindById(Integer id) {
     	User foundUser = entityManager.find(User.class, id);
     	if (foundUser == null) {
@@ -71,6 +67,7 @@ public class UserFacade {
     	
     	List<User> foundUsers = new ArrayList<User>();
     	foundUsers.add(foundUser);
+    	
     	return foundUsers; 
     }
 /**
@@ -143,9 +140,7 @@ public class UserFacade {
 		}
     	return foundUsers;
     }
-/**
- * Tries to persist a new user. Throw an exception if some checks are not passed. 
- * */
+
     public User addNewUser(User userToAdd) {
     	userToAdd = systemRestrictionCheck(userToAdd);
     	persistEntity(userToAdd);
@@ -153,14 +148,6 @@ public class UserFacade {
     	return userToAdd;
     }
     
-/**
- * Tries to update (merge) a user passed as a parameter. 
- * Throws an exception if:
- * <ul>
- * <li>there is no user in the DB with such id;</li>
- * <li>some checks are not passed;</li>
- * </ul> 
- * */
     public User updateUserInDB(User userToUpdate) {
     	List<User> usersInDB = getUsersFindById(userToUpdate.getId());
     	if (usersInDB.size() == 0) {
@@ -173,10 +160,6 @@ public class UserFacade {
     	return mergeEntity(userToUpdate);
     }
     
-/**
- * Refreshes user object passed as a parameter by the data from the DB.
- * Throws an exception if there is no user in DB with such id.
- * */
     public User refreshUserFromDB(User userToRefresh) {
     	List<User> usersInDB = getUsersFindById(userToRefresh.getId());
     	if (usersInDB.size() == 0) {
@@ -290,11 +273,6 @@ public class UserFacade {
 		}
     }
     
-/**
- * The method performs several checks on uniqueness and required properties.
- * Throws an Exception if some restrictions are violated or
- * returns the same object.
- * */
     private User systemRestrictionCheck(User userToCheck) {
     	
     	checkRequiredPropertyForNullity(userToCheck);
@@ -353,9 +331,6 @@ public class UserFacade {
     	return true;
     }
 	
-/**
- * Returns appropriate Properties object for current local on the front-end
- * */
     private Properties getSystemProperties() {
 		String currentLocal = FacesContext.getCurrentInstance().getViewRoot()
 				.getLocale().toString();
@@ -404,9 +379,6 @@ public class UserFacade {
 			List<User> foundUsers = getUsersFindByType(newUserType);	
 			
 			if (foundUsers.size() != 0) {
-				/*In the DB there is a user with type SUPER_ADMIN. If it has 
-				 * the same id as the id of the userToCheck than OK.
-				 * If these ids are different then throw an exception.*/
 				int IDofUserToCheck = userToCheck.getId();
     			int IDofUserInDB = foundUsers.get(0).getId();
 				if (IDofUserToCheck != IDofUserInDB) {
@@ -421,9 +393,6 @@ public class UserFacade {
     	String LoginOfUserToCheck = userToCheck.getLogin();
     	List<User> usersInDBWithSuchLogin = getUsersFindByLogin(LoginOfUserToCheck);
     	if (usersInDBWithSuchLogin.size() != 0) {
-    		/*In the DB there is a user with such login. If it has 
-			 * the same id as the id of the userToCheck than OK.
-			 * If these ids are different then throw an exception.*/
 			int IDofUserToCheck = userToCheck.getId();
 			int IDofUserInDB = usersInDBWithSuchLogin.get(0).getId();
 			if (IDofUserToCheck != IDofUserInDB) {

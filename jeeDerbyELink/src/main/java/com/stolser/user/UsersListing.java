@@ -28,16 +28,12 @@ import com.stolser.jpa.User.UserStatusType;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 import org.slf4j.*;
-/**
- * Contains properties and methods for 
- * the userListing.jsf page.
- * */
+
 @ManagedBean(name = "usersListing")
 @ViewScoped
 public class UsersListing {
 	static private final Logger logger = LoggerFactory.getLogger(UsersListing.class);
 
-	/** Contains all users with the status 'active' or 'not_active'.*/
 	private List<User> usersList;
 	/** Current user for whom extra info will be displayed in the popup window.*/
 	private User selectedUser;
@@ -339,9 +335,7 @@ public class UsersListing {
 	public List<Boolean> getUsersToDeleteFromDBFlags() {
 		return usersToDeleteFromDBFlags;
 	}
-	/**
-	 * Returns appropriate Properties object for current local on the front-end
-	 * */
+
 	private Properties getSystemProperties() {
 		String currentLocal = FacesContext.getCurrentInstance().getViewRoot()
 				.getLocale().toString();

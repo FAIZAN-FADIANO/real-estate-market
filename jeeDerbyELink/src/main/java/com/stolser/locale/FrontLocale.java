@@ -28,26 +28,8 @@ public class FrontLocale implements Serializable {
 				"The language of Goethe and Sigmund Freud."));
 	}
 	
-//constructors	
 	public FrontLocale() {}
 	
-	
-//---------------------
-	 
-	/*public void localeChanged(ValueChangeEvent e) {
-		
-		CustomLocale currentLocale = new CustomLocale();
-    	for (CustomLocale customLocale : locales) {
-			if (customLocale.getLangCode().equals(newValue)) {
-				currentLocale = customLocale;
-				break;
-			}
-		}
-    	
-		FacesContext.getCurrentInstance().getViewRoot().setLocale(currentLocale.getLocale());
-		
-	}*/
-
 	public CustomLocale getCurrentLocale() {
 		return currentLocale;
 	}
