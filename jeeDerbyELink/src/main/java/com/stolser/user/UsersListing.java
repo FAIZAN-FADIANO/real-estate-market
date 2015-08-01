@@ -1,5 +1,6 @@
 package com.stolser.user;
 
+import static com.stolser.MessageFromProperties.*;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,14 +61,8 @@ public class UsersListing {
 
 	@EJB 
 	private UserFacade userEJB;
-	@EJB
-	private PropertiesLoader propLoader;
-	private Map<String, Properties> propSystemMap;
-
 	private String userStatusFilter;
 
-
-	//-------END of properties-------
 	public UsersListing() {}
 
 	@PostConstruct
@@ -75,11 +70,9 @@ public class UsersListing {
 		populateUsersListFromStatusFilter();
 		populateUserStatusLabels();
 		populateUsersTableColumnVisibility();
-		
-		propSystemMap = propLoader.getPropSystemMap();
+
 		isDiscardUserButtonVisible = false;
 	}
-
 
 	public UserFacade getUserEJB() {
 		return userEJB;
@@ -135,29 +128,20 @@ public class UsersListing {
 	}
 
 	public void activateDisableUserOK() {
-		FacesMessage newMessage;
-		FacesContext context = FacesContext.getCurrentInstance();
-
 		try {
 			userForUpdate.setStatus(userForUpdateStatusNew);
 			userForUpdate = userEJB.updateUserInDB(userForUpdate);
 
-			String successMsg = MessageFormat.format(getSystemProperties()
-					.getProperty("activateDisableSuccessMessage"), userForUpdate, 
-					userForUpdate.getStatus());
-			newMessage = new FacesMessage(successMsg);
-			newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
-			context.addMessage(null, newMessage);
-			logger.debug(successMsg);
+			String successMessage = createMessageText("activateDisableSuccessMessage", 
+					userForUpdate, userForUpdate.getStatus());
+			addMessageToFacesContext(createInfoFacesMessage(successMessage));
+			logger.debug(successMessage);
 
 		} catch (Exception e) {
-			String errorMsg = MessageFormat.format(getSystemProperties()
-					.getProperty("activateDisableErrMessage"), userForUpdate, 
-					userForUpdate.getStatus());
-			newMessage = new FacesMessage(errorMsg);
-			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-			FacesContext.getCurrentInstance().addMessage(null, newMessage);
-			logger.error(errorMsg, e);
+			String errorMessage = createMessageText("activateDisableErrMessage", 
+					userForUpdate, userForUpdate.getStatus());
+			addMessageToFacesContext(createErrorFacesMessage(errorMessage));
+			logger.error(errorMessage, e);
 
 			userForUpdate.setStatus(userForUpdateStatusOld);
 		}
@@ -186,23 +170,18 @@ public class UsersListing {
 			default:
 				break;
 			}
-
-			String successMsg = MessageFormat.format(getSystemProperties()
-					.getProperty("discardSuccessMessage"), userForUpdate);
-			FacesMessage newMessage = new FacesMessage(successMsg);
-			newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
-			FacesContext.getCurrentInstance().addMessage(null, newMessage);
-			logger.debug(successMsg);
+			
+			String successMessage = createMessageText("discardSuccessMessage", 
+					userForUpdate);
+			addMessageToFacesContext(createInfoFacesMessage(successMessage));
+			logger.debug(successMessage);
 
 		} catch (Exception e) {
-			String errorMsg = MessageFormat.format(getSystemProperties()
-					.getProperty("discardErrMessage"), userForUpdate);
-			FacesMessage newMessage = new FacesMessage(errorMsg);
-			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-			FacesContext.getCurrentInstance().addMessage(null, newMessage);
-			logger.error(errorMsg, e);
+			String errorMessage = createMessageText("discardErrMessage", 
+					userForUpdate);
+			addMessageToFacesContext(createErrorFacesMessage(errorMessage));
+			logger.error(errorMessage, e);
 		}
-
 	}
 
 	public void changeUserStatusCancel() {
@@ -260,12 +239,10 @@ public class UsersListing {
 		try {
 			userEJB.removeUsersFromDB(usersToDeleteFromDB);
 
-			String successMsg = MessageFormat.format(getSystemProperties()
-					.getProperty("deleteUsersFromDBSuccessMessage"), usersToDeleteFromDB);
-			FacesMessage newMessage = new FacesMessage(successMsg);
-			newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
-			FacesContext.getCurrentInstance().addMessage(null, newMessage);
-			logger.debug(successMsg);
+			String successMessage = createMessageText("deleteUsersFromDBSuccessMessage", 
+					usersToDeleteFromDB);
+			addMessageToFacesContext(createInfoFacesMessage(successMessage));
+			logger.debug(successMessage);
 
 			usersList.removeAll(usersToDeleteFromDB);
 			usersToDeleteFromDB.clear();
@@ -276,12 +253,9 @@ public class UsersListing {
 			}
 
 		} catch (Exception e) {
-			String errorMsg = getSystemProperties()
-					.getProperty("deleteUsersFromDBErrorMsg");
-			FacesMessage newMessage = new FacesMessage(errorMsg);
-			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-			FacesContext.getCurrentInstance().addMessage(null, newMessage);
-			logger.error(errorMsg);
+			String errorMessage = createMessageText("deleteUsersFromDBErrorMsg");
+			addMessageToFacesContext(createErrorFacesMessage(errorMessage));
+			logger.error(errorMessage);
 		}
 	}
 
@@ -335,13 +309,6 @@ public class UsersListing {
 	public List<Boolean> getUsersToDeleteFromDBFlags() {
 		return usersToDeleteFromDBFlags;
 	}
-
-	private Properties getSystemProperties() {
-		String currentLocal = FacesContext.getCurrentInstance().getViewRoot()
-				.getLocale().toString();
-		Properties currentProperties = propSystemMap.get(currentLocal);
-		return currentProperties;
-	}
 	
 	private void populateUsersListFromStatusFilter() {
 		userStatusFilter = FacesContext.getCurrentInstance().getExternalContext()
@@ -350,10 +317,10 @@ public class UsersListing {
 			try {
 				switch (userStatusFilter) {
 				case "notdiscarded":
-					usersList = userEJB.getUsersFindByStatusNot(User.UserStatusType.DISCARDED);
+					usersList = userEJB.getUsersFindByStatusNot(UserStatusType.DISCARDED);
 					break;
 				case "discarded":
-					usersList = userEJB.getUsersFindByStatus(User.UserStatusType.DISCARDED);
+					usersList = userEJB.getUsersFindByStatus(UserStatusType.DISCARDED);
 					usersToDeleteFromDB = new ArrayList<>();
 					usersToDeleteFromDBFlags = new ArrayList<>();
 					for (int i = 0; i < usersList.size(); i++) {
@@ -370,7 +337,8 @@ public class UsersListing {
 		} else {
 			userStatusFilter = "";
 		}
-		logger.trace("A new usersList's been created with params: userstatus = {}.", userStatusFilter);
+		logger.trace("A new usersList's been created with params: userstatus = {}.", 
+				userStatusFilter);
 	}
 	
 	private void populateUserStatusLabels() {

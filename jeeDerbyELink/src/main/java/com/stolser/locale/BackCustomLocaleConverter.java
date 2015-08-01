@@ -22,7 +22,6 @@ public class BackCustomLocaleConverter implements Converter {
 	
 	@ManagedProperty(value = "#{backLocale}")
 	private BackLocale backLocale;
-	
 	private List<CustomLocale> locales;
 
 	public BackCustomLocaleConverter() {}

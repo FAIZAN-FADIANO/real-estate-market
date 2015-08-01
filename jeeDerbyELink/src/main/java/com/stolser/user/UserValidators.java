@@ -1,14 +1,11 @@
 package com.stolser.user;
 
+import static com.stolser.MessageFromProperties.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
@@ -18,7 +15,6 @@ import javax.faces.validator.ValidatorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.stolser.PropertiesLoader;
 import com.stolser.jpa.User;
 
 @ManagedBean(name = "userValidators")
@@ -28,16 +24,8 @@ public class UserValidators {
 	
 	@EJB
 	private UserFacade userFacade;
-	@EJB
-	private PropertiesLoader propLoader;
-	private Map<String, Properties> propSystemMap;
 
 	public UserValidators() {}
-	
-	@PostConstruct
-	private void init() {
-		propSystemMap = propLoader.getPropSystemMap();
-	}
 	
 	public void loginValidator(FacesContext context, UIComponent component, Object value)
 			throws ValidatorException {
@@ -55,12 +43,11 @@ public class UserValidators {
 		List<User> usersInDB = userFacade.getUsersFindByLogin(enteredLogin);
 		if (usersInDB.size() == 0) {	
 			/*there is no user in the DB with such login*/
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("invalidLoginErrSum"),
-					getSystemProperties().getProperty("invalidLoginErrDetail"));
-			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+			String messageSummary = createMessageText("invalidLoginErrSum");
+			String messageDetail = createMessageText("invalidLoginErrDetail");
 			
-			throw new ValidatorException(newMessage);
+			throw new ValidatorException(
+					createErrorFacesMessage(messageSummary, messageDetail));
 		}
 	}
 	
@@ -76,11 +63,8 @@ public class UserValidators {
 		matcher = pattern.matcher(enteredPassword);
 		
 		if( !matcher.matches() ) {
-			FacesMessage newMessage = new FacesMessage("value = " + value + " " + getSystemProperties()
-					.getProperty("passwordValidatorMessage"));
-				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-				
-			throw new ValidatorException(newMessage);
+			throw new ValidatorException(createErrorFacesMessage(
+					createMessageText("passwordValidatorMessage")));
 		}
 	}
 	
@@ -96,11 +80,8 @@ public class UserValidators {
 		matcher = pattern.matcher(enteredName);
 		
 		if( !matcher.matches() ) {
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("firstLastNameValidatorMessage"));
-				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-				
-			throw new ValidatorException(newMessage);
+			throw new ValidatorException(createErrorFacesMessage(
+					createMessageText("firstLastNameValidatorMessage")));
 		}
 	}
 	
@@ -118,11 +99,8 @@ public class UserValidators {
 		matcher = pattern.matcher(enteredEmail);
 		
 		if( !matcher.matches() ) {
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("emailValidatorMessage"));
-				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-				
-			throw new ValidatorException(newMessage);
+			throw new ValidatorException(createErrorFacesMessage(
+					createMessageText("emailValidatorMessage")));
 		}
 	}
 	
@@ -138,18 +116,9 @@ public class UserValidators {
 		matcher = pattern.matcher(enteredSkype);
 		
 		if( !matcher.matches() ) {
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("skypeValidatorMessage"));
-				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-				
-			throw new ValidatorException(newMessage);
+			throw new ValidatorException(createErrorFacesMessage(
+					createMessageText("skypeValidatorMessage")));
 		}
-	}
-	
-	private Properties getSystemProperties() {
-		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
-		Properties currentProperties = propSystemMap.get(currentLocal);
-		return currentProperties;
 	}
 	
 	private void checkLoginForMatchingPattern(String enteredLogin) {
@@ -158,11 +127,8 @@ public class UserValidators {
 	    Matcher matcher = pattern.matcher(enteredLogin);
 	    
 		if( ! matcher.matches() ) {
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("loginValidatorMessage"));
-			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-				
-			throw new ValidatorException(newMessage);
+			throw new ValidatorException(createErrorFacesMessage(
+					createMessageText("loginValidatorMessage")));
 		}
 	}
 	 
@@ -170,11 +136,8 @@ public class UserValidators {
 		List<User> usersInDB = userFacade.getUsersFindByLogin(enteredLogin);
 		if (usersInDB.size() != 0) {	
 			/*there is already a user in the DB with such login*/
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("loginExistValidatorMessage"));
-			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-			throw new ValidatorException(newMessage);
+			throw new ValidatorException(createErrorFacesMessage(
+					createMessageText("loginExistValidatorMessage")));
 		}
 	}
-
 }

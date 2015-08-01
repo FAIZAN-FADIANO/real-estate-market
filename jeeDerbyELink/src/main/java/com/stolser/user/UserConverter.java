@@ -1,12 +1,8 @@
 package com.stolser.user;
 
+import static com.stolser.MessageFromProperties.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.*;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -52,8 +48,7 @@ public class UserConverter implements Converter {
             	String errorMsg = "Conversion Error. Not a valid login.";
             	logger.error(errorMsg, e);
             	
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                		errorMsg, errorMsg));
+                throw new ConverterException(createErrorFacesMessage(errorMsg));
             }
         } else {
             return null;
@@ -62,7 +57,6 @@ public class UserConverter implements Converter {
 
 	@Override
 	public String getAsString(FacesContext context, UIComponent component, Object object) {
-		
 		if(isValueValid(object)) {
 			return ((User) object).getLogin();
         } else { 
@@ -82,5 +76,4 @@ public class UserConverter implements Converter {
 		return (object != null) 
 				&& ( ! "".equals(object));
 	}
-
 }

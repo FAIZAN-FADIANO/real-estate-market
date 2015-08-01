@@ -128,9 +128,9 @@
             <p:column headerText="#{userRB.userStatusLabel}" priority="1"
               width="20%" toggleable="false" sortBy="#{user.status}">
               <h:outputText value="#{user.status}"
-                rendered="#{(not loginBean.isUserSuperAdmin) or (user.type eq 'SUPER_ADMIN')}"></h:outputText>
+                rendered="#{(not loginBean.userSuperAdmin) or (user.type eq 'SUPER_ADMIN')}"></h:outputText>
               <p:selectOneMenu id="userStatusSelect" 
-                rendered="#{(loginBean.isUserSuperAdmin) and (user.type ne 'SUPER_ADMIN')}"
+                rendered="#{(loginBean.userSuperAdmin) and (user.type ne 'SUPER_ADMIN')}"
                 effect="fold" value="#{user.status}" styleClass="userStatusSelect"
                 valueChangeListener="#{usersListing.userStatusChanged}">
                 <f:selectItems value="#{usersListing.userStatusLabels}" />
@@ -144,7 +144,7 @@
       </b:row>
 
 <!-- Confirm Dialog for confirmation of user status changing  -->  
-      <p:dialog rendered="#{loginBean.isUserSuperAdmin}"
+      <p:dialog rendered="#{loginBean.userSuperAdmin}"
         widgetVar="userChangeStatusConfirmation" showEffect="fade" hideEffect="fade"
         header="#{systemRB.confirmDialogTitle}" modal="true" width="400"
         draggable="false" resizable="false" closable="false"> 
@@ -186,7 +186,7 @@
       
 <!--  Confirm dialog for discarding a user -->
       <p:confirmDialog id="userDiscardConfirmation" severity="alert"
-        rendered="#{loginBean.isUserSuperAdmin}" 
+        rendered="#{loginBean.userSuperAdmin}" 
         header="#{systemRB.confirmDialogTitle}"
         message="#{userRB.userDiscardConfirmMessage}" closable="false"
         closeOnEscape="false"

@@ -12,16 +12,13 @@ import javax.ejb.Startup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
-@Startup
-public class PropertiesLoader {
+public final class PropertiesLoader {
 	static private final Logger logger = LoggerFactory.getLogger(PropertiesLoader.class);
 
 	private Map<String, Properties> propSystemMap;
-	 
-    @PostConstruct
-    private void init() {
-        ClassLoader classLoader = this.getClass().getClassLoader();
+ 
+    private PropertiesLoader() {
+    	ClassLoader classLoader = this.getClass().getClassLoader();
         propSystemMap = new HashMap<>();
                 
         /* Loading all files for resource bundle system.properties*/
@@ -42,9 +39,15 @@ public class PropertiesLoader {
         	logger.error("Exception arose during loading system/system.properties.", e);
         }
     }
- 
-    public PropertiesLoader() {}
 
+    private static final class PropertiesLoaderHolder {
+    	private static final PropertiesLoader INSTANCE = new PropertiesLoader();
+    }
+    
+    public static PropertiesLoader getInstance() {
+    	return PropertiesLoaderHolder.INSTANCE;
+    }
+    
 	public Map<String, Properties> getPropSystemMap() {
 		return propSystemMap;
 	}

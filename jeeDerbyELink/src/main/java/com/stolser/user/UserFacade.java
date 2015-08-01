@@ -1,31 +1,19 @@
 package com.stolser.user;
 
-import java.text.MessageFormat;
+import static com.stolser.MessageFromProperties.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
-
-import javax.faces.context.FacesContext;
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import com.stolser.PropertiesLoader;
 import com.stolser.jpa.Admin;
-import com.stolser.jpa.EstateItem;
-import com.stolser.jpa.Post;
 import com.stolser.jpa.Realtor;
 import com.stolser.jpa.RegisteredUser;
 import com.stolser.jpa.User;
@@ -44,14 +32,6 @@ public class UserFacade {
 	
 	@EJB
 	private PostFacade postFacade;
-	@EJB
-	private PropertiesLoader propLoader;
-	private Map<String, Properties> propSystemMap;
-	
-	@PostConstruct
-	private void init() {
-		propSystemMap = propLoader.getPropSystemMap();
-	}
 	
     public List<User> getUsersFindAll() {
     	TypedQuery<User> query = entityManager
@@ -122,22 +102,17 @@ public class UserFacade {
     	
     	return foundUsers;
     }
-/**
- * The <code>login</code> property MUST be unique.<br/>
- * The method uses <code>getResultList()</code> and then performs a check how many 
- * elements have been retrieved:<br/>
- * - if 0 or 1 - returns an empty or a list with only one user;<br/>
- * - if more than 1 - throws an <code>javax.persistence.NonUniqueResultException</code>.
- * */
+
     public List<User> getUsersFindByLogin(String login) {
     	TypedQuery<User> query = entityManager.
     			createNamedQuery("User.findByLogin", User.class).setParameter("login", login);
     	List<User> foundUsers = query.getResultList();
     	int foundUsersSize = foundUsers.size();
     	if ( foundUsersSize > 1) {
-			throw new NonUniqueResultException(MessageFormat.format(
-					getSystemProperties().getProperty("nonUniqueLoginErr"), foundUsersSize, login));
+			throw new NonUniqueResultException(
+					createMessageText("nonUniqueLoginErr", foundUsersSize, login));
 		}
+    	
     	return foundUsers;
     }
 
@@ -151,8 +126,7 @@ public class UserFacade {
     public User updateUserInDB(User userToUpdate) {
     	List<User> usersInDB = getUsersFindById(userToUpdate.getId());
     	if (usersInDB.size() == 0) {
-			throw new RuntimeException(getSystemProperties()
-					.getProperty("noUserInDBWithID"));
+			throw new RuntimeException(createMessageText("noUserInDBWithID"));
 		}
     	
     	userToUpdate = systemRestrictionCheck(userToUpdate);
@@ -163,8 +137,7 @@ public class UserFacade {
     public User refreshUserFromDB(User userToRefresh) {
     	List<User> usersInDB = getUsersFindById(userToRefresh.getId());
     	if (usersInDB.size() == 0) {
-			throw new RuntimeException(getSystemProperties()
-					.getProperty("noUserInDBWithID"));
+			throw new RuntimeException(createMessageText("noUserInDBWithID"));
 		}
     	
     	User userFromDB = usersInDB.get(0);
@@ -181,8 +154,9 @@ public class UserFacade {
     	   	
     	User.UserType adminToDiscardType = adminToDiscard.getType();
     	if (adminToDiscardType == User.UserType.SUPER_ADMIN) {
-    		String errorMsg = getSystemProperties().getProperty("discardSuperAdminViolationErr");
+    		String errorMsg = createMessageText("discardSuperAdminViolationErr");
     		logger.error(errorMsg);
+    		
 			throw new RuntimeException(errorMsg);
 		}
     	
@@ -192,11 +166,12 @@ public class UserFacade {
     	
     	try {
     		adminToDiscard = (Admin)updateUserInDB(adminToDiscard);
+    		
     		logger.trace("User {} has been discarded.", adminToDiscard);
     		
 		} catch (Exception e) {
-			logger.error("An exception occurred during discarding a user ({})."
-					, adminToDiscard, e);
+			logger.error("An exception occurred during discarding a user ({}).",
+					adminToDiscard, e);
 		}
     	
     	return adminToDiscard;
@@ -219,10 +194,12 @@ public class UserFacade {
     	    	
     	try {
     		realtorToDiscard = (Realtor)updateUserInDB(realtorToDiscard);
+    		
     		logger.trace("User {} has been discarded.", realtorToDiscard);
     		
 		} catch (Exception e) {
-			logger.error("An exception occurred during discarding a user ({}).", realtorToDiscard, e);
+			logger.error("An exception occurred during discarding a user ({}).", 
+					realtorToDiscard, e);
 		}
     	
     	return realtorToDiscard;
@@ -233,22 +210,22 @@ public class UserFacade {
  * the back-end. Only such users can be removed from the DB.
  * */   
     public RegisteredUser discardRegisteredUser(RegisteredUser regUserToDiscard) {
-    	
     	regUserToDiscard.setFavoriteEstateItems(null);
     	regUserToDiscard.setStatus(User.UserStatusType.DISCARDED);
     	
     	try {
     		updateUserInDB(regUserToDiscard);
+    		
     		logger.trace("User {} has been discarded.", regUserToDiscard);
 		} catch (Exception e) {
-			logger.error("An exception occurred during discarding a user ({}).", regUserToDiscard, e);
+			logger.error("An exception occurred during discarding a user ({}).", 
+					regUserToDiscard, e);
 		}
     	
     	return regUserToDiscard;
     }
     
     public void removeUsersFromDB(List<User> usersToRemove) {
-    	
     	for (Iterator<User> iterator = usersToRemove.iterator(); iterator.hasNext();) {
 			User currentUser = (User) iterator.next();
 			removeUser(currentUser);
@@ -267,7 +244,8 @@ public class UserFacade {
     		entityManager.remove(userToRemove);
     		
 		} catch (RuntimeException e) {
-			logger.error("An exception occured during removing a user ({}).", userToRemove, e);
+			logger.error("An exception occured during removing a user ({}).", 
+					userToRemove, e);
 			
 			throw new RuntimeException("An exception occured during removing a user.", e);
 		}
@@ -286,22 +264,20 @@ public class UserFacade {
 	private <T> T persistEntity(T entity) {
 		try {
 			entityManager.persist(entity);
+			
 			return entity;
 			
 		} catch (Exception eee) {
-			throw new RuntimeException(getSystemProperties()
-					.getProperty("failureDuringPersistanceMessage"), eee);
+			throw new RuntimeException(createMessageText("failureDuringPersistanceMessage"), eee);
 		}
 	}
 	
 	private <T> T mergeEntity(T entity) {
 		try {
-			logger.trace("Before merging...(entity.hashcode = {})", entity.hashCode());
 			return entityManager.merge(entity);
 			
 		} catch (Exception eee) {
-			String errorMsg = getSystemProperties()
-					.getProperty("failureDuringMergingMessage");
+			String errorMsg = createMessageText("failureDuringMergingMessage");
 			logger.error(errorMsg, eee);
 			
 			throw new RuntimeException(errorMsg, eee);
@@ -314,8 +290,8 @@ public class UserFacade {
 			return entity;
 			
 		} catch (Exception eee) {
-			throw new RuntimeException(getSystemProperties()
-					.getProperty("failureDuringRefreshingMessage"), eee);
+			throw new RuntimeException(
+					createMessageText("failureDuringRefreshingMessage"), eee);
 		}
 	}
 	
@@ -323,24 +299,17 @@ public class UserFacade {
     	if (type == User.UserType.SUPER_ADMIN) {
     		int foundUsersSize = foundUsers.size();
     		if ( foundUsersSize > 1) {
-    			throw new NonUniqueResultException(MessageFormat.format(
-    					getSystemProperties().getProperty("nonUniqueSuperAdminErr"), foundUsersSize));
+    			throw new NonUniqueResultException(
+    					createMessageText("nonUniqueSuperAdminErr", foundUsersSize));
     		}
     	}
     	
     	return true;
     }
-	
-    private Properties getSystemProperties() {
-		String currentLocal = FacesContext.getCurrentInstance().getViewRoot()
-				.getLocale().toString();
-		Properties currentProperties = propSystemMap.get(currentLocal);
-		return currentProperties;
-	}
     
     private void checkIfNull(User assignee) {
     	if (assignee == null) {
-    		String errorMsg = getSystemProperties().getProperty("discardAdminNullErr");
+    		String errorMsg = createMessageText("discardAdminNullErr");
     		logger.error(errorMsg);
 			throw new NullPointerException(errorMsg);
 		}
@@ -349,8 +318,8 @@ public class UserFacade {
     private void checkIfStatusIsDiscarded(User userToRemove) {
     	User.UserStatusType userToRemoveStatus = userToRemove.getStatus(); 
     	if (userToRemoveStatus != User.UserStatusType.DISCARDED) {
-			String errorMsg = MessageFormat.format(getSystemProperties()
-					.getProperty("removeNotDiscardedUserErr"), userToRemoveStatus);
+			String errorMsg = createMessageText("removeNotDiscardedUserErr", 
+					userToRemoveStatus);
 			logger.error(errorMsg);
 			
     		throw new RuntimeException(errorMsg);
@@ -366,10 +335,8 @@ public class UserFacade {
         		|| (userToCheck.getLastName() == null)
         		|| (userToCheck.getDateOfCreation() == null);
     	if (isAnyRequiredPropertyIsNull) {
-			throw new RuntimeException(getSystemProperties()
-					.getProperty("requiredPropsViolationErr"));
+			throw new RuntimeException(createMessageText("requiredPropsViolationErr"));
     	}
-
     }
     
     private void checkSuperAdminUniqueness(User userToCheck) {
@@ -382,8 +349,7 @@ public class UserFacade {
 				int IDofUserToCheck = userToCheck.getId();
     			int IDofUserInDB = foundUsers.get(0).getId();
 				if (IDofUserToCheck != IDofUserInDB) {
-					throw new RuntimeException(getSystemProperties()
-							.getProperty("addSuperAdminViolationErr"));
+					throw new RuntimeException(createMessageText("addSuperAdminViolationErr"));
 				}
 			}
 		}
@@ -396,8 +362,8 @@ public class UserFacade {
 			int IDofUserToCheck = userToCheck.getId();
 			int IDofUserInDB = usersInDBWithSuchLogin.get(0).getId();
 			if (IDofUserToCheck != IDofUserInDB) {
-				throw new RuntimeException(MessageFormat.format(getSystemProperties()
-						.getProperty("addUserLoginViolationErr"), LoginOfUserToCheck));
+				throw new RuntimeException(createMessageText("addUserLoginViolationErr", 
+						LoginOfUserToCheck));
 			}
     	}
     }
@@ -408,22 +374,20 @@ public class UserFacade {
 		case SUPER_ADMIN:
 		case ADMIN:
 			if (!(userToCheck instanceof Admin)) {
-				throw new RuntimeException(MessageFormat.format(
-						getSystemProperties().getProperty("addUserTypeViolationErr"), 
+				throw new RuntimeException(createMessageText("addUserTypeViolationErr", 
 						User.UserType.SUPER_ADMIN + " or " + User.UserType.ADMIN, "Admin"));
+				
 			}
 			break;
 		case REALTOR:
 			if (!(userToCheck instanceof Realtor)) {
-				throw new RuntimeException(MessageFormat.format(
-						getSystemProperties().getProperty("addUserTypeViolationErr"), 
+				throw new RuntimeException(createMessageText("addUserTypeViolationErr", 
 						User.UserType.REALTOR, "Realtor"));
 			}
 			break;
 		case REGISTERED_USER:
 			if (!(userToCheck instanceof RegisteredUser)) {
-				throw new RuntimeException(MessageFormat.format(
-						getSystemProperties().getProperty("addUserTypeViolationErr"), 
+				throw new RuntimeException(createMessageText("addUserTypeViolationErr", 
 						User.UserType.REGISTERED_USER, "RegisteredUser"));
 			}
 			break;
@@ -431,11 +395,4 @@ public class UserFacade {
 			throw new RuntimeException("A new user type is invalid.");
 		}
     }
-    
 }
-
-
-
-
-
-

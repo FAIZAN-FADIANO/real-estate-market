@@ -64,17 +64,3 @@ public class PostFacade {
     	return query.getResultList();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

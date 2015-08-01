@@ -1,23 +1,15 @@
 package com.stolser.user;
 
+import static com.stolser.MessageFromProperties.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -26,20 +18,15 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.validator.ValidatorException;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
-import org.primefaces.model.menu.DefaultMenuModel;
-import org.primefaces.model.menu.MenuModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import com.stolser.PropertiesLoader;
-import com.stolser.jpa.Admin;
 import com.stolser.jpa.Realtor;
 import com.stolser.jpa.User;
 /**
@@ -62,9 +49,7 @@ public class LoginBean implements Serializable {
 	
 	@EJB
 	private UserFacade userFacade;
-	@EJB
-	private PropertiesLoader propLoader;
-	private Map<String, Properties> propSystemMap;
+	
 /**
  * Is NOT null only for users that have permissions to access the Admin Panel 
  * (active users with type != User.UserType.REGISTERED_USER). These users also can
@@ -78,8 +63,6 @@ public class LoginBean implements Serializable {
 	
 	@PostConstruct
 	private void init() {
-		
-		propSystemMap = propLoader.getPropSystemMap();
 		arePhoneNumbersDeleted = new ArrayList<Boolean>();
 	}
 
@@ -95,34 +78,34 @@ public class LoginBean implements Serializable {
 		User.UserStatusType userStatusType = user.getStatus();
 		
 		if (!(userPassword.equals(enteredPassword))) {  
-			/*the entered password doesn't match the password in the DB*/
-			FacesContext.getCurrentInstance().addMessage("loggingForm:passwordInput", 
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-							getSystemProperties().getProperty("invalidPassErrSum"),
-							getSystemProperties().getProperty("invalidPassErrDetail")));
+			String messageSummary = createMessageText("invalidPassErrSum");
+			String messageDetail = createMessageText("invalidPassErrDetail");
+			addMessageToFacesContext("loggingForm:passwordInput", 
+				createErrorFacesMessage(messageSummary, messageDetail));
 			
 			logger.info(logInMarker, "For login = {} incorrect password ({}) entered.",
-					userLogin, userPassword);
+					userLogin, enteredPassword);
 			
-			return null;
-			
+			return null;	
 		} 
 		
 		if (userType == User.UserType.REGISTERED_USER) {
 			/*registered users don't have access to the Admin Panel*/
-			FacesContext.getCurrentInstance().addMessage(null, 
-					new FacesMessage(FacesMessage.SEVERITY_WARN, 
-							getSystemProperties().getProperty("invalidTypeErrSum"), 
-							getSystemProperties().getProperty("invalidTypeErrDetail")));
+			String messageSummary = createMessageText("invalidTypeErrSum");
+			String messageDetail = createMessageText("invalidTypeErrDetail");
+			addMessageToFacesContext(
+					createErrorFacesMessage(messageSummary,	messageDetail));
+			
 			return null;
 		}
 		
 		if (userStatusType != User.UserStatusType.ACTIVE) {
 			/*the user is NOT active --> they don't have NO permissions*/
-			FacesContext.getCurrentInstance().addMessage(null, 
-					new FacesMessage(FacesMessage.SEVERITY_WARN, 
-							getSystemProperties().getProperty("invalidStatusErrSum"), 
-							getSystemProperties().getProperty("invalidStatusErrDetail")));
+			String messageSummary = createMessageText("invalidStatusErrSum");
+			String messageDetail = createMessageText("invalidStatusErrDetail");
+			addMessageToFacesContext(
+					createWarnFacesMessage(messageSummary, messageDetail));
+			
 			return null;
 		}
 		
@@ -161,34 +144,26 @@ public class LoginBean implements Serializable {
     }
 	
 	public String updateLoggedInUser() {
-	
+		removeEmptyPhoneNumbers();
+		
 		try{
-			removeEmptyPhoneNumbers();
-
 			loggedInUser = userFacade.updateUserInDB(loggedInUser);
-			logger.trace("after updateUserInDB()...(loggedInUser.hashcode = {})", loggedInUser.hashCode());
-			
-			String successMessage = MessageFormat.format(getSystemProperties()
-					.getProperty("updateUserSuccessMessage"), loggedInUser);
-			FacesMessage newMessage = new FacesMessage(successMessage);
-			newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
-			FacesContext.getCurrentInstance().addMessage(null, newMessage);
-			logger.debug(successMessage);
-			
-			return null;
 			
 		} catch(Exception e) {
-			String errorMessage = MessageFormat.format(getSystemProperties()
-					.getProperty("updateUserErr"), loggedInUser);
-			FacesMessage newMessage = new FacesMessage(errorMessage);
-			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-			FacesContext.getCurrentInstance().addMessage(null, newMessage);
+			String errorMessage = createMessageText("updateUserErr", loggedInUser);
+			addMessageToFacesContext(createErrorFacesMessage(errorMessage));
 			logger.error(errorMessage, e);
 			
 			loggedInUser = userFacade.refreshUserFromDB(loggedInUser);
 			
 			return null;
 		}
+		
+		String successMessage = createMessageText("updateUserSuccessMessage", loggedInUser);
+		addMessageToFacesContext(createInfoFacesMessage(successMessage));
+		logger.debug(successMessage);
+		
+		return null;
 	}
 	
 	public void passwordRepeatValidator(FacesContext context, UIComponent component, Object value)
@@ -197,19 +172,18 @@ public class LoginBean implements Serializable {
 		String firstPassword = getLoggedInUser().getPassword();
 		String repeatPassword = value.toString();
 		
-		List<FacesMessage> messages = FacesContext.getCurrentInstance()
+		List<FacesMessage> firstPasswordInputMessages = FacesContext.getCurrentInstance()
 				.getMessageList("myProfileInfo:myProfileForm:passwordFirst");
 		
-		if (messages.size() > 0) {
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("passwordRepeatNotCorrectMessage"));
-				newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-				
+		if (firstPasswordInputMessages.size() > 0) {		
+			FacesMessage newMessage = createErrorFacesMessage(
+					createMessageText("passwordRepeatNotCorrectMessage"));
+			
 			throw new ValidatorException(newMessage);
+			
 		} else if ( ! firstPassword.equals(repeatPassword) ) {
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-				.getProperty("passwordRepeatRequiredMessage"));
-			newMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
+			FacesMessage newMessage = createErrorFacesMessage(
+					createMessageText("passwordRepeatRequiredMessage"));
 			
 			throw new ValidatorException(newMessage);
 		}
@@ -227,33 +201,25 @@ public class LoginBean implements Serializable {
 		try (InputStream input = uploadedFile.getInputstream()) {
 			Files.copy(input, uploadedPhoto.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			
-			FacesMessage newMessage = new FacesMessage(getSystemProperties()
-					.getProperty("photoUploadedSuccessMes"));
-			newMessage.setSeverity(FacesMessage.SEVERITY_INFO);
-			FacesContext.getCurrentInstance().addMessage(null, newMessage);
-			
+			addMessageToFacesContext(createInfoFacesMessage(
+					createMessageText("photoUploadedSuccessMes")));
 			logger.debug("A new file with the full path = {} has been uploaded.",
 					uploadedPhoto);
 			
 			loggedInUser.setPhoto("/images/" + getNewImageName());
 			
 		} catch (IOException ioe) {
-			FacesMessage errorMessage = new FacesMessage(getSystemProperties()
-					.getProperty("photoUploadedFailureMes"));
-			errorMessage.setSeverity(FacesMessage.SEVERITY_ERROR);
-			FacesContext.getCurrentInstance().addMessage(null, errorMessage);
-			
+			addMessageToFacesContext(createErrorFacesMessage(
+					createMessageText("photoUploadedFailureMes")));
 			logger.error("A new file with the full path = {} has NOT been uploaded.",
 					uploadedPhoto, ioe);
 		}
-		
 	}
 	
 /**
  * Action listener for addNewPhoneNumber button on the myProfile.xhtml.
  * */
 	public void addNewPhoneNumber(ActionEvent event) {
-		
 		((Realtor) loggedInUser).getPhoneNumbers().add("");
 		arePhoneNumbersDeleted.add(false);
 	}
@@ -261,7 +227,6 @@ public class LoginBean implements Serializable {
  * Action listener for deletePhoneNumber button on the myProfile.xhtml.
  * */
 	public void deletePhoneNumber(ActionEvent event) {
-		
 		List<String> phoneNumbers = ((Realtor) getLoggedInUser()).getPhoneNumbers();
 		List<String> newPhoneNumbers = new ArrayList<>();
 		for (int i = 0; i < phoneNumbers.size(); i++) {
@@ -326,36 +291,28 @@ public class LoginBean implements Serializable {
 		this.arePhoneNumbersDeleted = arePhoneNumbersDeleted;
 	}
 	
-	public Boolean getIsUserSuperAdmin() {
+	public boolean isUserSuperAdmin() {
 		return  (loggedInUser.getType() == User.UserType.SUPER_ADMIN);
 	}
 	
-	public Boolean getIsUserAdmin() {
+	public boolean isUserAdmin() {
 		return  (loggedInUser.getType() == User.UserType.ADMIN);
 	}
 	
-	public Boolean getIsUserRealtor() {
+	public boolean isUserRealtor() {
 		return  (loggedInUser.getType() == User.UserType.REALTOR);
-	}
-
-	private Properties getSystemProperties() {
-		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
-		Properties currentProperties = propSystemMap.get(currentLocal);
-		return currentProperties;
 	}
 	
 	public AdminPanelRegister getAdminPanelRegister() {
-	return adminPanelRegister;
-}
+		return adminPanelRegister;
+	}
 
 	private void addUserToAdminPanelRegister(User user) {
-			
-			List<User> loggedInUsers = adminPanelRegister.getLoggedInUsers();
-			
-			loggedInUsers.remove(user);
-			loggedInUsers.add(user);
-			
-		}
+		List<User> loggedInUsers = adminPanelRegister.getLoggedInUsers();
+		
+		loggedInUsers.remove(user);
+		loggedInUsers.add(user);
+	}
 	
 	private File getUploadedPhotoAsFile() {
 		/* get the absolute path of the destination folder for uploaded images*/

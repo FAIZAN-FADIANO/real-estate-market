@@ -1,5 +1,6 @@
 package com.stolser.menu;
 
+import static com.stolser.MessageFromProperties.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
@@ -47,19 +48,13 @@ public class AdminPanelMainMenu implements Serializable {
 	@ManagedProperty(value = "#{loginBean}")
 	private LoginBean loginBean;
 	
-	@EJB
-	private PropertiesLoader propLoader;
-	private Map<String, Properties> propSystemMap;
 	private DefaultSeparator separator;
 	private User.UserType loggedInUserType;
 
 	public AdminPanelMainMenu() {}
 	
 	@PostConstruct
-	private void init() {
-		
-		propSystemMap = propLoader.getPropSystemMap();
-		
+	private void init() {		
 		loggedInUserType = loginBean.getLoggedInUser().getType();
 		logger.trace("loggedInUserType = {}", loggedInUserType);
 				
@@ -95,15 +90,6 @@ public class AdminPanelMainMenu implements Serializable {
 	public void setAdminMainMenuMobile(MenuModel mobileAdminMainMenu) {
 		this.adminMainMenuMobile = mobileAdminMainMenu;
 	}
-
-/**
- * Returns appropriate Properties object for current local on the front-end
- * */
-	private Properties getSystemProperties() {
-		String currentLocal = FacesContext.getCurrentInstance().getViewRoot().getLocale().toString();
-		Properties currentProperties = propSystemMap.get(currentLocal);
-		return currentProperties;
-	}
 	
 	private boolean isLoggedInUserSuperAdmin() {
 		return loggedInUserType == User.UserType.SUPER_ADMIN;
@@ -118,16 +104,16 @@ public class AdminPanelMainMenu implements Serializable {
 	}
 	
 	private void assembleDashboardSubmenu() {
-		DefaultSubMenu dashboardSubmenu = new DefaultSubMenu(getSystemProperties()
-        		.getProperty("dashboardMenuLabel"));
+		DefaultSubMenu dashboardSubmenu = new DefaultSubMenu(
+				createMessageText("dashboardMenuLabel"));
         dashboardSubmenu.setIcon("fa fa-dashboard");
-        DefaultMenuItem homeItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("homeMenuLabel"));
+        DefaultMenuItem homeItem = new DefaultMenuItem(
+        		createMessageText("homeMenuLabel"));
         homeItem.setOutcome("/adminPanel/home?faces-redirect=true");
         homeItem.setIcon("fa fa-home");
         
-        DefaultMenuItem monitorItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("monitorMenuLabel"));
+        DefaultMenuItem monitorItem = new DefaultMenuItem(
+        		createMessageText("monitorMenuLabel"));
         monitorItem.setOutcome("/adminPanel/adminPanelMonitor?faces-redirect=true");
         monitorItem.setIcon("fa fa-video-camera");
         
@@ -140,19 +126,19 @@ public class AdminPanelMainMenu implements Serializable {
 	}
 	
 	private void assembleUsersSubmenu() {
-		DefaultSubMenu usersSubmenu = new DefaultSubMenu(getSystemProperties()
-        		.getProperty("usersMenuLabel"));
-		DefaultSubMenu usersSubmenuMobile = new DefaultSubMenu(getSystemProperties()
-        		.getProperty("usersMenuLabel"));
+		DefaultSubMenu usersSubmenu = new DefaultSubMenu(
+				createMessageText("usersMenuLabel"));
+		DefaultSubMenu usersSubmenuMobile = new DefaultSubMenu(
+				createMessageText("usersMenuLabel"));
         usersSubmenu.setIcon("fa fa-user-plus");
-        DefaultSubMenu showUsersSubmenu = new DefaultSubMenu(getSystemProperties()
-        		.getProperty("showUsersMenuLabel"));
-        DefaultMenuItem showAllUsersItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("showAllUsersMenuLabel"));
+        DefaultSubMenu showUsersSubmenu = new DefaultSubMenu(
+        		createMessageText("showUsersMenuLabel"));
+        DefaultMenuItem showAllUsersItem = new DefaultMenuItem(
+        		createMessageText("showAllUsersMenuLabel"));
         showAllUsersItem.setOutcome("/adminPanel/userListing?userstatus=notdiscarded");
         showAllUsersItem.setIcon("fa fa-users");
-        DefaultMenuItem userRecycleBinItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("userRecycleBinMenuLabel"));
+        DefaultMenuItem userRecycleBinItem = new DefaultMenuItem(
+        		createMessageText("userRecycleBinMenuLabel"));
         userRecycleBinItem.setOutcome("/adminPanel/userListing?userstatus=discarded");
         userRecycleBinItem.setIcon("fa fa-trash");
         
@@ -169,14 +155,14 @@ public class AdminPanelMainMenu implements Serializable {
 		}
         usersSubmenuMobile.addElement(separator);
         
-        DefaultSubMenu addNewUserSubmenu = new DefaultSubMenu(getSystemProperties()
-        		.getProperty("addNewUserMenuLabel"));
-        DefaultMenuItem addNewAdminItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("addNewAdminMenuLabel"));
+        DefaultSubMenu addNewUserSubmenu = new DefaultSubMenu(
+        		createMessageText("addNewUserMenuLabel"));
+        DefaultMenuItem addNewAdminItem = new DefaultMenuItem(
+        		createMessageText("addNewAdminMenuLabel"));
         addNewAdminItem.setOutcome("/adminPanel/addNewUser?usertype=admin");
         addNewAdminItem.setIcon("fa fa-user-plus");
-        DefaultMenuItem addNewRealtorItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("addNewRealtorMenuLabel"));
+        DefaultMenuItem addNewRealtorItem = new DefaultMenuItem(
+        		createMessageText("addNewRealtorMenuLabel"));
         addNewRealtorItem.setOutcome("/adminPanel/addNewUser?usertype=realtor");
         addNewRealtorItem.setIcon("fa fa-user-plus");
         
@@ -190,8 +176,8 @@ public class AdminPanelMainMenu implements Serializable {
         	usersSubmenuMobile.addElement(separator);
   		}
                 
-        DefaultMenuItem myProfileItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("myProfileMenuLabel"));
+        DefaultMenuItem myProfileItem = new DefaultMenuItem(
+        		createMessageText("myProfileMenuLabel"));
         myProfileItem.setOutcome("/adminPanel/myProfile?faces-redirect=true");
         myProfileItem.setIcon("fa fa-male");
         
@@ -200,8 +186,8 @@ public class AdminPanelMainMenu implements Serializable {
         usersSubmenuMobile.addElement(myProfileItem);
         usersSubmenuMobile.addElement(separator);
         
-        DefaultMenuItem logOutItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("logOutMenuLabel"));
+        DefaultMenuItem logOutItem = new DefaultMenuItem(
+        		createMessageText("logOutMenuLabel"));
         logOutItem.setCommand("#{loginBean.adminPanelLogout}");
         logOutItem.setIcon("fa fa-sign-out");
         usersSubmenuMobile.addElement(logOutItem);
@@ -211,19 +197,19 @@ public class AdminPanelMainMenu implements Serializable {
 	}
 	
 	private void assembleRealEstateSubmenu() {
-		DefaultSubMenu realEstateSubmenu = new DefaultSubMenu(getSystemProperties()
-        		.getProperty("realEstateMenuLabel"));
-        DefaultMenuItem showAllEstateItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("showAllEstateItemsMenuLabel"));
+		DefaultSubMenu realEstateSubmenu = new DefaultSubMenu(
+				createMessageText("realEstateMenuLabel"));
+        DefaultMenuItem showAllEstateItem = new DefaultMenuItem(
+        		createMessageText("showAllEstateItemsMenuLabel"));
         showAllEstateItem.setIcon("fa fa-university");
-        DefaultMenuItem estateRecycleBinItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("estateRecycleBinMenuLabel"));
+        DefaultMenuItem estateRecycleBinItem = new DefaultMenuItem(
+        		createMessageText("estateRecycleBinMenuLabel"));
         estateRecycleBinItem.setIcon("fa fa-trash");
-        DefaultMenuItem addNewEstateItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("addNewEstateMenuLabel"));
+        DefaultMenuItem addNewEstateItem = new DefaultMenuItem(
+        		createMessageText("addNewEstateMenuLabel"));
         addNewEstateItem.setIcon("fa fa-plus");
-        DefaultMenuItem estateReportsItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("estateReportsMenuLabel"));
+        DefaultMenuItem estateReportsItem = new DefaultMenuItem(
+        		createMessageText("estateReportsMenuLabel"));
         estateReportsItem.setIcon("fa fa-line-chart");
         
         realEstateSubmenu.addElement(showAllEstateItem);
@@ -237,22 +223,22 @@ public class AdminPanelMainMenu implements Serializable {
 	}
 	
 	private void assemblePostsSubmenu() {
-		DefaultSubMenu postsSubmenu = new DefaultSubMenu(getSystemProperties()
-        		.getProperty("postsMenuLabel"));
-        DefaultMenuItem showAllPostsItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("showAllPostsMenuLabel"));
+		DefaultSubMenu postsSubmenu = new DefaultSubMenu(
+				createMessageText("postsMenuLabel"));
+        DefaultMenuItem showAllPostsItem = new DefaultMenuItem(
+        		createMessageText("showAllPostsMenuLabel"));
         showAllPostsItem.setIcon("fa fa-files-o");
-        DefaultMenuItem postRecycleBinItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("postRecycleBinMenuLabel"));
+        DefaultMenuItem postRecycleBinItem = new DefaultMenuItem(
+        		createMessageText("postRecycleBinMenuLabel"));
         postRecycleBinItem.setIcon("fa fa-trash");
-        DefaultMenuItem addNewPostItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("addNewPostMenuLabel"));
+        DefaultMenuItem addNewPostItem = new DefaultMenuItem(
+        		createMessageText("addNewPostMenuLabel"));
         addNewPostItem.setIcon("fa fa-file-word-o");
-        DefaultMenuItem postCategoriesItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("postCategoriesMenuLabel"));
+        DefaultMenuItem postCategoriesItem = new DefaultMenuItem(
+        		createMessageText("postCategoriesMenuLabel"));
         postCategoriesItem.setIcon("fa fa-list-ol");
-        DefaultMenuItem postCommentsItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("postCommentsMenuLabel"));
+        DefaultMenuItem postCommentsItem = new DefaultMenuItem(
+        		createMessageText("postCommentsMenuLabel"));
         postCommentsItem.setIcon("fa fa-comment-o");
         
         postsSubmenu.addElement(showAllPostsItem);
@@ -265,10 +251,10 @@ public class AdminPanelMainMenu implements Serializable {
 	}
 	
 	private void assembleAdminPanelSubmenu() {
-		DefaultSubMenu adminPanelSubmenu = new DefaultSubMenu(getSystemProperties()
-        		.getProperty("adminPanelMenuLabel"));
-        DefaultMenuItem adminPanelSettingsItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("adminPanelSettingsMenuLabel"));
+		DefaultSubMenu adminPanelSubmenu = new DefaultSubMenu(
+				createMessageText("adminPanelMenuLabel"));
+        DefaultMenuItem adminPanelSettingsItem = new DefaultMenuItem(
+        		createMessageText("adminPanelSettingsMenuLabel"));
         adminPanelSettingsItem.setIcon("fa fa-gears");
         
         adminPanelSubmenu.addElement(adminPanelSettingsItem);
@@ -277,29 +263,29 @@ public class AdminPanelMainMenu implements Serializable {
 	}
 
 	private void assembleFrontEndSubmenu() {
-		DefaultSubMenu frontEndSubmenu = new DefaultSubMenu(getSystemProperties()
-        		.getProperty("frontEndMenuLabel"));
-        DefaultSubMenu mainPageSubmenu = new DefaultSubMenu(getSystemProperties()
-        		.getProperty("mainPageMenuLabel"));
-        DefaultMenuItem mainPageSliderItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("mainPageSliderMenuLabel"));
+		DefaultSubMenu frontEndSubmenu = new DefaultSubMenu(
+				createMessageText("frontEndMenuLabel"));
+        DefaultSubMenu mainPageSubmenu = new DefaultSubMenu(
+        		createMessageText("mainPageMenuLabel"));
+        DefaultMenuItem mainPageSliderItem = new DefaultMenuItem(
+        		createMessageText("mainPageSliderMenuLabel"));
         mainPageSliderItem.setIcon("fa fa-image");
-        DefaultMenuItem mainPageEstateItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("mainPageEstateItemsMenuLabel"));
+        DefaultMenuItem mainPageEstateItem = new DefaultMenuItem(
+        		createMessageText("mainPageEstateItemsMenuLabel"));
         mainPageEstateItem.setIcon("fa fa-home");
-        DefaultMenuItem mainPageBlocksItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("mainPageBlocksMenuLabel"));
+        DefaultMenuItem mainPageBlocksItem = new DefaultMenuItem(
+        		createMessageText("mainPageBlocksMenuLabel"));
         mainPageBlocksItem.setIcon("fa fa-align-justify");
         
         mainPageSubmenu.addElement(mainPageSliderItem);
         mainPageSubmenu.addElement(mainPageEstateItem);
         mainPageSubmenu.addElement(mainPageBlocksItem);
         
-        DefaultMenuItem frontEndLanguagesItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("frontEndLanguagesMenuLabel"));
+        DefaultMenuItem frontEndLanguagesItem = new DefaultMenuItem(
+        		createMessageText("frontEndLanguagesMenuLabel"));
         frontEndLanguagesItem.setIcon("fa fa-language");
-        DefaultMenuItem frontEndFontsItem = new DefaultMenuItem(getSystemProperties()
-        		.getProperty("frontEndFontsMenuLabel"));
+        DefaultMenuItem frontEndFontsItem = new DefaultMenuItem(
+        		createMessageText("frontEndFontsMenuLabel"));
         frontEndFontsItem.setIcon("fa fa-font");
         
         frontEndSubmenu.addElement(mainPageSubmenu);
@@ -340,19 +326,3 @@ public class AdminPanelMainMenu implements Serializable {
         
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
