@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:b="http://bootsfaces.net/ui" 
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+<h:head></h:head>
+<h:body>
+  <ui:composition
+    template="/WEB-INF/templates/adminPanel/basic/adminPanelTemplateBasic.xhtml">
+    <ui:define name="title">Post Categories</ui:define>
+
+    <ui:define name="content">
+      <b:row>
+        <b:column col-xs="12">
+          <h1>
+            <h:outputFormat
+              value="Post Categories.">
+            </h:outputFormat>
+          </h1>
+          <p><h:outputFormat value="Here you can manage Post Categories. 
+            Click on a category's title to edit the category"></h:outputFormat></p>
+        </b:column>
+      </b:row>
+      <b:row>
+        <h:form id="postCategoriesForm" styleClass="postCategoriesForm">
+          <p:growl id="messages" autoUpdate="true" globalOnly="true"></p:growl>
+          <p:dataTable id="postCategoriesTable" styleClass="postCategoriesTable" var="category" 
+            paginator="true" rows="20" paginatorAlwaysVisible="false"
+            resizableColumns="false" 
+            sortBy="#{category.title}"
+            value="#{postCategoryListing.postCategories}" draggableRows="false"
+            draggableColumns="false" rowsPerPageTemplate="5,10,30,40,50"
+            rowsPerPageLabel="#{userRB.rowsPerPageLabel}" reflow="priority"
+            rowIndexVar="currentRow"
+            rowStyleClass="#{(category.status eq 'ACTIVE')?'activeEntityRow':
+                    ((category.status eq 'NOT_ACTIVE')?'notActiveEntityRow':'discardedEntityRow')}">
+            <f:facet name="header">
+              <h:outputFormat value="A list of categories ({0})">
+                <f:param value="#{fn:length(postCategoryListing.postCategories)}"></f:param>
+              </h:outputFormat>
+              <p:button styleClass="createNewPostCategory" 
+                outcome="createNewPostCategory" value="Create a new Category"/>
+              <p:commandButton styleClass="columnsToggler" 
+                id="categoryColumnsToggler" type="button"
+                value="#{userRB.showColumnsLabel}" icon="fa fa-wrench"></p:commandButton>
+              <p:columnToggler trigger="categoryColumnsToggler" datasource="postCategoriesTable">
+              </p:columnToggler>
+            </f:facet>
+  
+            <p:column headerText="ID"
+              priority="1" toggleable="true" width="5%">
+              <h:outputText value="#{category.id}"></h:outputText>
+            </p:column>
+  
+            <p:column headerText="Title"
+              priority="1" toggleable="false" width="20%"
+              sortBy="#{category.title}">
+              <p:link outcome="postCategoryEditing?cat_id=#{category.id}" value="#{category.title}"></p:link>
+            </p:column>
+            
+            <p:column headerText="System name"
+              priority="5" toggleable="true" width="15%">
+              <h:outputText value="#{category.systemName}"></h:outputText>
+            </p:column>
+  
+            <p:column headerText="Description"
+              priority="5" toggleable="true" width="20%">
+              <h:outputText value="#{category.description}"></h:outputText>
+            </p:column>
+            
+            <p:column headerText="SubCategories"
+              priority="3" toggleable="true" width="20%">
+              <div id="subCategories" class="listInsideTable">
+                <ui:repeat var="subCategory" value="#{category.subCategories}" >
+                  - #{subCategory.title}<br />
+                </ui:repeat>
+              </div>
+            </p:column>
+            
+            <p:column headerText="#{userRB.userStatusLabel}" priority="1"
+              width="20%" toggleable="false" sortBy="#{category.status}">
+              <h:outputText value="#{category.status}"
+                rendered="#{(not loginBean.userSuperAdmin)}"></h:outputText>
+              <p:selectOneMenu id="categoryStatusSelect" styleClass="categoryStatusSelect"
+                rendered="#{(loginBean.userSuperAdmin)}"
+                effect="fold" value="#{category.status}" 
+                valueChangeListener="#{postCategoryListing.categoryStatusChanged}"> 
+                <f:selectItems value="#{postCategoryListing.postCategoryStatusLabels}" />
+                <p:ajax oncomplete="PF('categoryChangeStatusConfirmation').show()"
+                  update="categoryChangeStatusConfirmation"/>
+              </p:selectOneMenu>
+            </p:column>
+          </p:dataTable>
+         </h:form>
+      </b:row>
+
+    <!-- Confirm Dialog for confirmation of user status changing  -->  
+      <p:dialog widgetVar="categoryChangeStatusConfirmation" 
+        rendered="#{loginBean.userSuperAdmin}" showEffect="fade" hideEffect="fade"
+        header="#{systemRB.confirmDialogTitle}" modal="true" width="400"
+        draggable="false" resizable="false" closable="false"> 
+        <p:outputPanel id="categoryChangeStatusConfirmation">
+          <p><h:outputFormat value="#{systemRB.postCatStatusChangingText}"
+            escape="false">
+            <f:param value="#{postCategoryListing.currentCategoryWithChangedStatus.title}"></f:param>
+            <f:param value="#{postCategoryListing.categoryStatusOld}"></f:param>
+            <f:param value="#{postCategoryListing.categoryStatusNew}"></f:param>
+          </h:outputFormat></p>
+          <p:commandButton value="#{systemRB.yesButtonLabel}" icon="fa fa-check" styleClass="leftGreenButton"
+            actionListener="#{postCategoryListing.saveNewCategoryStatusOK}" 
+            oncomplete="PF('categoryChangeStatusConfirmation').hide()" 
+            update="@all"/>
+          <p:commandButton value="#{systemRB.noButtonLabel}" icon="fa fa-close" styleClass="rightRedButton" 
+            actionListener="#{postCategoryListing.saveNewCategoryStatusCancel}"
+            oncomplete="PF('categoryChangeStatusConfirmation').hide()" 
+            update="@(.categoryStatusSelect)"/>
+        </p:outputPanel>
+      </p:dialog>
+
+    </ui:define>
+
+  </ui:composition>
+</h:body>
+</html>

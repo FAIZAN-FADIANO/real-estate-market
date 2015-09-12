@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<h:body>
+<ui:composition template="/WEB-INF/templates/adminPanel/basic/adminPanelTemplateBasic.xhtml">
+	<ui:define name="title">
+      <h:outputFormat value="Editing a Post Category">
+      </h:outputFormat>
+    </ui:define>
+ 
+	<ui:define name="content">
+      <b:row>
+        <b:column col-xs="12">
+                <h1>
+                  <h:outputFormat value="Editing a Post Category:">
+                  </h:outputFormat><br />
+                  <h:outputText id="editedCategoryTitle" styleClass="highlightedCode update" 
+                    value="#{postCategoryEditor.category.title}">
+                  </h:outputText>
+               </h1>
+        </b:column>
+      </b:row>
+      <h:form id="editCategoryForm" styleClass="editCategoryForm fullWidthFields"> 
+              <p:growl id="growl" globalOnly="true" autoUpdate="true"></p:growl>
+              <b:column col-xs="12" span="6" styleClass="panelGridWrapper">
+                <p:panelGrid>
+                    <p:row>
+                      <p:column styleClass="columnWidth-40">
+                        <p:outputLabel id="categoryTitleLabel" styleClass="update" 
+                            for="categoryTitle" value="Category Title: " />
+                      </p:column>
+                      <p:column>
+                        <p:inputText id="categoryTitle" styleClass="update"
+                          value="#{postCategoryEditor.category.title}"
+                          required="true" requiredMessage="#{systemRB.commonRequiredMessage}"
+                          placeholder="enter the title..." >
+                          <p:ajax process="@this" event="blur"
+                             update="@this categoryTitleLabel categoryTitleMsg"
+                             ></p:ajax>
+                        </p:inputText>
+                        <p:message id="categoryTitleMsg" styleClass="update" 
+                                    for="categoryTitle" />
+                      </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="categorySystemNameLabel" 
+                          for="categorySystemName" value="System Name: "/>
+                      </p:column>
+                      <p:column>
+                        <h:outputText id="categorySystemName" 
+                          value="#{postCategoryEditor.category.systemName}"/>
+                      </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="parentCategoryLabel" styleClass="update" 
+                          for="parentCategory" value="Parent Category: "/>
+                      </p:column>
+                      <p:column>
+                        <p:selectOneMenu id="parentCategory" var="category" styleClass="parentCategory update"
+                          effect="fold" value="#{postCategoryEditor.newParentCategory}"
+                          converter="#{postCategoryConverter}">
+                          <f:selectItem itemLabel="None" itemValue=""/>
+                          <f:selectItems value="#{postCategoryEditor.allPostCategories}" var="parent" 
+                            itemValue="#{parent}"
+                            itemLabel="#{parent.title}"/>
+                          <p:column>
+                            #{category.title}
+                          </p:column>
+                        </p:selectOneMenu>
+                      </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="subCategoriesLabel"  
+                          value="Sub-categories: "/>
+                      </p:column>
+                      <p:column>
+                        <div id="subCategories" class="listInsideTable">
+                          <ui:repeat var="subCategory" value="#{postCategoryEditor.category.subCategories}" >
+                            - #{subCategory.title}<br />
+                          </ui:repeat>
+                        </div>
+                      </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="categoryStatusLabel" styleClass="update" 
+                          for="categoryStatus" value="Category Status: "/>
+                      </p:column>
+                      <p:column>
+                        <p:selectOneMenu id="categoryStatus" styleClass="update"
+                          effect="fold" value="#{postCategoryEditor.category.status}" 
+                          required="true">
+                          <f:selectItems value="#{postCategoryEditor.postCategoryStatuses}" />
+                        
+                        </p:selectOneMenu>
+                      </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="categoryDescriptionLabel" styleClass="update" 
+                          for="categoryDescription" value="Category Description: "/>
+                      </p:column>
+                      <p:column>
+                        <p:inputTextarea id="categoryDescription" styleClass="update"
+                          value="#{postCategoryEditor.category.description}" 
+                          counter="charCounter" maxlength="200" counterTemplate="{0} characters remaining" />
+                          <br/><h:outputText id="charCounter" />
+                      </p:column>
+                    </p:row>
+     
+                </p:panelGrid>
+                <b:row>
+                  <b:column col-xs="12">
+                    <p:commandButton styleClass="blockAlignCenter" 
+                      action="#{postCategoryEditor.updatePostCategory}" 
+                      value="Save Category" update="@(.update)">
+                      <f:param name="cat_id" value="postCategoryEditor.category.id" />
+                    </p:commandButton>
+                    <p:commandButton action="#{postCategoryEditor.cancelUpdatingPostCategory}" 
+                      value="Cancel"
+                      styleClass="blockAlignCenter"/>
+                    <p:commandButton action="#{postCategoryEditor.deletePostCategory}" 
+                      value="Delete Category"
+                      styleClass="blockAlignCenter"/>
+                  </b:column>
+                </b:row>
+              </b:column> 
+              
+            </h:form>
+            
+
+    </ui:define>
+
+</ui:composition>
+</h:body>
+</html>

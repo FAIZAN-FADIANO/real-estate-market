@@ -1,5 +1,7 @@
 package com.stolser.post;
 
+import static com.stolser.MessageFromProperties.createMessageText;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,4 +65,66 @@ public class PostFacade {
     			createNamedQuery("Post.findByAuthor", Post.class).setParameter("author", author);
     	return query.getResultList();
     }
+    
+    public List<Post> getPostsFindByLinkName(String linkName) {
+    	TypedQuery<Post> query = entityManager.
+    			createNamedQuery("Post.findByLinkName", Post.class).setParameter("linkName", linkName);
+    	return query.getResultList();
+    }
+    
+    public Post addNewPost(Post postToAdd) {
+    	postToAdd = systemRestrictionCheck(postToAdd);
+    	persistEntity(postToAdd);
+
+    	return postToAdd;
+    }
+    
+    
+    
+    
+    
+    private Post systemRestrictionCheck(Post postToCheck) {
+    	
+    	checkRequiredPropertyForNullity(postToCheck);
+    	checkPostLinkNameUniqueness(postToCheck);
+
+    	return postToCheck;
+    }
+    
+    private void checkRequiredPropertyForNullity(Post postToCheck) {
+    	boolean isAnyRequiredPropertyIsNull = (postToCheck.getCategory() == null) 
+    			|| (postToCheck.getStatus() == null)
+    			|| (postToCheck.getAuthor() == null) 
+    			|| (postToCheck.getLinkName() == null) 
+        		|| (postToCheck.getTitle() == null) 
+        		|| (postToCheck.getText() == null)
+        		|| (postToCheck.getDateOfCreation() == null);
+    	if (isAnyRequiredPropertyIsNull) {
+			throw new RuntimeException(createMessageText("requiredPropsViolationErr"));
+    	}
+    }
+    
+    private void checkPostLinkNameUniqueness(Post postToCheck) {
+    	String linkNameOfPostToCheck = postToCheck.getLinkName();
+    	List<Post> postsInDBWithSuchLinkName = getPostsFindByLinkName(linkNameOfPostToCheck);
+    	if (postsInDBWithSuchLinkName.size() != 0) {
+			int IDofPostToCheck = postToCheck.getId();
+			int IDofPostInDB = postsInDBWithSuchLinkName.get(0).getId();
+			if (IDofPostToCheck != IDofPostInDB) {
+				throw new RuntimeException(createMessageText("addPostLinkNameViolationErr", 
+						linkNameOfPostToCheck));
+			}
+    	}
+    }
+    
+    private <T> T persistEntity(T entity) {
+		try {
+			entityManager.persist(entity);
+			
+			return entity;
+			
+		} catch (Exception eee) {
+			throw new RuntimeException(createMessageText("failureDuringPersistanceMessage"), eee);
+		}
+	}
 }

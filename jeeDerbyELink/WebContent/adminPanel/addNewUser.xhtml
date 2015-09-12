@@ -51,7 +51,8 @@
                           required="true" requiredMessage="#{loggingRB.loginRequiredMessage}"
                           validator="#{userValidators.loginValidator}" styleClass="update"
                           title="#{systemRB.loginValidatorMessage}" 
-                          placeholder="#{adminPanelRB.loginPlaceholderMessage}">
+                          placeholder="#{adminPanelRB.loginPlaceholderMessage}"
+                          disabled="#{newUserCreator.newUser.id ne 0}">
                           <p:ajax process="@this" 
                              update="@this newUserLoginLabel newUserLoginMsg"
                              event="blur"></p:ajax>
@@ -77,7 +78,8 @@
                           goodLabel="#{systemRB.goodPasswordFeedbackLabel}"
                           strongLabel="#{systemRB.strongPasswordFeedbackLabel}" 
                           title="#{systemRB.loginValidatorMessage}"
-                          redisplay="true">
+                          redisplay="true"
+                          disabled="#{newUserCreator.newUser.id ne 0}">
                           <p:ajax process="@this"
                                   update="@this passwordFirstMsg passwordFirstLabel" 
                                   event="blur"></p:ajax>
@@ -98,7 +100,8 @@
                           required="true" requiredMessage="#{loggingRB.passwordRepeatRequiredMessage}"
                           validator="#{newUserCreator.passwordRepeatValidator}"
                           feedback="false" title="#{systemRB.loginValidatorMessage}"
-                          redisplay="true">
+                          redisplay="true"
+                          disabled="#{newUserCreator.newUser.id ne 0}">
                           <p:ajax process="@this passwordFirst"
                                   update="@this passwordSecondMsg passwordSecondLabel" 
                                   event="blur"></p:ajax>
@@ -117,7 +120,8 @@
                           placeholder="#{adminPanelRB.firstNamePlaceholderMessage}"
                           required="true" requiredMessage="#{userRB.thisFieldIsRequiredMes}"
                           validator="#{userValidators.firstLastNameValidator}" styleClass="update"
-                          title="#{systemRB.firstLastNameValidatorMessage}">
+                          title="#{systemRB.firstLastNameValidatorMessage}"
+                          disabled="#{newUserCreator.newUser.id ne 0}">
                           <p:ajax process="@this" 
                              update="@this firstNameLabel firstNameMsg"
                              event="blur"></p:ajax>
@@ -136,7 +140,8 @@
                           placeholder="#{adminPanelRB.lastNamePlaceholderMessage}"
                           required="true" requiredMessage="#{userRB.thisFieldIsRequiredMes}"
                           validator="#{userValidators.firstLastNameValidator}" styleClass="update"
-                          title="#{systemRB.firstLastNameValidatorMessage}">
+                          title="#{systemRB.firstLastNameValidatorMessage}"
+                          disabled="#{newUserCreator.newUser.id ne 0}">
                           <p:ajax process="@this" 
                              update="@this lastNameLabel lastNameMsg"
                              event="blur"></p:ajax>
@@ -150,7 +155,15 @@
                   <b:column col-xs="12">
                     <p:commandButton action="#{newUserCreator.addNewUser}" 
                       value="#{adminPanelRB.createNewUserButtonLable}"
-                      update="@(.update)" styleClass="blockAlignCenter"/>
+                      ajax="false" styleClass="blockAlignCenter"
+                      rendered="#{newUserCreator.newUser.id eq 0}"/>
+                    <p:button outcome="addNewUser.jsf?usertype=admin"
+                      value="Create Another Admin" styleClass="blockAlignCenter"
+                      rendered="#{newUserCreator.newUser.id ne 0}"/>
+                    <p:button outcome="addNewUser.jsf?usertype=realtor"
+                      value="Create Another Realtor" styleClass="blockAlignCenter"
+                      rendered="#{newUserCreator.newUser.id ne 0}"/>
+                    
                   </b:column>
                 </b:row>
               </b:column> 

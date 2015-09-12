@@ -234,9 +234,21 @@ public class AdminPanelMainMenu implements Serializable {
         DefaultMenuItem addNewPostItem = new DefaultMenuItem(
         		createMessageText("addNewPostMenuLabel"));
         addNewPostItem.setIcon("fa fa-file-word-o");
-        DefaultMenuItem postCategoriesItem = new DefaultMenuItem(
+        
+        DefaultSubMenu postCategoriesSubmenu = new DefaultSubMenu(
         		createMessageText("postCategoriesMenuLabel"));
-        postCategoriesItem.setIcon("fa fa-list-ol");
+        DefaultMenuItem allCategoriesItem = new DefaultMenuItem(
+        		createMessageText("allPostCategoriesMenuLabel"));
+        allCategoriesItem.setIcon("fa fa-list-ol");
+        allCategoriesItem.setOutcome("/adminPanel/posts/categories/listingOfAllPostCategories?faces-redirect=true");
+        DefaultMenuItem addNewCategoryItem = new DefaultMenuItem(
+        		createMessageText("addNewCategoryMenuLabel"));
+        addNewCategoryItem.setIcon("fa fa-plus");
+        addNewCategoryItem.setOutcome("/adminPanel/posts/categories/createNewPostCategory?faces-redirect=true");
+        postCategoriesSubmenu.addElement(allCategoriesItem);
+        postCategoriesSubmenu.addElement(addNewCategoryItem);
+        
+        
         DefaultMenuItem postCommentsItem = new DefaultMenuItem(
         		createMessageText("postCommentsMenuLabel"));
         postCommentsItem.setIcon("fa fa-comment-o");
@@ -244,7 +256,7 @@ public class AdminPanelMainMenu implements Serializable {
         postsSubmenu.addElement(showAllPostsItem);
         postsSubmenu.addElement(postRecycleBinItem);
         postsSubmenu.addElement(addNewPostItem);
-        postsSubmenu.addElement(postCategoriesItem);
+        postsSubmenu.addElement(postCategoriesSubmenu);
         postsSubmenu.addElement(postCommentsItem);
 		
 		this.postsSubmenu = postsSubmenu;

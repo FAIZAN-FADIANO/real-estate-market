@@ -25,7 +25,8 @@ $colorTextTableBody: rgb(64, 124, 234);
 
 .blockAlignCenter {
 	display: block!important;
- 	margin: 0 auto!important;
+    margin-right: 15px!important;
+    float: left;
 }
 
 .tooltipBlock {
@@ -55,6 +56,15 @@ $colorTextTableBody: rgb(64, 124, 234);
 .labelBold {
 	font-weight: bold;
 }
+ 
+.highlightedCode {
+	padding: 2px 4px;
+    font-size: 90%;
+    color: #c7254e;
+    background-color: #f9f2f4;
+    border-radius: 4px;
+    font-weight: bold;
+}
 
 /* ----- END of General css ---------- */
 
@@ -80,6 +90,36 @@ $colorTextTableBody: rgb(64, 124, 234);
 	  font-size: 1.4em;
 	}
 	
+	.activeEntityRow {
+		background-color: rgba(4, 129, 1, 0.19);
+	}
+	.notActiveEntityRow {
+		background-color: rgba(255, 255, 0, 0.23);
+	}
+	.discardedEntityRow {
+		background-color: rgba(255, 0, 19, 0.23);
+	}
+	
+	.columnsToggler {
+		float: right;
+		margin-top: 3px;
+	}
+	
+	.listInsideTable {
+		padding-left: 0;
+    	list-style-position: inside;
+    	text-align: left;
+    	font-size: 80%;
+	}
+	
+	.postCategoriesTable {
+		.ui-link {
+			text-decoration: underline;
+		    color: #185AAF;
+		    font-weight: bold;
+		}
+	}
+	
 	.ui-button {
 		&.leftGreenButton {
 			float: left;
@@ -95,8 +135,15 @@ $colorTextTableBody: rgb(64, 124, 234);
 		
 	}
 	
+	.fullWidthFields {
+		textarea {
+			width: 100%;
+		}
+	}
 	
-	.recycleBinButton {
+	
+	.recycleBinButton,
+	.createNewPostCategory {
 		float: left;
 	}
 	
@@ -134,6 +181,21 @@ $colorTextTableBody: rgb(64, 124, 234);
 		    border: none;
 		}
 	}
+	
+	.ui-datatable-header {
+		height: 44px;
+ 		line-height: 36px;
+	}
+	
+	.ui-datatable-tablewrapper {
+		overflow: hidden;
+	}
+	
+	.ui-selectonemenu {
+		.ui-selectonemenu-trigger {
+			width: auto;
+		}
+	}
   
 	.usersTable {
 		.activeUserRow {
@@ -146,22 +208,7 @@ $colorTextTableBody: rgb(64, 124, 234);
 			background-color: rgba(255, 0, 19, 0.23);
 		}
 		
-		.columnsToggler {
-			float: right;
-			margin-top: 3px;
-		}
 		
-		.ui-datatable-header {
-			  height: 44px;
-	  		  line-height: 36px;
-		}
-		
-		.ui-datatable-tablewrapper {
-			overflow: hidden;
-		}
-		.ui-selectonemenu-trigger {
-			width: auto;
-		}
 	}
 	
 	.ui-datatable tbody td {

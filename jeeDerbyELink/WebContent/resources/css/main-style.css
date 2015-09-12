@@ -17,36 +17,47 @@
 /* line 26, sass/main-style.scss */
 .blockAlignCenter {
   display: block!important;
-  margin: 0 auto!important;
+  margin-right: 15px!important;
+  float: left;
 }
 
-/* line 31, sass/main-style.scss */
+/* line 32, sass/main-style.scss */
 .tooltipBlock {
   font-size: 85%;
 }
 
-/* line 35, sass/main-style.scss */
+/* line 36, sass/main-style.scss */
 .userPhotoRestrictions {
   font-size: 85% !important;
   color: red;
 }
 
-/* line 42, sass/main-style.scss */
+/* line 43, sass/main-style.scss */
 .panelGridWrapper .ui-widget-content .ui-panelgrid-cell + .ui-panelgrid-cell {
   text-align: center;
   padding-top: 7px;
   padding-bottom: 7px;
 }
 
-/* line 49, sass/main-style.scss */
+/* line 50, sass/main-style.scss */
 .userListingPopupPanel .ui-widget-content .ui-panelgrid-cell + .ui-panelgrid-cell {
   text-align: center;
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-/* line 55, sass/main-style.scss */
+/* line 56, sass/main-style.scss */
 .labelBold {
+  font-weight: bold;
+}
+
+/* line 60, sass/main-style.scss */
+.highlightedCode {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #c7254e;
+  background-color: #f9f2f4;
+  border-radius: 4px;
   font-weight: bold;
 }
 
@@ -58,192 +69,222 @@
 	}
 } */
 /*------- Admin Panel -------*/
-/* line 69, sass/main-style.scss */
+/* line 79, sass/main-style.scss */
 .adminPanel {
   /*------- adminPanel/myProfile.xhtml -------*/
   /*------- END of adminPanel/myProfile.xhtml -------*/
 }
-/* line 70, sass/main-style.scss */
+/* line 80, sass/main-style.scss */
 .adminPanel h1, .adminPanel .h1 {
   font-size: 2em;
 }
-/* line 73, sass/main-style.scss */
+/* line 83, sass/main-style.scss */
 .adminPanel h2, .adminPanel .h2 {
   font-size: 1.8em;
 }
-/* line 76, sass/main-style.scss */
+/* line 86, sass/main-style.scss */
 .adminPanel h3, .adminPanel .h3 {
   font-size: 1.7em;
 }
-/* line 79, sass/main-style.scss */
+/* line 89, sass/main-style.scss */
 .adminPanel h4, .adminPanel .h4 {
   font-size: 1.4em;
 }
-/* line 84, sass/main-style.scss */
+/* line 93, sass/main-style.scss */
+.adminPanel .activeEntityRow {
+  background-color: rgba(4, 129, 1, 0.19);
+}
+/* line 96, sass/main-style.scss */
+.adminPanel .notActiveEntityRow {
+  background-color: rgba(255, 255, 0, 0.23);
+}
+/* line 99, sass/main-style.scss */
+.adminPanel .discardedEntityRow {
+  background-color: rgba(255, 0, 19, 0.23);
+}
+/* line 103, sass/main-style.scss */
+.adminPanel .columnsToggler {
+  float: right;
+  margin-top: 3px;
+}
+/* line 108, sass/main-style.scss */
+.adminPanel .listInsideTable {
+  padding-left: 0;
+  list-style-position: inside;
+  text-align: left;
+  font-size: 80%;
+}
+/* line 116, sass/main-style.scss */
+.adminPanel .postCategoriesTable .ui-link {
+  text-decoration: underline;
+  color: #185AAF;
+  font-weight: bold;
+}
+/* line 124, sass/main-style.scss */
 .adminPanel .ui-button.leftGreenButton, .adminPanel.myProfile .myProfileForm .ui-button.addNewPhoneNumber {
   float: left;
   color: #158915;
   background-color: rgba(11, 158, 11, 0.5);
 }
-/* line 90, sass/main-style.scss */
+/* line 130, sass/main-style.scss */
 .adminPanel .ui-button.rightRedButton, .adminPanel.myProfile .myProfileForm .ui-button.deletePhoneNumbers {
   float: right;
   color: #db0909;
   background-color: rgba(192, 23, 23, 0.51);
 }
-/* line 99, sass/main-style.scss */
-.adminPanel .recycleBinButton {
+/* line 139, sass/main-style.scss */
+.adminPanel .fullWidthFields textarea {
+  width: 100%;
+}
+/* line 146, sass/main-style.scss */
+.adminPanel .recycleBinButton,
+.adminPanel .createNewPostCategory {
   float: left;
 }
-/* line 103, sass/main-style.scss */
+/* line 150, sass/main-style.scss */
 .adminPanel #header {
   margin-top: 10px;
   /* min-height: 100px; */
 }
-/* line 108, sass/main-style.scss */
+/* line 155, sass/main-style.scss */
 .adminPanel .deleteUsersFromDBButton {
   float: left;
 }
-/* line 112, sass/main-style.scss */
+/* line 159, sass/main-style.scss */
 .adminPanel .deleteUsersFromDBPanel {
   min-height: 40px;
 }
-/* line 116, sass/main-style.scss */
+/* line 163, sass/main-style.scss */
 .adminPanel .usersToDeleteFromDBList {
   margin: 10px 0 15px;
 }
-/* line 120, sass/main-style.scss */
+/* line 167, sass/main-style.scss */
 .adminPanel .adminMainMenu {
   margin-bottom: 20px;
 }
-/* line 124, sass/main-style.scss */
+/* line 171, sass/main-style.scss */
 .adminPanel .userHeaderPhoto {
   display: block;
   margin-right: 25px;
 }
-/* line 129, sass/main-style.scss */
+/* line 176, sass/main-style.scss */
 .adminPanel .userTopMenu {
   text-align: center;
 }
-/* line 133, sass/main-style.scss */
+/* line 180, sass/main-style.scss */
 .adminPanel .userTopMenu.ui-panelgrid > * > tr, .adminPanel .userTopMenu.ui-panelgrid .ui-panelgrid-cell {
   border: none;
 }
-/* line 139, sass/main-style.scss */
-.adminPanel .usersTable .activeUserRow {
-  background-color: rgba(4, 129, 1, 0.19);
-}
-/* line 142, sass/main-style.scss */
-.adminPanel .usersTable .notActiveUserRow {
-  background-color: rgba(255, 255, 0, 0.23);
-}
-/* line 145, sass/main-style.scss */
-.adminPanel .usersTable .discardedUserRow {
-  background-color: rgba(255, 0, 19, 0.23);
-}
-/* line 149, sass/main-style.scss */
-.adminPanel .usersTable .columnsToggler {
-  float: right;
-  margin-top: 3px;
-}
-/* line 154, sass/main-style.scss */
-.adminPanel .usersTable .ui-datatable-header {
+/* line 185, sass/main-style.scss */
+.adminPanel .ui-datatable-header {
   height: 44px;
   line-height: 36px;
 }
-/* line 159, sass/main-style.scss */
-.adminPanel .usersTable .ui-datatable-tablewrapper {
+/* line 190, sass/main-style.scss */
+.adminPanel .ui-datatable-tablewrapper {
   overflow: hidden;
 }
-/* line 162, sass/main-style.scss */
-.adminPanel .usersTable .ui-selectonemenu-trigger {
+/* line 195, sass/main-style.scss */
+.adminPanel .ui-selectonemenu .ui-selectonemenu-trigger {
   width: auto;
 }
-/* line 167, sass/main-style.scss */
+/* line 201, sass/main-style.scss */
+.adminPanel .usersTable .activeUserRow {
+  background-color: rgba(4, 129, 1, 0.19);
+}
+/* line 204, sass/main-style.scss */
+.adminPanel .usersTable .notActiveUserRow {
+  background-color: rgba(255, 255, 0, 0.23);
+}
+/* line 207, sass/main-style.scss */
+.adminPanel .usersTable .discardedUserRow {
+  background-color: rgba(255, 0, 19, 0.23);
+}
+/* line 214, sass/main-style.scss */
 .adminPanel .ui-datatable tbody td {
   text-align: center;
   color: #407cea;
 }
-/* line 175, sass/main-style.scss */
+/* line 222, sass/main-style.scss */
 .adminPanel #usersTable_head,
 .adminPanel #usersTable_foot,
 .adminPanel .userStatusCell,
 .adminPanel .userTypeCell {
   text-transform: lowercase;
 }
-/* line 179, sass/main-style.scss */
+/* line 226, sass/main-style.scss */
 .adminPanel .mainMenuTrigger {
   display: none;
 }
-/* line 183, sass/main-style.scss */
+/* line 230, sass/main-style.scss */
 .adminPanel .userTopMenuTrigger {
   float: right;
   padding: 0;
 }
-/* line 187, sass/main-style.scss */
+/* line 234, sass/main-style.scss */
 .adminPanel .userTopMenuTrigger .ui-menubar .ui-menuitem-link {
   padding: 0.15em 0.3em;
 }
-/* line 191, sass/main-style.scss */
+/* line 238, sass/main-style.scss */
 .adminPanel .langSelectIcon {
   width: 195px;
   line-height: 1.2;
   float: right;
 }
-/* line 197, sass/main-style.scss */
+/* line 244, sass/main-style.scss */
 .adminPanel table.ui-panelgrid {
   width: 100%;
 }
-/* line 201, sass/main-style.scss */
+/* line 248, sass/main-style.scss */
 .adminPanel .columnWidth-35 {
   width: 35%;
 }
-/* line 204, sass/main-style.scss */
+/* line 251, sass/main-style.scss */
 .adminPanel .columnWidth-40 {
   width: 40%;
 }
-/* line 208, sass/main-style.scss */
+/* line 255, sass/main-style.scss */
 .adminPanel .userDetailsPhoto {
   height: 200px;
   display: block;
   margin: auto;
 }
-/* line 215, sass/main-style.scss */
+/* line 262, sass/main-style.scss */
 .adminPanel .panelGridWrapper .ui-panelgrid {
   margin-bottom: 15px;
 }
-/* line 219, sass/main-style.scss */
+/* line 266, sass/main-style.scss */
 .adminPanel .panelGridWrapper input {
   width: 100%;
 }
-/* line 223, sass/main-style.scss */
+/* line 270, sass/main-style.scss */
 .adminPanel .panelGridWrapper .ui-message {
   margin: 0px;
 }
-/* line 234, sass/main-style.scss */
+/* line 281, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .ui-message {
   margin-left: 0px;
 }
-/* line 246, sass/main-style.scss */
+/* line 293, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .phoneNumbersWrapper {
   float: left;
   margin-top: 10px;
   width: 100%;
 }
-/* line 251, sass/main-style.scss */
+/* line 298, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .phoneNumbersWrapper > div {
   width: 100%;
 }
-/* line 256, sass/main-style.scss */
+/* line 303, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .phoneNumbersWrapper .phoneNumberRow {
   margin-bottom: 10px;
 }
-/* line 260, sass/main-style.scss */
+/* line 307, sass/main-style.scss */
 .adminPanel.myProfile .myProfileForm .phoneNumbersWrapper input {
   width: 85%;
   margin-left: 4%;
 }
-/* line 267, sass/main-style.scss */
+/* line 314, sass/main-style.scss */
 .adminPanel.myProfile .userPhotoWrapper {
   background-size: cover;
   height: 150px;
@@ -251,13 +292,13 @@
 
 /*------- END of .adminPanel -------*/
 /*Logging Form*/
-/* line 280, sass/main-style.scss */
+/* line 327, sass/main-style.scss */
 #loggingTitle {
   margin-top: 20px;
   text-align: center;
 }
 
-/* line 285, sass/main-style.scss */
+/* line 332, sass/main-style.scss */
 #loggingFormWrapper {
   border-radius: 10px;
   border: 1px solid;
@@ -267,88 +308,88 @@
   padding-bottom: 10px;
   margin-top: 50px;
 }
-/* line 294, sass/main-style.scss */
+/* line 341, sass/main-style.scss */
 #loggingFormWrapper input, #loggingFormWrapper button {
   width: 100%;
   margin: 5px 0 20px;
   padding: 5px;
 }
-/* line 300, sass/main-style.scss */
+/* line 347, sass/main-style.scss */
 #loggingFormWrapper .logInButton {
   width: 50%;
   margin: 5px auto 20px;
   display: block;
 }
 
-/* line 307, sass/main-style.scss */
+/* line 354, sass/main-style.scss */
 .langSelectTop {
   width: 100%;
   max-width: 120px;
 }
 
-/* line 312, sass/main-style.scss */
+/* line 359, sass/main-style.scss */
 #langSelectIcon {
   float: left;
   margin-right: 7px;
   margin-top: 5px;
 }
 
-/* line 319, sass/main-style.scss */
+/* line 366, sass/main-style.scss */
 #langSelect label {
   /* 		font-size: 125%; */
 }
-/* line 323, sass/main-style.scss */
+/* line 370, sass/main-style.scss */
 #langSelect div .ui-selectonemenu-trigger {
   width: auto;
 }
 
 /*END --- Logging Form --*/
-/* line 330, sass/main-style.scss */
+/* line 377, sass/main-style.scss */
 .ui-icon.fa {
   width: 25px;
 }
 
-/* line 336, sass/main-style.scss */
+/* line 383, sass/main-style.scss */
 .mainMenu form div {
   width: 100%;
 }
 
 @media (max-width: 658px) {
-  /* line 345, sass/main-style.scss */
+  /* line 392, sass/main-style.scss */
   .adminPanel .mainMenuTrigger {
     display: block;
   }
-  /* line 349, sass/main-style.scss */
+  /* line 396, sass/main-style.scss */
   .adminPanel .userTopMenuTrigger {
     display: none;
   }
-  /* line 353, sass/main-style.scss */
+  /* line 400, sass/main-style.scss */
   .adminPanel .mainMenu {
     display: none;
   }
-  /* line 356, sass/main-style.scss */
+  /* line 403, sass/main-style.scss */
   .adminPanel .mainContent {
     width: 100%;
   }
 }
 /*------- Front End -------------*/
-/* line 369, sass/main-style.scss */
+/* line 416, sass/main-style.scss */
 .frontEnd h1, .frontEnd .h1 {
   font-size: 2em;
 }
-/* line 372, sass/main-style.scss */
+/* line 419, sass/main-style.scss */
 .frontEnd h2, .frontEnd .h2 {
   font-size: 1.8em;
 }
-/* line 375, sass/main-style.scss */
+/* line 422, sass/main-style.scss */
 .frontEnd h3, .frontEnd .h3 {
   font-size: 1.7em;
 }
-/* line 378, sass/main-style.scss */
+/* line 425, sass/main-style.scss */
 .frontEnd h4, .frontEnd .h4 {
   font-size: 1.4em;
 }
-/* line 382, sass/main-style.scss */
+/* line 429, sass/main-style.scss */
 .frontEnd #header {
   margin-top: 10px;
 }

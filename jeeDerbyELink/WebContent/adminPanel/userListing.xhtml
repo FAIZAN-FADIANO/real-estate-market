@@ -29,9 +29,10 @@
         <h:form id="usersTableForm" styleClass="usersTableForm">
           <p:growl id="messages" autoUpdate="true" globalOnly="true"></p:growl>
           <p:dataTable id="usersTable" styleClass="usersTable" var="user" rows="5"
+            value="#{usersListing.usersList}"
             paginator="true" paginatorAlwaysVisible="false"
             resizableColumns="false" sortBy="#{user.type}"
-            value="#{usersListing.usersList}" draggableRows="false"
+            draggableRows="false"
             draggableColumns="false" rowsPerPageTemplate="5,10,20,50"
             rowsPerPageLabel="#{userRB.rowsPerPageLabel}" reflow="priority"
             emptyMessage="#{userRB.emptyMessage}" 

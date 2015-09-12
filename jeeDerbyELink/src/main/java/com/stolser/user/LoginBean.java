@@ -101,7 +101,7 @@ public class LoginBean implements Serializable {
 		
 		if (userStatusType != User.UserStatusType.ACTIVE) {
 			/*the user is NOT active --> they don't have NO permissions*/
-			String messageSummary = createMessageText("invalidStatusErrSum");
+			String messageSummary = createMessageText("invalidStatusErrSum"); 
 			String messageDetail = createMessageText("invalidStatusErrDetail");
 			addMessageToFacesContext(
 					createWarnFacesMessage(messageSummary, messageDetail));

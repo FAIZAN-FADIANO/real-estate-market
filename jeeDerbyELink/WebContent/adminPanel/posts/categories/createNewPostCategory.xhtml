@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<h:body>
+<ui:composition template="/WEB-INF/templates/adminPanel/basic/adminPanelTemplateBasic.xhtml">
+	<ui:define name="title">
+      <h:outputFormat value="Create a new Post Category">
+      </h:outputFormat>
+    </ui:define>
+ 
+	<ui:define name="content">
+      <b:row>
+        <b:column col-xs="12">
+                <h1>
+                  <h:outputFormat value="Create a new Post Category">
+                  </h:outputFormat>
+               </h1>
+               <p>Fill the fields and press the "Create Category" button.</p>
+        </b:column>
+      </b:row>
+      <h:form id="addCategoryForm" styleClass="addCategoryForm fullWidthFields"> 
+              <p:growl id="growl" globalOnly="true" autoUpdate="true"></p:growl>
+              <b:column col-xs="12" span="6" styleClass="panelGridWrapper">
+                <p:panelGrid>
+                    <p:row>
+                      <p:column styleClass="columnWidth-40">
+                        <p:outputLabel id="categoryTitleLabel" styleClass="update" 
+                            for="categoryTitle" value="Category Title: " />
+                      </p:column>
+                      <p:column>
+                        <p:inputText id="categoryTitle" styleClass="update"
+                          value="#{postCategoryCreator.newPostCategory.title}"
+                          required="true" requiredMessage="#{systemRB.commonRequiredMessage}"
+                          placeholder="enter the title..."
+                          disabled="#{postCategoryCreator.newPostCategory.id ne 0}">
+                          <p:ajax process="@this" event="blur"
+                             update="@this categoryTitleLabel categoryTitleMsg"
+                             ></p:ajax>
+                        </p:inputText>
+                        <p:message id="categoryTitleMsg" styleClass="update" 
+                                    for="categoryTitle" />
+                      </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="categorySystemNameLabel" styleClass="update" 
+                          for="categorySystemName" value="System Name: "/>
+                      </p:column>
+                      <p:column>
+                      <h:panelGrid columns="2" style="width:100%">
+                        <p:inputText id="categorySystemName" styleClass="update categorySystemName"
+                          value="#{postCategoryCreator.newPostCategory.systemName}"
+                          required="true" requiredMessage="#{systemRB.commonRequiredMessage}"
+                          validator="#{postCategoryValidator.systemNameValidator}" 
+                          title="The System Name will be used in URLs." 
+                          placeholder="enter the system name..."
+                          disabled="#{postCategoryCreator.newPostCategory.id ne 0}">
+                          <p:ajax process="@this" event="blur" 
+                             update="@this categorySystemNameLabel categorySystemNameMsg"/>
+                        </p:inputText>
+                        <p:commandButton id="catSystemNameAutoFill" icon="fa fa-rotate-left" 
+                          ajax="true" disabled="#{postCategoryCreator.newPostCategory.id ne 0}">
+                            <p:ajax listener="#{postCategoryCreator.fillSystemNameField}"
+                              update="categorySystemName categorySystemNameLabel categorySystemNameMsg" immediate="true"
+                              event="click" oncomplete="postCategorySystemNameGetFocus();"/>
+                        </p:commandButton>
+                        <p:tooltip for="catSystemNameAutoFill" value="Click to autofill this field."/>
+                      </h:panelGrid>
+                        
+                        <p:message id="categorySystemNameMsg" styleClass="update" 
+                                    for="categorySystemName" />
+                      </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="parentCategoryLabel" styleClass="update" 
+                          for="parentCategory" value="Parent Category: "/>
+                      </p:column>
+                      <p:column>
+                        <p:selectOneMenu id="parentCategory" var="category" styleClass="parentCategory"
+                          effect="fold" value="#{postCategoryCreator.newPostCategory.parentCategory}"
+                          converter="#{postCategoryConverter}" 
+                          disabled="#{postCategoryCreator.newPostCategory.id ne 0}">
+                          <f:selectItem itemLabel="Select..." itemValue=""/>
+                          <f:selectItems value="#{postCategoryCreator.allPostCategories}" var="parent"
+                            itemValue="#{parent}"
+                            itemLabel="#{parent.title}"/>
+                          <p:column>
+                            #{category.title}
+                          </p:column>
+                        </p:selectOneMenu>
+                      </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="categoryStatusLabel" styleClass="update" 
+                          for="categoryStatus" value="Category Status: "/>
+                      </p:column>
+                      <p:column>
+                        <p:selectOneMenu id="categoryStatus" 
+                          effect="fold" value="#{postCategoryCreator.newPostCategory.status}" 
+                          required="true"
+                          disabled="#{postCategoryCreator.newPostCategory.id ne 0}">
+                          <f:selectItems value="#{postCategoryCreator.postCategoryStatuses}" />
+                        
+                        </p:selectOneMenu>
+                      </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                      <p:column>
+                        <p:outputLabel id="categoryDescriptionLabel" styleClass="update" 
+                          for="categoryDescription" value="Category Description: "/>
+                      </p:column>
+                      <p:column>
+                        <p:inputTextarea id="categoryDescription"
+                          value="#{postCategoryCreator.newPostCategory.description}" 
+                          counter="charCounter" maxlength="200" counterTemplate="{0} characters remaining" 
+                          disabled="#{postCategoryCreator.newPostCategory.id ne 0}"/>
+                          <br/><h:outputText id="charCounter" />
+                      </p:column>
+                    </p:row>
+     
+                </p:panelGrid>
+                <b:row>
+                  <b:column col-xs="12">
+                    <p:commandButton action="#{postCategoryCreator.createPostCategory}" 
+                      value="Create Category"
+                      ajax="false" styleClass="blockAlignCenter"
+                      rendered="#{postCategoryCreator.newPostCategory.id eq 0}"/>
+                    <p:button outcome="createNewPostCategory"
+                      value="Create Another Category" styleClass="blockAlignCenter"
+                      rendered="#{postCategoryCreator.newPostCategory.id ne 0}"/>
+                  </b:column>
+                </b:row>
+              </b:column> 
+              
+            </h:form>
+            
+
+    </ui:define>
+
+</ui:composition>
+</h:body>
+</html>

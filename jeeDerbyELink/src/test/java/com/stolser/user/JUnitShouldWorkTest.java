@@ -37,6 +37,7 @@ public class JUnitShouldWorkTest {
 	public void test() {
 		//setup
 		Object object = null;
+		//Object object = new Object;
 		//execute
 		//assert
 		assertEquals("Hello World", "Hello World");

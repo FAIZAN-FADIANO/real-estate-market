@@ -1,13 +1,10 @@
 package com.stolser.user;
 
 import static com.stolser.MessageFromProperties.*;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -20,14 +17,13 @@ import javax.faces.validator.ValidatorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.stolser.PropertiesLoader;
-import com.stolser.jpa.Admin;
-import com.stolser.jpa.Realtor;
 import com.stolser.jpa.User;
+
 
 @ManagedBean(name = "newUserCreator")
 @ViewScoped
-public class NewUserCreator {
+public class NewUserCreator implements Serializable {
+	static private final long serialVersionUID = 1L;
 	static private final Logger logger = LoggerFactory.getLogger(NewUserCreator.class);
 	
 	private User newUser;
@@ -76,7 +72,7 @@ public class NewUserCreator {
 
 	public String addNewUser() {
 		try{
-			userEJB.addNewUser(newUser);
+			newUser = userEJB.addNewUser(newUser);
 			
 		} catch(Exception e) {
 			String failureMessage = createMessageText("userNotBeenCreatedMessage", newUser);

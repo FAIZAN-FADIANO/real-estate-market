@@ -35,10 +35,14 @@ abstract public class User implements Serializable {
 	
 	@Id
 	@Column(name = "USER_PK")
-	@TableGenerator(name = "userIdGenerator", table = "SEQUENCE_STORAGE",
-			pkColumnName = "SEQUENCE_NAME", pkColumnValue = "USERS.USER_PK",
-			valueColumnName = "SEQUENCE_VALUE", initialValue = 1, allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "userIdGenerator")
+	@TableGenerator(name = "userIdGenerator", 
+					table = "SEQUENCE_STORAGE",
+					pkColumnName = "SEQUENCE_NAME", 
+					pkColumnValue = "USERS.USER_PK",
+					valueColumnName = "SEQUENCE_VALUE", 
+					initialValue = 1, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.TABLE, 
+					generator = "userIdGenerator")
 	private int id;
 	@NotNull
 	@Column(name = "USER_TYPE")
@@ -210,7 +214,7 @@ abstract public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return lastName + " " + firstName + " (" + login + ")";
+		return lastName + " " + firstName + " (" + login + "; id = " + id + ")";
 	}
 
 	@Override
@@ -223,15 +227,13 @@ abstract public class User implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		
 		User other = (User) obj;
-		if (id != other.id)
-			return false;
+		if (id != other.id)	return false;
+		
 		return true;
 	}
 

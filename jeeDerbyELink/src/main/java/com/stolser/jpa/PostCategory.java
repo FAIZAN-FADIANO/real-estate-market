@@ -16,12 +16,11 @@ import javax.validation.constraints.*;
 @NamedQueries({
 	@NamedQuery(name="PostCategory.findAll", query="select c from PostCategory c"),
 	@NamedQuery(name="PostCategory.findBySystemName",
-			query="select c from PostCategory c where c.systemName = :systemName"),
+		query="select c from PostCategory c where c.systemName = :systemName"),
 	@NamedQuery(name="PostCategory.findByStatus",
-			query="select c from PostCategory c where c.status = :status"),
-	@NamedQuery(name="PostCategory.findByParent",
-	query="select c from PostCategory c where c.parentCategory = :parentCategory")
-	
+		query="select c from PostCategory c where c.status = :status"),
+	@NamedQuery(name="PostCategory.findByParentCategory",
+		query="select c from PostCategory c where c.parentCategory = :parentCategory")
 })
 @Table(name="POST_CATEGORIES")
 public class PostCategory implements Serializable {
@@ -42,8 +41,9 @@ public class PostCategory implements Serializable {
 	/**
 	 * <span style="color:red";>Value MUST be unique.</span> Will be used in a URL.
 	 * */
-	@NotNull
 	@Column(name="SYSTEM_NAME")
+	@Pattern(regexp="(^[a-zA-Z]{3,30}$)|(^$)")
+	@NotNull
 	private String systemName;
 	
 	/**
@@ -51,9 +51,9 @@ public class PostCategory implements Serializable {
 	 * If <code>status = NOT_ACTIVE</code> then neither this category's posts nor
 	 * any subcategory's posts are displayed on the front-end.
 	 * */
-	@NotNull
 	@Column(name="STATUS")
 	@Enumerated(EnumType.STRING)
+	@NotNull
 	private PostCategoryStatusType status;
 	@NotNull
 	private String title;
@@ -68,12 +68,17 @@ public class PostCategory implements Serializable {
 	private String description;
 	@Version
 	private int version;
-/*--------- END of entity properties --------------*/
-/*--------- constructors ----------------------*/	
+
 	public PostCategory() {}
-/*--------- END of constructors --------------*/
-	
-	enum PostCategoryStatusType {
+
+	public PostCategory(String systemName, PostCategoryStatusType status, String title) {
+		super();
+		this.systemName = systemName;
+		this.status = status;
+		this.title = title;
+	}
+
+	public enum PostCategoryStatusType {
 		ACTIVE, NOT_ACTIVE;
 	}
 	
@@ -142,4 +147,29 @@ public class PostCategory implements Serializable {
 		this.version = version;
 	}
 /*-------- END of getters and setters ---------*/
+
+	@Override
+	public String toString() {
+		return title + " (" + systemName + "; id = " + id + ")";
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		
+		PostCategory other = (PostCategory) obj;
+		if (id != other.id)	return false;
+		
+		return true;
+	}
 }

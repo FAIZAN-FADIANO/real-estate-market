@@ -19,7 +19,9 @@ import javax.validation.constraints.*;
 	@NamedQuery(name="Post.findByStatus",
 		query="select p from Post p where p.status = :status"),
 	@NamedQuery(name="Post.findByAuthor",
-		query="select p from Post p where p.author = :author")
+		query="select p from Post p where p.author = :author"),
+	@NamedQuery(name="Post.findByLinkName",
+		query="select p from Post p where p.linkName = :linkName")
 })
 @Table(name="POST")
 public class Post implements Serializable {
@@ -35,20 +37,21 @@ public class Post implements Serializable {
 					initialValue=1, allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.TABLE, generator="postIdGenerator")
 	private int id;
-	@NotNull
 	@ManyToOne
 	@JoinColumn(name="CATEGORY_ID")
+	@NotNull
 	private PostCategory category;
 	@NotNull
 	private PostStatusType status;
-	@NotNull
 	@ManyToOne
 	@JoinColumn(name="AUTHOR_ID")
+	@NotNull
 	private User author;
 	@OneToMany(mappedBy="post", orphanRemoval=true)
 	private Collection<PostComment> listOfComments;
 	@Column(name="CREATION_DATE")
 	@Temporal(TemporalType.DATE)
+	@NotNull
 	private Date dateOfCreation;
 	/**
 	 * <span style="color:red";>Value MUST be unique.</span> Will be used in a URL.
@@ -58,7 +61,8 @@ public class Post implements Serializable {
 	private String linkName;
 	@NotNull
 	private String title;
-	@NotNull private String text;
+	@NotNull 
+	private String text;
 	private String excerpt;
 	@Column(name="META_TITLE")
 	private String metaTitle;
@@ -68,12 +72,21 @@ public class Post implements Serializable {
 	private String metaDescription;
 	@Version
 	private int version;
-/*--------- END of entity properties --------------*/
-	
-/*--------- constructors --------------------------*/	
+
 	public Post() {}
-/*--------- END of constructors -------------------*/
 	
+	public Post(PostCategory category, PostStatusType status, User author, Date dateOfCreation,
+			String linkName, String title, String text) {
+		super();
+		this.category = category;
+		this.status = status;
+		this.author = author;
+		this.dateOfCreation = dateOfCreation;
+		this.linkName = linkName;
+		this.title = title;
+		this.text = text;
+	}
+
 	public enum PostStatusType {
 		ACTIVE, NOT_ACTIVE, DISCARDED;
 	}

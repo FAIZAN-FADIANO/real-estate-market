@@ -36,6 +36,11 @@ function onlyOneOpenMenuItem() {
 	
 }
 
+function postCategorySystemNameGetFocus() {
+	$('.categorySystemName').focus();
+	$('.categorySystemName').blur();
+}
+
 
 
 

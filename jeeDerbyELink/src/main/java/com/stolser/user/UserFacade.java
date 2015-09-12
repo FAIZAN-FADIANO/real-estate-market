@@ -118,9 +118,8 @@ public class UserFacade {
 
     public User addNewUser(User userToAdd) {
     	userToAdd = systemRestrictionCheck(userToAdd);
-    	persistEntity(userToAdd);
-
-    	return userToAdd;
+    	
+    	return persistEntity(userToAdd);
     }
     
     public User updateUserInDB(User userToUpdate) {
@@ -356,14 +355,14 @@ public class UserFacade {
     }
     
     private void checkLoginUniqueness(User userToCheck) {
-    	String LoginOfUserToCheck = userToCheck.getLogin();
-    	List<User> usersInDBWithSuchLogin = getUsersFindByLogin(LoginOfUserToCheck);
+    	String loginOfUserToCheck = userToCheck.getLogin();
+    	List<User> usersInDBWithSuchLogin = getUsersFindByLogin(loginOfUserToCheck);
     	if (usersInDBWithSuchLogin.size() != 0) {
 			int IDofUserToCheck = userToCheck.getId();
 			int IDofUserInDB = usersInDBWithSuchLogin.get(0).getId();
 			if (IDofUserToCheck != IDofUserInDB) {
 				throw new RuntimeException(createMessageText("addUserLoginViolationErr", 
-						LoginOfUserToCheck));
+						loginOfUserToCheck));
 			}
     	}
     }

@@ -119,7 +119,7 @@ public class UsersListing {
 		/*We need to assign a chosen user to the userForUpdate var only if 
 		 * the status of this particular user hasn't already been changed during this
 		 * view. Otherwise userForUpdate contain an object managed by EntityManager
-		 * that was returned by the UserFacade#mergeEntity() method and if we true 
+		 * that was returned by the UserFacade#mergeEntity() method and if we try 
 		 * to change the status of the same object again (on the same view) we 
 		 * will get javax.persistence.OptimisticLockException.*/
 		if ((userForUpdate == null) || (userForUpdate.getId() != userForUpdateCurrentId)) {
