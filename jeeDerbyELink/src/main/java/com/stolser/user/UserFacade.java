@@ -1,13 +1,14 @@
 package com.stolser.user;
 
 import static com.stolser.MessageFromProperties.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
@@ -30,7 +31,7 @@ public class UserFacade {
 	@PersistenceContext(unitName = "derby")
 	private EntityManager entityManager;
 	
-	@EJB
+	@Inject
 	private PostFacade postFacade;
 	
     public List<User> getUsersFindAll() {

@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.*;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
-@ManagedBean (name = "frontLocale")
+@Named("frontLocale")
 @SessionScoped
 public class FrontLocale implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+	static private final long serialVersionUID = 1L;
 	private List<CustomLocale> locales = new ArrayList<>();
 	private CustomLocale currentLocale;
 	

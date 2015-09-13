@@ -1,25 +1,33 @@
 package com.stolser.user;
 
 import static com.stolser.MessageFromProperties.*;
+
+import java.io.Serializable;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
-import javax.faces.bean.*;
+//import javax.faces.bean.*;
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.stolser.jpa.User;
 
-@ManagedBean(name = "userConverter")
+@Named("userConverter")
 @ViewScoped
-public class UserConverter implements Converter {
+public class UserConverter implements Converter, Serializable {
+	static private final long serialVersionUID = 1L;
 	static private final Logger logger = LoggerFactory.getLogger(UserConverter.class);
 	
-	@ManagedProperty(value = "#{usersListing}")
+	@Inject
 	private UsersListing usersListing;
 	private List<User> usersList;
 	

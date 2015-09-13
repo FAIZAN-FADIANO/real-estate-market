@@ -1,26 +1,28 @@
 package com.stolser.locale;
 
+import java.io.Serializable;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ManagedBean(name = "backLocaleConverter")
+@Named("backLocaleConverter")
 @RequestScoped
-public class BackCustomLocaleConverter implements Converter {
+public class BackCustomLocaleConverter implements Converter, Serializable {
+	static private final long serialVersionUID = 1L;
 	static private final Logger logger = LoggerFactory
 			.getLogger(BackCustomLocaleConverter.class);
 	
-	@ManagedProperty(value = "#{backLocale}")
+	@Inject
 	private BackLocale backLocale;
 	private List<CustomLocale> locales;
 

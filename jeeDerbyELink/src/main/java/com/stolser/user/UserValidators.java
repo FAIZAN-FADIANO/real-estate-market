@@ -1,28 +1,31 @@
 package com.stolser.user;
 
 import static com.stolser.MessageFromProperties.*;
+
+import java.io.Serializable;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.stolser.jpa.User;
 
-@ManagedBean(name = "userValidators")
+@Named("userValidators")
 @SessionScoped
-public class UserValidators {
+public class UserValidators implements Serializable {
+	static private final long serialVersionUID = 1L;
 	static private final Logger logger = LoggerFactory.getLogger(UserValidators.class);
 	
-	@EJB
+	@Inject
 	private UserFacade userFacade;
 
 	public UserValidators() {}

@@ -12,11 +12,11 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,15 +26,15 @@ import com.stolser.jpa.PostCategory;
 import com.stolser.jpa.PostCategory.PostCategoryStatusType;
 import com.stolser.post.PostFacade;
 
-@ManagedBean(name = "postCategoryEditor")
+@Named("postCategoryEditor")
 @ViewScoped
 public class PostCategoryEditor implements Serializable {
 	static private final long serialVersionUID = 1L;
 	static private final Logger logger = LoggerFactory.getLogger(PostCategoryEditor.class);
 	
-	@EJB
+	@Inject
 	private PostCategoryFacade categoryFacade;
-	@EJB
+	@Inject
 	private PostFacade postFacade;
 	private PostCategory category;
 	private PostCategory newParentCategory;
@@ -140,7 +140,7 @@ public class PostCategoryEditor implements Serializable {
 		addMessageToFacesContext(createInfoFacesMessage(successMessage));
 		logger.debug(successMessage);
 		
-		return "listingOfAllPostCategories?faces-redirect=true";
+		return null;
 	}
 	
 	public PostCategory getCategory() {
@@ -162,6 +162,5 @@ public class PostCategoryEditor implements Serializable {
 	public List<PostCategoryStatusType> getPostCategoryStatuses() {
 		return postCategoryStatuses;
 	}
-	
-	
+
 }

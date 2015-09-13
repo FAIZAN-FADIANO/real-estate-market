@@ -1,36 +1,28 @@
 package com.stolser.menu;
 
 import static com.stolser.MessageFromProperties.*;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Properties;
 
+import java.io.Serializable;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSeparator;
 import org.primefaces.model.menu.DefaultSubMenu;
-import org.primefaces.model.menu.MenuElement;
 import org.primefaces.model.menu.MenuModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.stolser.PropertiesLoader;
 import com.stolser.jpa.User;
 import com.stolser.jpa.User.UserType;
 import com.stolser.user.LoginBean;
 
-@ManagedBean(name="adminMainMenuBean")
+@Named("adminMainMenuBean")
 @SessionScoped
 public class AdminPanelMainMenu implements Serializable {
-	
 	static private final long serialVersionUID = 1L;
 	private final Logger logger = LoggerFactory.getLogger(AdminPanelMainMenu.class);
 	
@@ -45,7 +37,7 @@ public class AdminPanelMainMenu implements Serializable {
 	private DefaultSubMenu adminPanelSubmenu;
 	private DefaultSubMenu frontEndSubmenu;
 	
-	@ManagedProperty(value = "#{loginBean}")
+	@Inject
 	private LoginBean loginBean;
 	
 	private DefaultSeparator separator;

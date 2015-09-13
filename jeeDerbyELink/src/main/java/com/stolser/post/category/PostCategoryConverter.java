@@ -2,29 +2,30 @@ package com.stolser.post.category;
 
 import static com.stolser.MessageFromProperties.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.stolser.jpa.PostCategory;
-import com.stolser.user.UserConverter;
 
-@ManagedBean(name = "postCategoryConverter")
+@Named("postCategoryConverter")
 @ViewScoped
-public class PostCategoryConverter implements Converter {
+public class PostCategoryConverter implements Converter, Serializable {
+	static private final long serialVersionUID = 1L;
 	static private final Logger logger = LoggerFactory.getLogger(PostCategoryConverter.class);
 	
-	@ManagedProperty(value = "#{postCategoryCreator}")
+	@Inject
 	private PostCategoryCreator postCategoryCreator;
 	private List<PostCategory> postCategories;
 	

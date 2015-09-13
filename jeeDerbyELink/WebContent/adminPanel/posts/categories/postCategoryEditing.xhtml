@@ -41,7 +41,7 @@
                         <p:inputText id="categoryTitle" styleClass="update"
                           value="#{postCategoryEditor.category.title}"
                           required="true" requiredMessage="#{systemRB.commonRequiredMessage}"
-                          placeholder="enter the title..." >
+                          placeholder="enter the title...">
                           <p:ajax process="@this" event="blur"
                              update="@this categoryTitleLabel categoryTitleMsg"
                              ></p:ajax>
@@ -135,9 +135,18 @@
                     <p:commandButton action="#{postCategoryEditor.cancelUpdatingPostCategory}" 
                       value="Cancel"
                       styleClass="blockAlignCenter"/>
-                    <p:commandButton action="#{postCategoryEditor.deletePostCategory}" 
-                      value="Delete Category"
-                      styleClass="blockAlignCenter"/>
+                    <p:commandButton value="Delete Category" type="button"
+                      onclick="PF('confirmDeleting').show()" styleClass="blockAlignCenter"/>
+                      <p:confirmDialog message="Are you sure about deleting this category?"
+                        header="The Category Deleting" severity="alert"
+                        widgetVar="confirmDeleting">
+                        <p:commandButton value="Yes Sure" styleClass="leftGreenButton"
+                          actionListener="#{postCategoryEditor.deletePostCategory}"
+                          oncomplete="PF('confirmDeleting').hide()">
+                        </p:commandButton>
+                        <p:commandButton value="Cancel" onclick="PF('confirmDeleting').hide();" 
+                          type="button" styleClass="rightRedButton"/>
+                      </p:confirmDialog>
                   </b:column>
                 </b:row>
               </b:column> 

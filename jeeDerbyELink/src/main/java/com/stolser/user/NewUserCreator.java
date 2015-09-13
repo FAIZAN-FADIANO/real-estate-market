@@ -5,22 +5,23 @@ import static com.stolser.MessageFromProperties.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.*;
+import javax.faces.view.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.stolser.jpa.User;
 
-
-@ManagedBean(name = "newUserCreator")
+@Named("newUserCreator")
 @ViewScoped
 public class NewUserCreator implements Serializable {
 	static private final long serialVersionUID = 1L;
@@ -29,7 +30,7 @@ public class NewUserCreator implements Serializable {
 	private User newUser;
 	private String userTypeLabel;
 	private String passwordRepeat;
-	@EJB 
+	@Inject 
 	private UserFacade userEJB;
 
 	public NewUserCreator() {}

@@ -28,7 +28,7 @@
       <b:row>
         <h:form id="usersTableForm" styleClass="usersTableForm">
           <p:growl id="messages" autoUpdate="true" globalOnly="true"></p:growl>
-          <p:dataTable id="usersTable" styleClass="usersTable" var="user" rows="5"
+          <p:dataTable id="usersTable" styleClass="usersTable" var="user" rows="10"
             value="#{usersListing.usersList}"
             paginator="true" paginatorAlwaysVisible="false"
             resizableColumns="false" sortBy="#{user.type}"

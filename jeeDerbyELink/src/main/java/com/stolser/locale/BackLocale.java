@@ -1,16 +1,20 @@
 package com.stolser.locale;
 
 import static com.stolser.MessageFromProperties.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 import javax.annotation.PostConstruct;
-import javax.faces.bean.*;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ManagedBean (name = "backLocale")
+@Named("backLocale")
 @SessionScoped
 public class BackLocale implements Serializable {
 	static private final Logger logger = LoggerFactory.getLogger(BackLocale.class);

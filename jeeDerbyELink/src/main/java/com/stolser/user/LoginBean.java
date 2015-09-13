@@ -10,14 +10,17 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.*;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.validator.ValidatorException;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.event.FileUploadEvent;
@@ -32,10 +35,9 @@ import com.stolser.jpa.User;
 /**
  * Used for managing sessions and updating logged in user's info. 
  * */
-@ManagedBean(name="loginBean")
+@Named("loginBean")
 @SessionScoped
 public class LoginBean implements Serializable {
-	
 	static private final long serialVersionUID = 1L;
 	static private final Logger logger = LoggerFactory.getLogger(LoginBean.class);
 	
@@ -47,7 +49,7 @@ public class LoginBean implements Serializable {
 	/*Used for deleting phone numbers on the myProfile.xhtml*/
 	private List<Boolean> arePhoneNumbersDeleted;
 	
-	@EJB
+	@Inject
 	private UserFacade userFacade;
 	
 /**
@@ -56,7 +58,7 @@ public class LoginBean implements Serializable {
  * access the User Private Panel.
  * */
 	private User loggedInUser;
-	@EJB
+	@Inject
 	private AdminPanelRegister adminPanelRegister; 
 	
 	public LoginBean() {}

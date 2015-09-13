@@ -8,9 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.stolser.jpa.PostCategory;
 import com.stolser.jpa.PostCategory.PostCategoryStatusType;
 
-@ManagedBean(name = "postCategoryCreator")
+@Named("postCategoryCreator")
 @ViewScoped
 public class PostCategoryCreator implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -28,7 +28,7 @@ public class PostCategoryCreator implements Serializable {
 	private PostCategory newPostCategory;
 	private List<PostCategory> allPostCategories;
 	private List<PostCategoryStatusType> postCategoryStatuses;
-	@EJB
+	@Inject
 	private PostCategoryFacade categoryFacade;
 	
 	public PostCategoryCreator() {}

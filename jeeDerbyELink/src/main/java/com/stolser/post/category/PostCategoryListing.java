@@ -2,33 +2,32 @@ package com.stolser.post.category;
 
 import static com.stolser.MessageFromProperties.*;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.stolser.jpa.PostCategory;
-import com.stolser.jpa.User;
 import com.stolser.jpa.PostCategory.PostCategoryStatusType;
-import com.stolser.jpa.User.UserStatusType;
-import com.stolser.user.UsersListing;
 
-@ManagedBean(name = "postCategoryListing")
+@Named("postCategoryListing")
 @ViewScoped
-public class PostCategoryListing {
+public class PostCategoryListing implements Serializable {
+	static private final long serialVersionUID = 1L;
 	static private final Logger logger = LoggerFactory.getLogger(PostCategoryListing.class);
 	
 	private List<PostCategory> postCategories;
 	private List<PostCategoryStatusType> postCategoryStatusLabels;
-	@EJB 
+	@Inject
 	private PostCategoryFacade categoryFacade;
 
 	private PostCategoryStatusType categoryStatusOld;

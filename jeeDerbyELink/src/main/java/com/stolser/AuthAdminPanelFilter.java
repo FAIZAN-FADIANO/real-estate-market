@@ -2,6 +2,7 @@ package com.stolser;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -30,6 +31,7 @@ public class AuthAdminPanelFilter implements Filter {
 	private HttpServletRequest httpRequest;
 	private HttpServletResponse httpResponse;
 	private HttpSession session;
+	@Inject
 	private LoginBean loginBean;
 	private User loggedInUser;
 	private String requestedURI;
@@ -49,9 +51,6 @@ public class AuthAdminPanelFilter implements Filter {
 		httpRequest = (HttpServletRequest) request;
 		httpResponse = (HttpServletResponse) response;
 		session = httpRequest.getSession(false);
-		loginBean = (session != null) 
-				? (LoginBean)session.getAttribute("loginBean") 
-				: null;
 		loggedInUser = (loginBean != null) 
 				? loginBean.getLoggedInUser() 
 				: null;

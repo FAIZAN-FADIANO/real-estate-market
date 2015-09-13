@@ -1,26 +1,19 @@
 package com.stolser.user;
 
 import static com.stolser.MessageFromProperties.*;
-import java.text.MessageFormat;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.*;
-import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ValueChangeEvent;
-import javax.el.ELException;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.stolser.PropertiesLoader;
 import com.stolser.jpa.Admin;
 import com.stolser.jpa.Realtor;
 import com.stolser.jpa.User;
@@ -30,9 +23,10 @@ import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 import org.slf4j.*;
 
-@ManagedBean(name = "usersListing")
+@Named("usersListing")
 @ViewScoped
-public class UsersListing {
+public class UsersListing implements Serializable {
+	static private final long serialVersionUID = 1L;
 	static private final Logger logger = LoggerFactory.getLogger(UsersListing.class);
 
 	private List<User> usersList;
@@ -59,7 +53,7 @@ public class UsersListing {
 	private List<User> usersToDeleteFromDB;
 	private Boolean isDeleteUsersButtonVisible;
 
-	@EJB 
+	@Inject
 	private UserFacade userEJB;
 	private String userStatusFilter;
 
